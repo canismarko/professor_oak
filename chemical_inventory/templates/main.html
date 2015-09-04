@@ -1,3 +1,9 @@
 Welcome to teh chemical inventory.
 
 You currenty have {{ inventory_size }} chemicals.
+
+<p>
+  <a href="{% url 'chemical_list' %}">View list of chemicals</a>
+</p>
+
+<a href="{% url 'add_container' %}">Add inventory</a>

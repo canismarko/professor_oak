@@ -1,0 +1,24 @@
+Here go the chemicals
+
+<table>
+  <tr>
+    <th>Name</th>
+    <th>Formula</th>
+    <th>In stock</th>
+  </tr>
+  {% for chemical in object_list %}
+  <tr>
+    <td>
+      <a href="{{ chemical.detail_url }}"
+	 title="Detailed information on chemical {{ chemical.name }}">
+	{{ chemical.name }}</a>
+    </td>
+    <td>{{ chemical.formula }}</td>
+    <td>
+      {% if chemical.is_in_stock %}Yes
+      {% else %}No
+      {% endif %}
+    </td>
+  </tr>
+  {% endfor %}
+</table>

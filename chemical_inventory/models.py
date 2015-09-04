@@ -1,3 +1,4 @@
+from django.core.urlresolvers import reverse
 from django.db import models
 from django.contrib.auth.models import User
 
@@ -31,7 +32,19 @@ class Chemical(models.Model):
     glove = models.ForeignKey('Glove')
 
     def __str__(self):
-        return "{} ({})".format(self.name, self.formula)
+        return "{name} ({formula})".format(name=self.name, formula=self.formula)
+
+    def detail_url(self):
+        """Return the url for the detailed view of this chemical and all the
+        containers of it. Looked up in urls.py."""
+        url = reverse('chemical_detail', kwargs={'pk': self.pk})
+        return url
+
+    def is_in_stock(self):
+        """Return True if a chemical has a container with material in it,
+        otherwise return False."""
+        # Stubbed for development
+        return True
 
 
 class Glove(models.Model):
@@ -63,7 +76,7 @@ class Container(models.Model):
     owner = models.ForeignKey(User)
     quantity = models.FloatField(null=True, blank=True)
     unit_of_measure = models.CharField(max_length=20, null=True)
-    empty_status = models.BooleanField()
+    empty_status = models.BooleanField(default=False)
     emptied_by = models.ForeignKey(User, null=True, blank=True, related_name='emptied_containers')
     barcode = models.CharField(max_length=30, blank=True)
     supplier = models.ForeignKey('Supplier', null=True, blank=True)
