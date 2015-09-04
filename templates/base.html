@@ -1,0 +1,19 @@
+<html>
+
+  <head>
+    <title>
+      {% block title %}{% endblock %} | Professor Oak
+    </title>
+  </head>
+
+  <body>
+    <h1>
+      <a href="/" title="Return to frontpage">Professor Oak Lab Management</a>
+    </h1>
+
+    {% include 'includes/navigation.html' %}
+
+    {% block content %}{% endblock %}
+
+  </body>
+</html>

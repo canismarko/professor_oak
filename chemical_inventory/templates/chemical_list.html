@@ -1,5 +1,8 @@
-Here go the chemicals
+{% extends 'base.html' %}
 
+{% block title %}Current Inventory{% endblock %}
+
+{% block content %}
 <table>
   <tr>
     <th>Name</th>
@@ -22,3 +25,5 @@ Here go the chemicals
   </tr>
   {% endfor %}
 </table>
+
+{% endblock %}

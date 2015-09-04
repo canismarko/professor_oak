@@ -1,6 +1,10 @@
-<h1>Add to Inventory</h1>
+{% extends 'base.html' %}
 
-<!-- {% debug %} -->
+{% block title %}Add Inventory{% endblock %}
+
+{% block content %}
+
+<h1>Add to Inventory</h1>
 
 <form action="." method="post">
 
@@ -20,3 +24,5 @@
   </table>
 
 </form>
+
+{% endblock %}
