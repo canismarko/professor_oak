@@ -3,6 +3,12 @@ from django.contrib.auth.models import User
 
 # Create your models here.
 class Chemical(models.Model):
+    """The general idea of a chemical (eg Lithium hydroxide). It is *not*
+    a bottle of lithium hydroxide, just the general concept of lithium
+    hydroxide. An instance of `Chemical` describes safety information
+    among other things.
+
+    """
     cas_number = models.CharField(max_length=10, db_index=True, blank=True)
     name = models.CharField(max_length=200)
     formula = models.CharField(max_length=50, blank=True)
@@ -29,6 +35,9 @@ class Chemical(models.Model):
 
 
 class Glove(models.Model):
+    """Different chemicals have different glove compatibility. The `name`
+    field should provide some indication of the material from which it is
+    made."""
     name = models.CharField(max_length=50)
     supplier = models.ManyToManyField('Supplier', blank=True)
 
@@ -37,6 +46,12 @@ class Glove(models.Model):
 
 
 class Container(models.Model):
+    """This is a specific container of a chemical. This could be a
+    specific bottle of lithium hydroxide in your lab. Attributes
+    associated with a container include things like its location,
+    amount and owner.
+
+    """
     chemical = models.ForeignKey('Chemical')
     location = models.ForeignKey('Location')
     batch = models.CharField(max_length=30, blank=True)
