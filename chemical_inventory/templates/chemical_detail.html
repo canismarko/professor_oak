@@ -3,14 +3,11 @@
 {% block title %}{{ chemical.name }}{% endblock %}
 
 {% block content %}
-<h1>{{ chemical.name }}</h1>
+<h2>{{ chemical.name }}</h2>
 
 <dl>
   <dt>Formula</dt>
   <dd>{{ chemical.formula }}</dd>
-
-  <dt>CAS Number</dt>
-  <dd>{{ chemical.cas_number }}</dd>
 
   <dt>CAS Number</dt>
   <dd>{{ chemical.cas_number }}</dd>
@@ -20,12 +17,15 @@
   <dd>Flammability: {{ chemical.flammability }}</dd>
   <dd>Instability: {{ chemical.instability }}</dd>
   <dd>Special Hazards: {{ chemical.special_hazards }}</dd>
+
+  <dt>Gloves</dt>
+  <dd>{{ chemical.glove }}</dd>
 </dl>
 
 
 <h2>Containers</h2>
 
-<table>
+<table class="table">
   <th>Location</th>
   <th>Quantity</th>
   <th>Expiration Date</th>
@@ -33,7 +33,7 @@
   {% for container in container_list %}
   <tr>
     <td>{{ container.location }}</td>
-    <td>{{ container.quantity }}</td>
+    <td>{{ container.quantity }} {{ container.unit_of_measure }}</td>
     <td>{{ container.expiration_date }}</td>
     <td>{{ container.owner.get_full_name }}</td>
   </tr>

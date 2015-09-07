@@ -4,14 +4,24 @@
 
 {% block content %}
 
-Welcome to teh chemical inventory.
-
-You currenty have {{ inventory_size }} chemicals.
+<h2>Chemical Inventory</h2>
 
 <p>
-  <a href="{% url 'chemical_list' %}">View list of chemicals</a>
+  Welcome to the chemical inventory. You currenty have
+  {{ inventory_size }} chemicals.
 </p>
 
-<a href="{% url 'add_container' %}">Add inventory</a>
+<div class="row">
+
+  <div class="col-md-2">
+    <a href="{% url 'add_container' %}" class="btn btn-primary">
+      Add inventory</a>
+  </div>
+
+  <div class="col-md-2">
+    <a href="{% url 'chemical_list' %}" class="btn btn-default">
+      View list of chemicals</a>
+  </div>
+
 
 {% endblock %}
