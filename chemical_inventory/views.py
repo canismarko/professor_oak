@@ -3,6 +3,7 @@ from django.shortcuts import render
 from django.views.generic.list import ListView
 from django.views.generic.detail import DetailView
 from django.views.generic.edit import CreateView
+from django.views.generic.edit import UpdateView
 
 from .models import Chemical, Container
 
@@ -68,3 +69,8 @@ class AddContainerView(CreateView):
     def success_url(self, url):
         # Django throws an error if it can't set success_url
         pass
+
+class EditChemicalView(UpdateView):
+	template_name = # Make Template
+	model = Chemical
+	fields = ['cas_number', 'name', 'formula', 'NFPA_RATINGS', 'NFPA_HAZARDS', ] 

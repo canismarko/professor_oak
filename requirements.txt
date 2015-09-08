@@ -1,3 +1,5 @@
 Django==1.8.4
 wheel==0.24.0
 django-angular==0.7.15
+distribute==0.7.3
+pyBarcode==0.7
