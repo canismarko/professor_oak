@@ -1,9 +1,0 @@
-{% load browserid %}
-
-<!-- Browser id login stuff -->
-{% if user.is_authenticated %}
-<p>Current user: {{ user.email }}</p>
-{% browserid_logout text='Logout' %}
-{% else %}
-{% browserid_login text='Login' color='light' %}
-{% endif %}
