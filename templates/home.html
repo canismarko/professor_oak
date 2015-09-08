@@ -1,9 +1,7 @@
-<html>
-  <head><title>Oak Lab Management</title></head>
-  <body>
-		<nav id=navMenu>
-		{% include "includes/navigation.html" %}
-		</nav>
+{% extends 'base.html' %}
+
+{% block title %}Chemical Inventory{% endblock %}
+
+{% block content %}
     Hello, {{ user_full_name }}
-  </body>
-</html>
+{% endblock %}

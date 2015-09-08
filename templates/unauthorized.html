@@ -1,0 +1,17 @@
+{% extends 'error.html' %}
+
+{% block title %}Unauthorized{% endblock %}
+
+{% block error_message %}
+  <h3>Unauthorized Login</h3>
+  <p>
+    You are not authorized to use this site. If this is your first
+    time here, please <strong>contact your group's
+    administrator</strong> to have yourself added.
+  </p>
+  <p>
+    <a href="/" title="Return home" class="btn btn-default">
+      <span class="glyphicon glyphicon-home"></span>
+      Home</a>
+  </p>
+{% endblock %}

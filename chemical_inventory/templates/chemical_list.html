@@ -1,6 +1,17 @@
-Here go the chemicals
+{% extends 'base.html' %}
 
-<table>
+{% block title %}Current Inventory{% endblock %}
+
+{% block content %}
+
+<h2>Chemicals currently in your lab</h2>
+
+<p>
+  <a href="{% url 'add_container' %}" class="btn btn-primary">
+    Add chemical</a>
+</p>
+
+<table class="table">
   <tr>
     <th>Name</th>
     <th>Formula</th>
@@ -22,3 +33,5 @@ Here go the chemicals
   </tr>
   {% endfor %}
 </table>
+
+{% endblock %}

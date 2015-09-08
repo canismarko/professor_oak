@@ -1,3 +1,5 @@
+import datetime
+
 from django.core.urlresolvers import reverse
 from django.db import models
 from django.contrib.auth.models import User
@@ -69,7 +71,7 @@ class Container(models.Model):
     location = models.ForeignKey('Location')
     batch = models.CharField(max_length=30, blank=True)
     date_added = models.DateTimeField(auto_now=True)
-    date_opened = models.DateField(null=True)
+    date_opened = models.DateField(null=True, default=datetime.date.today)
     expiration_date = models.DateField()
     state = models.CharField(max_length=10)
     container_type = models.CharField(max_length=50)

@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+{% load staticfiles %}
+
+{% block content %}
+
+<h2>It Appears We Have a Problem&hellip;</h2>
+
+<div class="row">
+  <div class="col-md-6">
+    <div class="alert alert-danger" role="alert">
+      {% block error_message %}
+      {% endblock %}
+    </div>
+  </div>
+  <div class="col-md-6">
+    <img src="{% static 'lab-fire.jpg' %}"
+	 alt="lab fire" class="img-responsive" />
+  </div>
+</div>
+
+{% endblock %}

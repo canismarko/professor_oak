@@ -15,12 +15,24 @@ Including another URLconf
 """
 from django.conf.urls import include, url
 from django.contrib import admin
+from django.views.generic.base import RedirectView
+from django.views.generic import TemplateView
+from django.core.urlresolvers import reverse
 
 from . import views
 import chemical_inventory.urls
 
 urlpatterns = [
-    url(r'^$', views.home, name='home'),
+    # Since there's home content yet, temporarily redirect to the chemical inventory
+    # url(r'^$', views.home, name='home'),
+    url(r'^$', RedirectView.as_view(url='/chemical_inventory/', permanent=False), name='home'),
     url(r'^admin/', include(admin.site.urls)),
     url(r'^chemical_inventory/', include(chemical_inventory.urls)),
+
+    # Authorization stuff using Persona
+    url(r'', include('django_browserid.urls')),
+    url(r'^unauthorized/$', views.unauthorized, name='unauthorized'),
+    url(r'^accounts/login/$',
+        TemplateView.as_view(template_name='login.html'),
+        name='login'),
 ]
