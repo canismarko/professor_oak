@@ -1,3 +1,4 @@
+from django.contrib.auth.decorators import login_required
 from django.core.urlresolvers import reverse
 from django.shortcuts import render
 from django.views.generic.list import ListView
@@ -49,7 +50,6 @@ class ChemicalDetailView(DetailView):
         # Add list of containers to context
         context['container_list'] = chemical.container_set.all()
         return context
-
 
 class AddContainerView(CreateView):
     template_name = 'container_form.html'

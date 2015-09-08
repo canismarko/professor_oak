@@ -25,14 +25,14 @@ SECRET_KEY = '%rd$h^*ahp%r620=_dn1i=g58(-75=asjn)wd7116fs4ed4gyh'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
-
+ALLOWED_HOSTS = ['localhost', '127.0.0.1']
 
 # Application definition
 
 INSTALLED_APPS = (
     'django.contrib.admin',
     'django.contrib.auth',
+    'django_browserid', # Mozilla persona authentication
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
@@ -41,6 +41,17 @@ INSTALLED_APPS = (
     'professor_oak',
     'chemical_inventory',
 )
+
+# Add the django_browserid authentication backend.
+AUTHENTICATION_BACKENDS = (
+    'django.contrib.auth.backends.ModelBackend',
+    'django_browserid.auth.BrowserIDBackend',
+)
+
+# Disable the creation of unrecognized users
+BROWSERID_CREATE_USER = False
+
+LOGIN_REDIRECT_URL_FAILURE = '/unauthorized/'
 
 MIDDLEWARE_CLASSES = (
     'django.contrib.sessions.middleware.SessionMiddleware',
