@@ -29,7 +29,7 @@
 		Edit Information</a>
 </p>
 
-<img src="{{ chemical.get_structure }}" title="Chemical structure of {{ chemical.name }}" class=structure_display></img>
+<img src="{{ chemical.structure_url }}" title="Chemical structure of {{ chemical.name }}" class=structure_display></img>
 
 <h2>Containers</h2>
 
@@ -45,7 +45,7 @@
     <td>{{ container.expiration_date }}</td>
     <td>{{ container.owner.get_full_name }}</td>
 	<td> <a href="{{ container.edit_url }}"
-		title="Edit container of {{ chemical.name }}" > 
+		title="Edit container of {{ chemical.name }}" >
 		Edit</a> </td>
   </tr>
   {% endfor %}

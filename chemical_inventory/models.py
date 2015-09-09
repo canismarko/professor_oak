@@ -5,7 +5,6 @@ from django.db import models
 from django.contrib.auth.models import User
 from chemspipy import ChemSpider
 from django.conf import settings
-cs = ChemSpider(settings.CHEMSPIDER_KEY)
 
 # Create your models here.
 class Chemical(models.Model):
@@ -44,7 +43,7 @@ class Chemical(models.Model):
         containers of it. Looked up in urls.py."""
         url = reverse('chemical_detail', kwargs={'pk': self.pk})
         return url
-	
+
     def edit_url(self):
         """Return the url for the detailed view of this chemical and all the
         containers of it. Looked up in urls.py."""
@@ -57,11 +56,16 @@ class Chemical(models.Model):
         # Stubbed for development
         return True
 
-    def get_structure(self):
-        CAS = self.cas_number
-        c = cs.simple_search(CAS)
-        image = c[0].image_url
-        return image
+    def structure_url(self):
+        try:
+            cs = ChemSpider(settings.CHEMSPIDER_KEY)
+        except AttributeError:
+            image_url = 'http://img-9gag-fun.9cache.com/photo/avLeQWn_460sa.gif'
+        else:
+            CAS = self.cas_number
+            search_result = cs.simple_search(CAS)
+            image_url = search_result[0].image_url
+        return image_url
 
 class Glove(models.Model):
     """Different chemicals have different glove compatibility. The `name`
