@@ -38,6 +38,7 @@ INSTALLED_APPS = (
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'djangular',
+    'rest_framework',
     'professor_oak',
     'chemical_inventory',
 )
