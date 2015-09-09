@@ -117,3 +117,5 @@ USE_TZ = True
 STATIC_ROOT = 'static_files/'
 
 STATIC_URL = '/static/'
+
+from .localsettings import *
