@@ -41,6 +41,12 @@ class Chemical(models.Model):
         containers of it. Looked up in urls.py."""
         url = reverse('chemical_detail', kwargs={'pk': self.pk})
         return url
+	
+    def edit_url(self):
+        """Return the url for the detailed view of this chemical and all the
+        containers of it. Looked up in urls.py."""
+        url = reverse('chemical_edit', kwargs={'pk': self.pk})
+        return url
 
     def is_in_stock(self):
         """Return True if a chemical has a container with material in it,

@@ -4,6 +4,7 @@ django-angular==0.7.15
 <<<<<<< HEAD
 distribute==0.7.3
 pyBarcode==0.7
+chemspipy==1.0.4
 =======
 django-browserid
 >>>>>>> origin/master
