@@ -41,6 +41,9 @@
     <td>{{ container.quantity }} {{ container.unit_of_measure }}</td>
     <td>{{ container.expiration_date }}</td>
     <td>{{ container.owner.get_full_name }}</td>
+	<td> <a href="{{ container.edit_url }}"
+		title="Edit container of {{ chemical.name }}" > 
+		Edit</a> </td>
   </tr>
   {% endfor %}
 </table>

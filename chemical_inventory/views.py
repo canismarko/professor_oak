@@ -84,3 +84,17 @@ class EditChemicalView(UpdateView):
 		# Get the actual Chemical object
 		chemical = Chemical.objects.get(pk=pk)
 		return chemical
+
+class EditContainerView(UpdateView):
+    template_name = 'container_form.html'
+    model = Container
+    fields = ['chemical', 'location', 'batch', 'date_opened', 'expiration_date','state', 'container_type', 'owner', 'quantity', 'unit_of_measure','supplier', 'empty_status'] 
+
+	# Do I have to do this again here?
+def get_object(self):
+	"""Return the specific chemical by its primary key ('pk')."""
+	# Find the primary key from the url
+	pk = self.kwargs['pk']
+	# Get the actual Chemical object
+	container = Container.objects.get(barcode=barcode)
+	return chemical

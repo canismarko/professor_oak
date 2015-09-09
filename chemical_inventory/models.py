@@ -94,7 +94,12 @@ class Container(models.Model):
         return string.format(chemical=self.chemical,
                              container_type=self.container_type,
                              location=self.location)
-
+    # This too?
+    # def edit_url(self):
+        # """Return the url for the detailed view of this chemical and all the
+        # containers of it. Looked up in urls.py."""
+        # url = reverse('container_edit', kwargs={'barcode': self.barcode})
+        # return url
 
 class Location(models.Model):
     name = models.CharField(max_length=50, blank=True)
@@ -106,6 +111,7 @@ class Location(models.Model):
         return "{name} ({room} {bldg})".format(name=self.name,
                                              room=self.room_number,
                                              bldg=self.building)
+
 
 
 class Supplier(models.Model):

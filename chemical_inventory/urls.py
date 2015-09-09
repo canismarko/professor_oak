@@ -21,4 +21,7 @@ urlpatterns = [
     url(r'^containers/add/$',
         login_required(views.AddContainerView.as_view()),
         name='add_container'),
+	url(r'^containers/edit/(?P<barcode>[0-9]+)/$',
+		views.EditContainerView.as_view(),
+		name='container_edit'),
 ]
