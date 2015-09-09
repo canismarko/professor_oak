@@ -2,11 +2,13 @@ from django.contrib.auth.decorators import login_required
 from django.core.urlresolvers import reverse
 from django.shortcuts import render
 from django.views.generic.list import ListView
+from django.views.generic.base import TemplateView
 from django.views.generic.detail import DetailView
 from django.views.generic.edit import CreateView
 from django.views.generic.edit import UpdateView
 from rest_framework import viewsets, permissions
 
+from .forms import ChemicalForm, ContainerForm
 from .models import Chemical, Container
 from .serializers import ChemicalSerializer
 
@@ -55,12 +57,15 @@ class ChemicalDetailView(DetailView):
         return context
 
 
-class AddContainerView(CreateView):
+class AddContainerView(TemplateView):
     template_name = 'container_form.html'
-    model = Container
-    fields = ['chemical', 'location', 'batch', 'date_opened', 'expiration_date',
-              'state', 'container_type', 'owner', 'quantity', 'unit_of_measure',
-              'supplier']
+
+    def get_context_data(self, *args, **kwargs):
+        context = super().get_context_data(*args, **kwargs)
+        # Load the angular forms for container and chemical
+        context.update(chemical_form=ChemicalForm())
+        context.update(container_form=ContainerForm())
+        return context
 
     @property
     def success_url(self):
