@@ -5,8 +5,10 @@ from django.views.generic.list import ListView
 from django.views.generic.detail import DetailView
 from django.views.generic.edit import CreateView
 from django.views.generic.edit import UpdateView
+from rest_framework import viewsets, permissions
 
 from .models import Chemical, Container
+from .serializers import ChemicalSerializer
 
 def main(request):
     """This view function returns a generic landing page response."""
@@ -52,6 +54,7 @@ class ChemicalDetailView(DetailView):
         context['container_list'] = chemical.container_set.all()
         return context
 
+
 class AddContainerView(CreateView):
     template_name = 'container_form.html'
     model = Container
@@ -70,7 +73,22 @@ class AddContainerView(CreateView):
         # Django throws an error if it can't set success_url
         pass
 
+
 class EditChemicalView(UpdateView):
-	template_name = # Make Template
+	template_name = '' # Make Template
 	model = Chemical
 	fields = ['cas_number', 'name', 'formula', 'NFPA_RATINGS', 'NFPA_HAZARDS', ] 
+
+
+# Browseable API viewsets
+# =======================
+
+class ChemicalViewSet(viewsets.ModelViewSet):
+    """Viewset for the Chemical model. User is required to be logged in to
+    post."""
+    # Determine which object to list
+    queryset = Chemical.objects.all()
+    # Decide how to convert to JSON
+    serializer_class = ChemicalSerializer
+    # Require user be logged in to post to this endpoint
+    permission_classes = (permissions.IsAuthenticatedOrReadOnly,)

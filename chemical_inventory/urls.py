@@ -2,6 +2,7 @@
 
 from django.contrib.auth.decorators import login_required
 from django.conf.urls import include, url
+from rest_framework import routers
 
 from . import views
 
@@ -18,4 +19,13 @@ urlpatterns = [
     url(r'^containers/add/$',
         login_required(views.AddContainerView.as_view()),
         name='add_container'),
+]
+
+# URLs for the browsable API
+router = routers.DefaultRouter()
+router.register(r'chemicals', views.ChemicalViewSet)
+
+# Add API URLs to Django's urls
+urlpatterns += [
+    url(r'^api/', include(router.urls)),
 ]
