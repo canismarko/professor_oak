@@ -3,8 +3,8 @@
 {% block title %}{{ chemical.name }}{% endblock %}
 
 {% block content %}
-<h2>{{ chemical.name }}</h2>
 
+<h2>{{ chemical.name }}</h2>
 <dl>
   <dt>Formula</dt>
   <dd>{{ chemical.formula }}</dd>
@@ -25,11 +25,11 @@
 
 <p>
     <a href="{{ chemical.edit_url }}"
-		title="Edit information for {{ chemical.name }}" class="btn btn-primary">
+		title="Edit chemical information for {{ chemical.name|lower }}" class="btn btn-primary">
 		Edit Information</a>
+	<a href="{% url 'chemical_list' %}" title="Return to list of chemicals" class="btn btn-link">Back</a>
 </p>
-
-<img src="{{ chemical.get_structure }}" title="Chemical structure of {{ chemical.name }}" class=structure_display></img>
+	<img src="{{ chemical.get_structure }}" title="Chemical structure of {{ chemical.name|lower }}" class=structure_display></img>
 
 <h2>Containers</h2>
 
@@ -38,14 +38,17 @@
   <th>Quantity</th>
   <th>Expiration Date</th>
   <th>Contact Person</th>
+  <th>Empty?</th>
+  <th></th>
   {% for container in container_list %}
   <tr>
     <td>{{ container.location }}</td>
     <td>{{ container.quantity }} {{ container.unit_of_measure }}</td>
     <td>{{ container.expiration_date }}</td>
     <td>{{ container.owner.get_full_name }}</td>
+	<td><input type="checkbox"></td>
 	<td> <a href="{{ container.edit_url }}"
-		title="Edit container of {{ chemical.name }}" > 
+		title="Edit this container of {{ chemical.name|lower }}" > 
 		Edit</a> </td>
   </tr>
   {% endfor %}

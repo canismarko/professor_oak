@@ -37,7 +37,7 @@ class ChemicalListView(ListView):
 class ChemicalDetailView(DetailView):
     """This view shows detailed information about one chemical. Also gets
     the list of containers that this chemical is in."""
-
+	
     template_name = 'chemical_detail.html'
     template_object_name = 'chemical'
 
