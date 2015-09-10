@@ -103,10 +103,10 @@ class EditContainerView(UpdateView):
     def get_object(self):
         """Return the specific chemical by its primary key ('pk')."""
         # Find the primary key from the url
-        barcode = self.kwargs['barcode']
+        pk = self.kwargs['pk']
         # Get the actual Chemical object
-        container = Container.objects.get(barcode=barcode)
-        return chemical
+        container = Container.objects.get(pk=pk)
+        return container
 
 # Browseable API viewsets
 # =======================
