@@ -1,5 +1,5 @@
 {% extends 'base.html' %}
-
+{% load custom_filters %}
 {% block title %}{{ chemical.name }}{% endblock %}
 
 {% block content %}
@@ -7,7 +7,7 @@
 <h2>{{ chemical.name }}</h2>
 <dl>
   <dt>Formula</dt>
-  <dd>{{ chemical.formula }}</dd>
+  <dd>{{ chemical.formula|subscript }}</dd>
 
   <dt>CAS Number</dt>
   <dd>{{ chemical.cas_number }}</dd>

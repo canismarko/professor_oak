@@ -41,7 +41,7 @@ class ChemicalDetailView(DetailView):
 	
     template_name = 'chemical_detail.html'
     template_object_name = 'chemical'
-
+	
     def get_object(self):
         """Return the specific chemical by its primary key ('pk')."""
         # Find the primary key from the url
