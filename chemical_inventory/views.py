@@ -12,6 +12,7 @@ from .forms import ChemicalForm, ContainerForm
 from .models import Chemical, Container
 from .serializers import ChemicalSerializer
 
+
 def main(request):
     """This view function returns a generic landing page response."""
     # A 'context' is the data that the template can use
@@ -56,7 +57,6 @@ class ChemicalDetailView(DetailView):
         context['container_list'] = chemical.container_set.all()
         return context
 
-
 class AddContainerView(TemplateView):
     template_name = 'container_form.html'
 
@@ -95,9 +95,9 @@ class EditChemicalView(UpdateView):
 		return chemical
 
 class EditContainerView(UpdateView):
-	template_name = 'container_form.html'
-	model = Container
-	fields = ['chemical', 'location', 'batch', 'date_opened', 'expiration_date','state', 'container_type', 'owner', 'quantity', 'unit_of_measure','supplier', 'empty_status'] 
+    template_name = 'container_edit.html'
+    model = Container
+    fields = ['chemical', 'location', 'batch', 'date_opened', 'expiration_date','state', 'container_type', 'owner', 'quantity', 'unit_of_measure','supplier', 'empty_status'] 
 
 	# Do I have to do this again here?
 	def get_object(self):

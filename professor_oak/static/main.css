@@ -1,3 +1,9 @@
 .main-content {
     margin-top: 15px;
 }
+img.structure_display {
+	position: relative;
+	vertical-align: text-top;
+	right: auto
+
+}

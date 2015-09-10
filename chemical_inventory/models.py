@@ -3,6 +3,9 @@ import datetime
 from django.core.urlresolvers import reverse
 from django.db import models
 from django.contrib.auth.models import User
+from chemspipy import ChemSpider
+from django.conf import settings
+cs = ChemSpider(settings.CHEMSPIDER_KEY)
 
 # Create your models here.
 class Chemical(models.Model):
@@ -54,6 +57,11 @@ class Chemical(models.Model):
         # Stubbed for development
         return True
 
+    def get_structure(self):
+        CAS = self.cas_number
+        c = cs.simple_search(CAS)
+        image = c[0].image_url
+        return image
 
 class Glove(models.Model):
     """Different chemicals have different glove compatibility. The `name`
@@ -94,12 +102,12 @@ class Container(models.Model):
         return string.format(chemical=self.chemical,
                              container_type=self.container_type,
                              location=self.location)
-    # This too?
-    # def edit_url(self):
-        # """Return the url for the detailed view of this chemical and all the
-        # containers of it. Looked up in urls.py."""
-        # url = reverse('container_edit', kwargs={'barcode': self.barcode})
-        # return url
+							 
+    def edit_url(self):
+        """Return the url for the detailed view of this chemical and all the
+        containers of it. Looked up in urls.py."""
+        url = reverse('container_edit', kwargs={'pk': self.pk})
+        return url
 
 class Location(models.Model):
     name = models.CharField(max_length=50, blank=True)
