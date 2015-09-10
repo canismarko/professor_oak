@@ -17,7 +17,7 @@ from .serializers import ChemicalSerializer
 def main(request):
     """This view function returns a generic landing page response."""
     # A 'context' is the data that the template can use
-    context = {'inventory_size': len(Chemical.objects.all())}
+    context = {'inventory_size': len(Container.objects.filter(empty_status=False))}
     # Now put the context together with a template
     # Look in chemical_inventory/templates/main.html for the actual html
     # 'request' is the HTTP request submitted by the browser
