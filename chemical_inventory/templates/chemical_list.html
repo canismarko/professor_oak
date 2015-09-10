@@ -9,6 +9,7 @@
 <p>
   <a href="{% url 'add_container' %}" class="btn btn-primary">
     Add chemical</a>
+	<a href="{% url 'inventory_main' %}" title="Return to list of chemicals" class="btn btn-link">Home</a>
 </p>
 
 <table class="table">
@@ -21,7 +22,7 @@
   <tr>
     <td>
       <a href="{{ chemical.detail_url }}"
-	 title="Detailed information on chemical {{ chemical.name }}">
+	 title="Detailed information on chemical {{ chemical.name|lower }}">
 	{{ chemical.name }}</a>
     </td>
     <td>{{ chemical.formula }}</td>

@@ -5,6 +5,7 @@ from django.db import models
 from django.contrib.auth.models import User
 from django.conf import settings
 from chemspipy import ChemSpider
+# from django.utils.safestring import mark_safe
 
 # Create your models here.
 class Chemical(models.Model):
@@ -37,7 +38,11 @@ class Chemical(models.Model):
 
     def __str__(self):
         return "{name} ({formula})".format(name=self.name, formula=self.formula)
-
+	
+    def subscript(self):
+        # stubbed for development
+        return self
+	
     def detail_url(self):
         """Return the url for the detailed view of this chemical and all the
         containers of it. Looked up in urls.py."""
@@ -113,7 +118,13 @@ class Container(models.Model):
         containers of it. Looked up in urls.py."""
         url = reverse('container_edit', kwargs={'pk': self.pk})
         return url
-
+		
+    def detail_url(self):
+        """Return the url for the detailed view of this chemical and all the
+        containers of it. Looked up in urls.py."""
+        url = reverse('chemical_detail', kwargs={'pk': self.pk})
+        return url
+		
 class Location(models.Model):
     name = models.CharField(max_length=50, blank=True)
     room_number = models.CharField(max_length=20)

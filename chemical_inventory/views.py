@@ -7,6 +7,7 @@ from django.views.generic.detail import DetailView
 from django.views.generic.edit import CreateView
 from django.views.generic.edit import UpdateView
 from rest_framework import viewsets, permissions
+from django.utils.safestring import mark_safe
 
 from .forms import ChemicalForm, ContainerForm
 from .models import Chemical, Container
