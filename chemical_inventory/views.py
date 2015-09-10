@@ -100,13 +100,13 @@ class EditContainerView(UpdateView):
     fields = ['chemical', 'location', 'batch', 'date_opened', 'expiration_date','state', 'container_type', 'owner', 'quantity', 'unit_of_measure','supplier', 'empty_status'] 
 
 	# Do I have to do this again here?
-	def get_object(self):
-		"""Return the specific chemical by its primary key ('pk')."""
-		# Find the primary key from the url
-		barcode = self.kwargs['barcode']
-		# Get the actual Chemical object
-		container = Container.objects.get(barcode=barcode)
-		return chemical
+    def get_object(self):
+        """Return the specific chemical by its primary key ('pk')."""
+        # Find the primary key from the url
+        barcode = self.kwargs['barcode']
+        # Get the actual Chemical object
+        container = Container.objects.get(barcode=barcode)
+        return chemical
 
 # Browseable API viewsets
 # =======================
