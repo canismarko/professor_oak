@@ -40,8 +40,13 @@ class Chemical(models.Model):
         return "{name} ({formula})".format(name=self.name, formula=self.formula)
 	
     def subscript(self):
+        # list_formula = list(self.formula)
+        # if '_' in list_formula:
+            # list_formula[:] = ['/u208' for '_' in list_formula]
         # stubbed for development
-        return self
+        # "".join(list_formula)
+        unicode_formula = self.encode('utf-8')
+        return unicode_formula
 	
     def detail_url(self):
         """Return the url for the detailed view of this chemical and all the
