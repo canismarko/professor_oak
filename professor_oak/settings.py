@@ -118,4 +118,7 @@ STATIC_ROOT = 'static_files/'
 
 STATIC_URL = '/static/'
 
-from .localsettings import *
+try:
+    from .localsettings import *
+except ImportError:
+    pass
