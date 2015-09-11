@@ -10,7 +10,7 @@ def subscript(self):
     formula = self
     x = 0
     while x in range (0, len(formula)):
-        if formula[x] in ('_'):
+        if formula[x] in ('_', '^'):
             formula = insert_maths_boundary(formula, x)
             x += 1
         x += 1
