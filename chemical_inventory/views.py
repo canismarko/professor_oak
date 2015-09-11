@@ -7,6 +7,7 @@ from django.views.generic.detail import DetailView
 from django.views.generic.edit import CreateView
 from django.views.generic.edit import UpdateView
 from rest_framework import viewsets, permissions
+from django.utils.safestring import mark_safe
 
 from .forms import ChemicalForm, ContainerForm
 from .models import Chemical, Container
@@ -16,7 +17,7 @@ from .serializers import ChemicalSerializer
 def main(request):
     """This view function returns a generic landing page response."""
     # A 'context' is the data that the template can use
-    context = {'inventory_size': len(Chemical.objects.all())}
+    context = {'inventory_size': len(Container.objects.filter(empty_status=False))}
     # Now put the context together with a template
     # Look in chemical_inventory/templates/main.html for the actual html
     # 'request' is the HTTP request submitted by the browser
@@ -37,10 +38,10 @@ class ChemicalListView(ListView):
 class ChemicalDetailView(DetailView):
     """This view shows detailed information about one chemical. Also gets
     the list of containers that this chemical is in."""
-
+	
     template_name = 'chemical_detail.html'
     template_object_name = 'chemical'
-
+	
     def get_object(self):
         """Return the specific chemical by its primary key ('pk')."""
         # Find the primary key from the url
@@ -100,13 +101,13 @@ class EditContainerView(UpdateView):
     fields = ['chemical', 'location', 'batch', 'date_opened', 'expiration_date','state', 'container_type', 'owner', 'quantity', 'unit_of_measure','supplier', 'empty_status'] 
 
 	# Do I have to do this again here?
-def get_object(self):
-	"""Return the specific chemical by its primary key ('pk')."""
-	# Find the primary key from the url
-	pk = self.kwargs['pk']
-	# Get the actual Chemical object
-	container = Container.objects.get(barcode=barcode)
-	return chemical
+    def get_object(self):
+        """Return the specific chemical by its primary key ('pk')."""
+        # Find the primary key from the url
+        pk = self.kwargs['pk']
+        # Get the actual Chemical object
+        container = Container.objects.get(pk=pk)
+        return container
 
 # Browseable API viewsets
 # =======================
