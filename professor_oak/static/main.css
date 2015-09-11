@@ -1,9 +1,32 @@
 .main-content {
     margin-top: 15px;
 }
-img.structure_display {
-	position: relative;
-	vertical-align: text-bottom;
-	right: auto
 
+/* ChemSpider chemical structures */
+img.structure_display {
+    position: relative;
+    vertical-align: text-bottom;
+    right: auto
+}
+
+/* Djang-angular forms */
+form label {
+    margin-bottom: 0px;
+    margin-top: 10px;
+}
+label {
+    font-weight: normal;
+}
+label.required {
+    font-weight: bold;
+}
+
+/* Form validation */
+ul.djng-form-control-feedback {
+    margin-bottom: 0px;
+    list-style-type: none;
+}
+li.invalid {
+    color: red;
+    font-weight: bold;
 }
