@@ -69,6 +69,17 @@ angular.module('chemicalInventory', ['ngResource', 'ngAnimate', 'toaster'])
 		    " to inventory. It's super effective!";
 		toaster.success('Success!', message);
 		resetContainer();
+	    }).catch(function(reason) {
+		// Display visual feedback of error
+		var message = "Chemical not added. Please contact your administrator";
+		toaster.pop({
+		    type: 'error',
+		    title: 'Error!',
+		    body: message,
+		    timeout: 0,
+		    showCloseButton: true
+		});
+		console.log(reason);
 	    });
 	}
 	$scope.save = function() {
