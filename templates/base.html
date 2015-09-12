@@ -1,5 +1,6 @@
 {% load staticfiles %}
 {% load browserid %}
+{% load custom_filters %}
 <!DOCTYPE html>
 
 <html ng-app="chemicalInventory">
@@ -13,7 +14,9 @@
     <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.5/css/bootstrap.min.css">
     {% browserid_css %}
     <link rel="stylesheet" type="text/css" href="{% static 'main.css' %}">
-
+	
+	<!--MathJax Link-->
+	
     <!-- Favicon that shows up in the browser tab -->
     <link rel="shortcut icon" href="{% static 'favicon.ico' %}" />
 
@@ -65,7 +68,23 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
     {% browserid_js %}
     <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.4.5/angular.min.js"></script>
-
+	<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    extensions: ["tex2jax.js"],
+    jax: ["input/TeX", "output/HTML-CSS"],
+    tex2jax: {
+      inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+      displayMath: [ ['$$','$$'], ["\\[","\\]"] ],
+      processEscapes: true
+    },
+    "HTML-CSS": { availableFonts: ["Arial"] }
+  });
+</script>
+<script type="text/javascript" src="path-to-MathJax/MathJax.js">
+</script>
+	<script type="text/javascript"
+	src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+	</script>
     <!-- chemical_inventory angular files -->
     <script src="{% static 'inventory_ctrl.js' %}"></script>
 
