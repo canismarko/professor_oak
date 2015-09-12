@@ -12,6 +12,7 @@
 
     <!-- Styles -->
     <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.5/css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/angularjs-toaster/0.4.15/toaster.min.css">
     {% browserid_css %}
     <link rel="stylesheet" type="text/css" href="{% static 'main.css' %}">
 
@@ -28,30 +29,30 @@
 
   <body>
 
+    <toaster-container></toaster-container>
+
     {% browserid_info %}
     <div class="container no_padding">
       <div class="row header">
-	<div class="col-md-1">
-	  <img src="{% static 'oak-sprite.png' %}"
-	       class="img-responsive img-center" />
+	<div class="col-md-10">
+	  <a href="/" title="Return to frontpage">
+	    <img src="{% static 'oak-sprite.png' %}"
+		 class="oak-sprite" />
+	    <h1>Professor Oak Lab Management</h1>
+	  </a>
 	</div>
-	<div class="col-md-9">
-	  <h1>
-	    <a href="/" title="Return to frontpage">Professor Oak Lab Management</a>
-	 </h1>
-	</div>
-	<div class="col-md-2">
+	<div class="col-md-2 current-user">
 	  <!-- Browser id login stuff -->
 	  {% if user.is_authenticated %}
-	  <p>Welcome, {{ user.first_name }}</p>
-	  <ul class="auth-options">
+	  <p class="text-center">Welcome, {{ user.first_name }}</p>
+	  <div class="auth-options text-center">
 	    {% if user.is_staff %}
-	    <li><a href="/admin/" title="Administration site">Admin</a></li>
+	    <span class="btn btn-link"><a href="/admin/" title="Administration site">Admin</a></span>
 	    {% endif %}
-	    <li>
+	    <span class="btn btn-link">
 	      {% browserid_logout text='Logout' %}
-	    </li>
-	  </ul>
+	    </span>
+	  </div>
 	  {% elif request.GET.next %}
 	    {% browserid_login text='Login' color='light' next=request.GET.next %}
 	  {% else %}
@@ -73,6 +74,8 @@
     {% browserid_js %}
     <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.4.5/angular.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.4.5/angular-resource.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.4.5/angular-animate.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/angularjs-toaster/0.4.15/toaster.min.js"></script>
 
     <!-- MathJax stuff -->
     <script type="text/x-mathjax-config">
@@ -87,7 +90,7 @@
 	  "HTML-CSS": { availableFonts: ["Arial"] }
       });
     </script>
-    <script type="text/javascript" src="path-to-MathJax/MathJax.js"></script>
+    <!-- <script type="text/javascript" src="path-to-MathJax/MathJax.js"></script> -->
     <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
 
     <!-- chemical_inventory angular files -->

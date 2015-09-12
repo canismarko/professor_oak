@@ -1,4 +1,4 @@
-angular.module('chemicalInventory', ['ngResource'])
+angular.module('chemicalInventory', ['ngResource', 'ngAnimate', 'toaster'])
 
 // Set csrf token and AJAX header
     .config(function($httpProvider) {
@@ -12,7 +12,7 @@ angular.module('chemicalInventory', ['ngResource'])
 	$resourceProvider.defaults.stripTrailingSlashes = false;
     })
 
-    .controller('addContainer', ['$scope', '$resource', function($scope, $resource) {
+    .controller('addContainer', ['$scope', '$resource', 'toaster', function($scope, $resource, toaster) {
 	var Chemical;
 	// Get the list of currently existing chemicals the user can choose from
 	Chemical = $resource('/chemical_inventory/api/chemicals/');
@@ -43,14 +43,33 @@ angular.module('chemicalInventory', ['ngResource'])
 	var expiration_date = new Date();
 	expiration_date.setFullYear(1+expiration_date.getFullYear());
 	expiration_date = expiration_date.toISOString().split('T')[0];
-	$scope.container = {
-	    date_opened: date_opened,
-	    expiration_date: expiration_date,
-	};
+	// Helper function resets the container form to an empty pristine state
+	function resetContainer() {
+	    $scope.container = {
+		date_opened: date_opened,
+		expiration_date: expiration_date,
+		quantity: 100,
+		unit_of_measure: 'g',
+	    };
+	    if (typeof $scope.container_form != 'undefined' ) {
+		console.log('form pristine');
+		$scope.container_form.$setPristine();
+	    }
+	}
+	resetContainer();
 	// Save the entered form data
 	function save_container(container) {
-	    var Container = $resource('/chemical_inventory/api/containers/')
-	    Container.save(container);
+	    var Container = $resource('/chemical_inventory/api/containers/');
+	    var newContainer = Container.save(container);
+	    newContainer.$promise.then(function(container) {
+		// Display visual feedback of success
+		var message = "Added " +
+		    container.quantity + container.unit_of_measure +
+		    " of " + $scope.chemical.name +
+		    " to inventory. It's super effective!";
+		toaster.success('Success!', message);
+		resetContainer();
+	    });
 	}
 	$scope.save = function() {
 	    // Check if a new chemical is being saved

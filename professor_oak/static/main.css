@@ -1,20 +1,25 @@
+/* Site-wide styles */
 .main-content {
     margin-top: 15px;
+}
+
+.header h1 {
+    display: inline-block;
+    margin-top: 10px;
 }
 
 .header h1 a:hover {
     text-decoration: none;
 }
-
-.header span {
+.header img.oak-sprite {
+    display: inline-block;
+    margin-top: -20px;
+    margin-right: 8px;
+    max-height: 40px;
 }
 
-.img-center {
-    margin: 0 auto;
-}
-
-.auth-options {
-    list-style-type: none;
+.current-user {
+    margin-top: 5px;
 }
 
 /* General styles for hemical inventory */

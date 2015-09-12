@@ -62,7 +62,6 @@ angular.module('chemicalInventory')
 		}
 	    });
 	}
-
 	return {
 	    link: link
 	};
