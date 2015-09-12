@@ -3,8 +3,12 @@
 {% block title %}{{ chemical.name }}{% endblock %}
 
 {% block content %}
-
 <h2>{{ chemical.name }}</h2>
+<div class="row">
+<div class="col-md-12">
+<div class="row">
+<div class="col-md-6">
+
 <dl>
   <dt>Formula</dt>
   <dd>{{ chemical.formula|subscript }}</dd>
@@ -29,8 +33,13 @@
 		Edit Information</a>
 	<a href="{% url 'chemical_list' %}" title="Return to list of chemicals" class="btn btn-link">Back</a>
 </p>
-
-	<img src="{{ chemical.structure_url }}" title="Chemical structure of {{ chemical.name|lower }}" class=structure_display></img>
+</div>
+<div class="col-md-6" style="text-align:right">
+	<img src="{{ chemical.structure_url }}" title="Chemical structure of {{ chemical.name|lower }}"></img>
+</div>
+</div>
+</div>
+</div>
 
 <h2>Containers</h2>
 
