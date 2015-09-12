@@ -29,7 +29,7 @@
   <body>
 
     {% browserid_info %}
-    <div class="container">
+    <div class="container no_padding">
       <div class="row header">
 	<div class="col-md-1">
 	  <img src="{% static 'oak-sprite.png' %}"
@@ -62,9 +62,7 @@
 
       {% include 'includes/navigation.html' %}
 
-      {% block appheader %}{% endblock %}
-
-      <div class="main-content">
+      <div class="main-content no_padding">
 	{% block content %}{% endblock %}
       </div>
 

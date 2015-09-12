@@ -22,6 +22,14 @@
     height: 24px;
 }
 
+.col {
+  padding-top:0px;
+  padding-bottom:10px;
+}
+.no_padding {
+  padding-left:0px;
+}
+
 /* ChemSpider chemical structures */
 img.structure_display {
     position: relative;
