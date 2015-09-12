@@ -11,7 +11,7 @@ from django.utils.safestring import mark_safe
 
 from .forms import ChemicalForm, ContainerForm
 from .models import Chemical, Container
-from .serializers import ChemicalSerializer
+from .serializers import ChemicalSerializer, ContainerSerializer
 
 
 def main(request):
@@ -38,10 +38,10 @@ class ChemicalListView(ListView):
 class ChemicalDetailView(DetailView):
     """This view shows detailed information about one chemical. Also gets
     the list of containers that this chemical is in."""
-	
+
     template_name = 'chemical_detail.html'
     template_object_name = 'chemical'
-	
+
     def get_object(self):
         """Return the specific chemical by its primary key ('pk')."""
         # Find the primary key from the url
@@ -122,3 +122,13 @@ class ChemicalViewSet(viewsets.ModelViewSet):
     # Require user be logged in to post to this endpoint
     permission_classes = (permissions.IsAuthenticatedOrReadOnly,)
 
+
+class ContainerViewSet(viewsets.ModelViewSet):
+    """Viewset for the Chemical model. User is required to be logged in to
+    post."""
+    # Determine which object to list
+    queryset = Container.objects.all()
+    # Decide how to convert to JSON
+    serializer_class = ContainerSerializer
+    # Require user be logged in to post to this endpoint
+    permission_classes = (permissions.IsAuthenticatedOrReadOnly,)

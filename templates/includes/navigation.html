@@ -1,10 +1,13 @@
+{% load staticfiles %}
 <!-- Navigation -->
 <html>
   {% block nav %}
 
   <ul class="nav nav-tabs">
     <li{% if 'chemical_inventory' in request.path %} class="active"{% endif%}>
-      <a href="/chemical_inventory/">Chemical Inventory</a>
+      <a href="/chemical_inventory/">
+	<img class="inventory-icon" src="{% static 'pokeball.svg' %}" />
+	Chemical Inventory</a>
     </li>
     <li><a href="http://cabana.chem.uic.edu">Cabana Group Website</a></li>
   </ul>

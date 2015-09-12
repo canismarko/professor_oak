@@ -2,6 +2,26 @@
     margin-top: 15px;
 }
 
+.header h1 a:hover {
+    text-decoration: none;
+}
+
+.header span {
+}
+
+.img-center {
+    margin: 0 auto;
+}
+
+.auth-options {
+    list-style-type: none;
+}
+
+/* General styles for hemical inventory */
+.inventory-icon {
+    height: 24px;
+}
+
 /* ChemSpider chemical structures */
 img.structure_display {
     position: relative;

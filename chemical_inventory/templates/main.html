@@ -1,10 +1,14 @@
 {% extends 'base.html' %}
+{% load staticfiles %}
 
 {% block title %}Chemical Inventory{% endblock %}
 
 {% block content %}
 
-<h2>Chemical Inventory</h2>
+<h2>
+  <img class="inventory-icon" src="{% static 'pokeball.svg' %}" />
+  Chemical Inventory
+</h2>
 
 <p>
   Welcome to the chemical inventory. You currenty have
