@@ -1,15 +1,19 @@
-{% extends 'base.html' %}
+{% extends 'main.html' %}
 {% load custom_filters %}
+{% load staticfiles %}
+
 {% block title %}Add Inventory{% endblock %}
 
 {% block content %}
 
-<h1>Add to Inventory</h1>
+<h2>
+  Add to Inventory
+</h2>
 
 <div ng-controller="addContainer" po-add-container>
-
   <p>
-    <input type="submit" class="btn btn-primary" value="Save"
+    <input type="submit" class="btn btn-primary" value="Add"
+	   ng-click="save()"
 	   ng-disabled="{{ chemical_form.form_name }}.$invalid || {{ container_form.form_name }}.$invalid" />
     <a href="{% url 'chemical_list' %}" class="btn btn-link">Cancel</a>
   </p>
@@ -23,26 +27,33 @@
 
       <form name="{{ chemical_form.form_name }}" novalidate>
 
-	<label>Search for Chemical:</label>
+	<div class="panel panel-primary">
 
-	<div class="row">
+	  <div class="panel-heading">Search for Existing Chemicals</div>
 
-	  <div class="col-md-6">
-	    <div class="form-group">
-	      <input type="text" class="form-control" autofocus
-		     placeholder="Chemical name..."
-		     ng-model="chemical_name" ng-model-options="{debounce: 1000}">
-	    </div>
-	  </div>
+	  <div class="panel-body">
+	    <div class="row">
 
-	  <div class="col-md-6">
-	    <select multiple="1" class="form-control"
-		    ng-options="chemical.id as chemical.$displayName for chemical in matching_chemicals"
-		    ng-model="active_chemical_id">
-	    </select>
-	  </div>
+	      <div class="col-md-6">
+		<div class="form-group">
+		  <input type="text" class="form-control" autofocus
+			 placeholder="Chemical name..."
+			 ng-model="chemical_name" ng-model-options="{debounce: 1000}">
+		</div>
+	      </div>
 
-	</div>
+	      <div class="col-md-6">
+		<select multiple="1" class="form-control"
+			ng-options="chemical.id as chemical.$displayName for chemical in matching_chemicals"
+			ng-model="active_chemical_id">
+		</select>
+	      </div>
+
+	    </div><!-- /row -->
+
+	  </div><!-- panel-body -->
+
+	</div><!-- /panel -->
 
 	<hr />
 

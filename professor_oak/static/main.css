@@ -1,6 +1,32 @@
+/* Site-wide styles */
 .main-content {
     margin-top: 15px;
 }
+
+.header h1 {
+    display: inline-block;
+    margin-top: 10px;
+}
+
+.header h1 a:hover {
+    text-decoration: none;
+}
+.header img.oak-sprite {
+    display: inline-block;
+    margin-top: -20px;
+    margin-right: 8px;
+    max-height: 40px;
+}
+
+.current-user {
+    margin-top: 5px;
+}
+
+/* General styles for hemical inventory */
+.inventory-icon {
+    height: 24px;
+}
+
 .col {
   padding-top:0px;
   padding-bottom:10px;
@@ -9,9 +35,11 @@
 .no_padding {
   padding-left:0px;
 }
+
 .some_padding {
   padding-left:5px;
 }
+
 /* ChemSpider chemical structures */
 img.structure_display {
     position: relative;

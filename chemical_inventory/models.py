@@ -95,9 +95,9 @@ class Container(models.Model):
     expiration_date = models.DateField()
     state = models.CharField(max_length=10)
     container_type = models.CharField(max_length=50)
-    owner = models.ForeignKey(User)
+    owner = models.ForeignKey(User, blank=True, null=True)
     quantity = models.FloatField(null=True, blank=True)
-    unit_of_measure = models.CharField(max_length=20, null=True)
+    unit_of_measure = models.CharField(max_length=20, null=True, blank=True)
     empty_status = models.BooleanField(default=False)
     emptied_by = models.ForeignKey(User, null=True, blank=True, related_name='emptied_containers')
     barcode = models.CharField(max_length=30, blank=True)
@@ -114,13 +114,21 @@ class Container(models.Model):
         containers of it. Looked up in urls.py."""
         url = reverse('container_edit', kwargs={'pk': self.pk})
         return url
-		
+
     def detail_url(self):
         """Return the url for the detailed view of this chemical and all the
         containers of it. Looked up in urls.py."""
         url = reverse('chemical_detail', kwargs={'pk': self.pk})
         return url
-		
+
+    def save_model(self, request, obj, form, change):
+        """Automatically set the user if necessary."""
+        print(obj)
+        if getattr(obj, 'owner', None) is None:
+            obj.owner = request.user
+        obj.save()
+
+
 class Location(models.Model):
     name = models.CharField(max_length=50, blank=True)
     room_number = models.CharField(max_length=20)
