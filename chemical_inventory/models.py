@@ -26,7 +26,7 @@ class Chemical(models.Model):
         (4, 'Danger (4)'),
     ]
     NFPA_HAZARDS = [
-        ('W', '̶Water reactive (̶W'),
+        ('W', '̶Water reactive (̶W)'),
         ('OX', 'Oxidizer (OX)'),
         ('SA', 'Simple asphyxiant (SA)'),
     ]
@@ -38,7 +38,7 @@ class Chemical(models.Model):
 
     def __str__(self):
         return "{name} ({formula})".format(name=self.name, formula=self.formula)
-	
+
     def detail_url(self):
         """Return the url for the detailed view of this chemical and all the
         containers of it. Looked up in urls.py."""
@@ -108,7 +108,7 @@ class Container(models.Model):
         return string.format(chemical=self.chemical,
                              container_type=self.container_type,
                              location=self.location)
-							 
+
     def edit_url(self):
         """Return the url for the detailed view of this chemical and all the
         containers of it. Looked up in urls.py."""

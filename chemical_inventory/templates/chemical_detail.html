@@ -30,7 +30,7 @@
 	<a href="{% url 'chemical_list' %}" title="Return to list of chemicals" class="btn btn-link">Back</a>
 </p>
 
-	<img src="{{ chemical.get_structure }}" title="Chemical structure of {{ chemical.name|lower }}" class=structure_display></img>
+	<img src="{{ chemical.structure_url }}" title="Chemical structure of {{ chemical.name|lower }}" class=structure_display></img>
 
 <h2>Containers</h2>
 
@@ -46,11 +46,11 @@
     <td>{{ container.location }}</td>
     <td>{{ container.quantity }} {{ container.unit_of_measure }}</td>
     <td>{{ container.expiration_date }}</td>
-    <td>{{ container.owner.get_full_name }}</td>
+    <td> <a href="mailto:{{container.owner.email}}" title="Send {{ container.owner.get_short_name }} an email" >{{ container.owner.get_full_name }}</a></td>
 	<td><input type="checkbox"></td>
 	<td> <a href="{{ container.edit_url }}"
-		title="Edit this container of {{ chemical.name|lower }}" > 
-		Edit</a> </td>
+		title="Edit this container of {{ chemical.name|lower }}" >
+	    Edit</a> </td>
   </tr>
   {% endfor %}
 </table>

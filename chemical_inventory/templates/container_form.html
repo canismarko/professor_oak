@@ -6,116 +6,69 @@
 
 <h1>Add to Inventory</h1>
 
-<div class="row">
-  <div ng-controler="containerForm" class="col-md-6">
+<div ng-controller="addContainer" po-add-container>
 
-    <form>
+  <p>
+    <input type="submit" class="btn btn-primary" value="Save"
+	   ng-disabled="{{ chemical_form.form_name }}.$invalid || {{ container_form.form_name }}.$invalid" />
+    <a href="{% url 'chemical_list' %}" class="btn btn-link">Cancel</a>
+  </p>
 
-      <!-- Prevents cross site request forgery -->
-      {% csrf_token %}
+  <!-- Prevents cross site request forgery -->
+  {% csrf_token %}
 
-      <!-- <div class="form-group"> -->
-      <!-- 	<label>Chemical Name: -->
-      <!-- 	  <input type="text" ng-model="chemical_name" -->
-      <!-- 		 class="form-control"> -->
-      <!-- 	</label> -->
-      <!-- </div> -->
+  <div class="row">
 
-      <!-- <div class="form-group"> -->
-      <!-- 	<label>CAS Number: -->
-      <!-- 	  <input type="text" ng-model="cas_number" -->
-      <!-- 		 class="form-control"> -->
-      <!-- 	</label> -->
-      <!-- </div> -->
+    <div class="col-md-6">
 
-      <!-- <div class="form-group"> -->
-      <!-- 	<label>Formula: -->
-      <!-- 	  <input type="text" ng-model="formula" -->
-      <!-- 		 class="form-control"> -->
-      <!-- 	</label> -->
-      <!-- </div> -->
+      <form name="{{ chemical_form.form_name }}" novalidate>
 
-      <!-- <p>[NFPA Rating goes here]</p> -->
+	<label>Search for Chemical:</label>
 
-      <!-- <p>[Glove selection goes here]</p> -->
+	<div class="row">
 
-      <!-- <hr /> -->
+	  <div class="col-md-6">
+	    <div class="form-group">
+	      <input type="text" class="form-control" autofocus
+		     placeholder="Chemical name..."
+		     ng-model="chemical_name" ng-model-options="{debounce: 1000}">
+	    </div>
+	  </div>
 
-      <!-- <div class="form-group"> -->
-      <!-- 	<label>Location: -->
-      <!-- 	  <input type="text" ng-model="location" -->
-      <!-- 		 class="form-control"> -->
-      <!-- 	</label> -->
-      <!-- </div> -->
+	  <div class="col-md-6">
+	    <select multiple="1" class="form-control"
+		    ng-options="chemical.id as chemical.$displayName for chemical in matching_chemicals"
+		    ng-model="active_chemical_id">
+	    </select>
+	  </div>
 
-      <!-- <div class="form-group"> -->
-      <!-- 	<label>Batch: -->
-      <!-- 	  <input type="text" ng-model="batch" -->
-      <!-- 		 class="form-control"> -->
-      <!-- 	</label> -->
-      <!-- </div> -->
+	</div>
 
-      <!-- <div class="form-group"> -->
-      <!-- 	<label>Date Opened: -->
-      <!-- 	  <input type="date" ng-model="chemical_name" -->
-      <!-- 		 class="form-control"> -->
-      <!-- 	</label> -->
-      <!-- </div> -->
+	<hr />
 
-      <!-- <div class="form-group"> -->
-      <!-- 	<label>Expiration Date: -->
-      <!-- 	  <input type="date" ng-model="expiration_date" -->
-      <!-- 		 class="form-control"> -->
-      <!-- 	</label> -->
-      <!-- </div> -->
+	<p>(<b>bold</b> = required)</p>
 
-      <!-- <div class="form-group"> -->
-      <!-- 	<label>State: -->
-      <!-- 	  <input type="text" ng-model="state" -->
-      <!-- 		 class="form-control"> -->
-      <!-- 	</label> -->
-      <!-- </div> -->
+	<div class="chemical-form">
 
-      <!-- <div class="form-group"> -->
-      <!-- 	<label>Container Type: -->
-      <!-- 	  <input type="text" ng-model="container_type" -->
-      <!-- 		 class="form-control"> -->
-      <!-- 	</label> -->
-      <!-- </div> -->
+	  {{ chemical_form }}
 
-      <!-- <div class="form-group"> -->
-      <!-- 	<label>Owner: -->
-      <!-- 	  <input type="text" ng-model="owner" -->
-      <!-- 		 class="form-control"> -->
-      <!-- 	</label> -->
-      <!-- </div> -->
+	</div>
 
-      <!-- <div class="form-group"> -->
-      <!-- 	<label>: -->
-      <!-- 	  <input type="text" ng-model="chemical_name" -->
-      <!-- 		 class="form-control"> -->
-      <!-- 	</label> -->
-      <!-- </div> -->
+      </form>
 
-      <!-- <div class="form-group"> -->
-      <!-- 	<label>Chemical Name: -->
-      <!-- 	  <input type="text" ng-model="chemical_name" -->
-      <!-- 		 class="form-control"> -->
-      <!-- 	</label> -->
-      <!-- </div> -->
+    </div>
 
-      {{ chemical_form }}
+    <div class="col-md-6">
 
-      <hr />
+      <form name="{{ container_form.form_name }}" novalidate>
+	{{ container_form }}
+      </form>
 
-      {{ container_form }}
-
-      <button type="submit" class="btn btn-primary">Save</button>
-      <a href="{% url 'chemical_list' %}" class="btn btn-link">Cancel</a>
-
-    </form>
-
+    </div>
   </div>
+
+</form>
+
 </div>
 
 {% endblock %}
