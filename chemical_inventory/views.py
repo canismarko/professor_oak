@@ -19,7 +19,7 @@ def main(request):
     """This view function returns a generic landing page response."""
     # A 'context' is the data that the template can use
     context = {
-	'inventory_size': len(Container.objects.filter(empty_status=False)),
+	'inventory_size': len(Container.objects.filter(is_empty=False)),
 	'xkcd_url': xkcd.Comic(xkcd.getLatestComicNum()).getImageLink(),
 	'xkcd_alt': xkcd.Comic(xkcd.getLatestComicNum()).getAsciiAltText(),
 	'xkcd_title': xkcd.Comic(xkcd.getLatestComicNum()).getAsciiTitle()
@@ -61,7 +61,8 @@ class ChemicalDetailView(DetailView):
         # Get the default context
         context = super().get_context_data(*args, **kwargs)
         # Add list of containers to context
-        context['container_list'] = chemical.container_set.all()
+        container_list = chemical.container_set.order_by('is_empty')
+        context['container_list'] = container_list
         return context
 
 class AddContainerView(TemplateView):
@@ -104,7 +105,7 @@ class EditChemicalView(UpdateView):
 class EditContainerView(UpdateView):
     template_name = 'container_edit.html'
     model = Container
-    fields = ['chemical', 'location', 'batch', 'date_opened', 'expiration_date','state', 'container_type', 'owner', 'quantity', 'unit_of_measure','supplier', 'empty_status'] 
+    fields = ['chemical', 'location', 'batch', 'date_opened', 'expiration_date','state', 'container_type', 'owner', 'quantity', 'unit_of_measure','supplier', 'is_empty'] 
 
 	# Do I have to do this again here?
     def get_object(self):

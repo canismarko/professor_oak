@@ -1,16 +1,4 @@
-angular.module('chemicalInventory', ['ngResource', 'ngAnimate', 'toaster'])
-
-// Set csrf token and AJAX header
-    .config(function($httpProvider) {
-	$httpProvider.defaults.xsrfCookieName = 'csrftoken';
-	$httpProvider.defaults.xsrfHeaderName = 'X-CSRFToken';
-	$httpProvider.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
-    })
-
-// Retain trailing slash on urls
-    .config(function($resourceProvider) {
-	$resourceProvider.defaults.stripTrailingSlashes = false;
-    })
+angular.module('chemicalInventory')
 
     .controller('addContainer', ['$scope', '$resource', 'toaster', function($scope, $resource, toaster) {
 	var Chemical;
@@ -97,5 +85,19 @@ angular.module('chemicalInventory', ['ngResource', 'ngAnimate', 'toaster'])
 		    save_container($scope.container);
 		});
 	    }
+	};
+    }])
+
+// Controller handles the list of containers for a given chemical,
+// eg. allowing the user to set the .is_empty attribute via a checkbox
+    .controller('chemicalList', ['$scope', '$resource', '$http', 'djangoUrl', function($scope, $resource, $http, djangoUrl) {
+	// Handler for changing empty status
+	$scope.updateStatus = function() {
+	    var containerUrl, Container, container;
+	    // Get the container object from the API
+	    containerUrl = djangoUrl.reverse('api:container-detail',
+					     {pk: $scope.chemicalId});
+	    var payload = {is_empty: $scope.isEmpty};
+	    $http.patch(containerUrl, {is_empty: $scope.isEmpty});
 	};
     }])

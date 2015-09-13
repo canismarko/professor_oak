@@ -7,4 +7,4 @@ chemspipy==1.0.4
 django-browserid==1.0.0
 djangorestframework==3.2.3
 django-filter==0.11.0
-
+xkcd==2.3.1

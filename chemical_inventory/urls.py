@@ -29,10 +29,10 @@ urlpatterns = [
 
 # URLs for the browsable API
 router = routers.DefaultRouter()
-router.register(r'chemicals', views.ChemicalViewSet)
-router.register(r'containers', views.ContainerViewSet)
+router.register(r'chemicals', views.ChemicalViewSet, base_name="chemical")
+router.register(r'containers', views.ContainerViewSet, base_name="container")
 
 # Add API URLs to Django's urls
 urlpatterns += [
-    url(r'^api/', include(router.urls)),
+    url(r'^api/', include(router.urls, namespace="api")),
 ]

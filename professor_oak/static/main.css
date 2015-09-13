@@ -22,7 +22,7 @@
     margin-top: 5px;
 }
 
-/* General styles for hemical inventory */
+/* General styles for chemical inventory */
 .inventory-icon {
     height: 24px;
 }
@@ -38,6 +38,13 @@
 
 .some_padding {
   padding-left:5px;
+}
+
+/* List of containers of a given chemical */
+.chemical-list tr.empty {
+    opacity: 0.4;
+    /* color: silver; */
+    font-style: italic;
 }
 
 /* ChemSpider chemical structures */

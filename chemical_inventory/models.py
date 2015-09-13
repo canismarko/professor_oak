@@ -98,7 +98,7 @@ class Container(models.Model):
     owner = models.ForeignKey(User, blank=True, null=True)
     quantity = models.FloatField(null=True, blank=True)
     unit_of_measure = models.CharField(max_length=20, null=True, blank=True)
-    empty_status = models.BooleanField(default=False)
+    is_empty = models.BooleanField(default=False)
     emptied_by = models.ForeignKey(User, null=True, blank=True, related_name='emptied_containers')
     barcode = models.CharField(max_length=30, blank=True)
     supplier = models.ForeignKey('Supplier', null=True, blank=True)
