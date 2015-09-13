@@ -6,7 +6,7 @@ from django.views.generic.base import TemplateView
 from django.views.generic.detail import DetailView
 from django.views.generic.edit import CreateView
 from django.views.generic.edit import UpdateView
-from rest_framework import viewsets, permissions
+from rest_framework import viewsets, permissions, response, status
 from django.utils.safestring import mark_safe
 
 from .forms import ChemicalForm, ContainerForm
@@ -132,3 +132,13 @@ class ContainerViewSet(viewsets.ModelViewSet):
     serializer_class = ContainerSerializer
     # Require user be logged in to post to this endpoint
     permission_classes = (permissions.IsAuthenticatedOrReadOnly,)
+
+    def create(self, request, *args, **kwargs):
+        # Copied from rest_framework.mixins with modification
+        data = request.data.copy()
+        data['owner'] = request.user.id
+        serializer = self.get_serializer(data=data)
+        serializer.is_valid(raise_exception=True)
+        self.perform_create(serializer)
+        headers = self.get_success_headers(serializer.data)
+        return response.Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)

@@ -121,12 +121,10 @@ class Container(models.Model):
         url = reverse('chemical_detail', kwargs={'pk': self.pk})
         return url
 
-    def save_model(self, request, obj, form, change):
+    def save(self, *args, **kwargs):
         """Automatically set the user if necessary."""
-        print(obj)
-        if getattr(obj, 'owner', None) is None:
-            obj.owner = request.user
-        obj.save()
+        ret = super().save(*args, **kwargs)
+        return ret
 
 
 class Location(models.Model):

@@ -1,0 +1,38 @@
+[
+{
+    "fields": {
+        "password": "pbkdf2_sha256$20000$8pvVXWdpfStY$AaoJToNmK7iZitUhiJaBJKU3WHtHRDK3WSaYKGDD6Kw=",
+        "last_name": "Wolf",
+        "groups": [],
+        "is_superuser": true,
+        "is_staff": true,
+        "first_name": "Mark",
+        "email": "mark.wolf.music@gmail.com",
+        "user_permissions": [],
+        "last_login": "2015-09-12T18:56:40.738Z",
+        "date_joined": "2015-09-03T22:54:08Z",
+        "username": "mwolf",
+        "is_active": true
+    },
+    "pk": 1,
+    "model": "auth.user"
+},
+{
+    "fields": {
+        "password": "pbkdf2_sha256$20000$MNJcCIVB3O5I$ncBHYmr399XSg5FhnDGdaX/emVx8zR2kHIMCJaVZRXw=",
+        "last_name": "Plews",
+        "groups": [],
+        "is_superuser": true,
+        "is_staff": true,
+        "first_name": "Michael",
+        "email": "plews2@uic.edu",
+        "user_permissions": [],
+        "last_login": "2015-09-11T14:23:37.340Z",
+        "date_joined": "2015-09-04T00:04:02Z",
+        "username": "mplews",
+        "is_active": true
+    },
+    "pk": 2,
+    "model": "auth.user"
+}
+]
