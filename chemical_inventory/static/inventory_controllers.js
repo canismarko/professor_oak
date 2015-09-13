@@ -27,14 +27,14 @@ angular.module('chemicalInventory')
 	});
 	// Automatically set default for opened and expiration dates
 	var today = new Date();
-	var date_opened = today.toISOString().split('T')[0];
+	// var date_opened = today.toISOString().split('T')[0];
 	var expiration_date = new Date();
 	expiration_date.setFullYear(1+expiration_date.getFullYear());
-	expiration_date = expiration_date.toISOString().split('T')[0];
+	// expiration_date = expiration_date.toISOString().split('T')[0];
 	// Helper function resets the container form to an empty pristine state
 	function resetContainer() {
 	    $scope.container = {
-		date_opened: date_opened,
+		date_opened: today,
 		expiration_date: expiration_date,
 		quantity: 100,
 		unit_of_measure: 'g',

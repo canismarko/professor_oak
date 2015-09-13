@@ -141,8 +141,9 @@ class ContainerViewSet(viewsets.ModelViewSet):
     permission_classes = (permissions.IsAuthenticatedOrReadOnly,)
 
     def create(self, request, *args, **kwargs):
-        # Copied from rest_framework.mixins with modification
+        # (Copied from rest_framework.mixins with modification)
         data = request.data.copy()
+        # Set the owner to be the request user
         data['owner'] = request.user.id
         serializer = self.get_serializer(data=data)
         serializer.is_valid(raise_exception=True)

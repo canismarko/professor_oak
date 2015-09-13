@@ -1,9 +1,10 @@
 from django.contrib import admin
 
-from .models import Chemical, Container, Glove, Location
+from . import models
 
 # Register your models here.
-admin.site.register(Chemical)
-admin.site.register(Container)
-admin.site.register(Glove)
-admin.site.register(Location)
+admin.site.register(models.Chemical)
+admin.site.register(models.Container)
+admin.site.register(models.Glove)
+admin.site.register(models.Location)
+admin.site.register(models.Supplier)
