@@ -61,7 +61,7 @@ class Chemical(models.Model):
         try:
             cs_key = settings.CHEMSPIDER_KEY
         except AttributeError:
-            url = 'http://i.imgur.com/X17puIB.gif'
+            url = 'http://discovermagazine.com/~/media/Images/Zen%20Photo/N/nanoputian/3487.gif'
         else:
             cs = ChemSpider(cs_key)
             CAS = self.cas_number
