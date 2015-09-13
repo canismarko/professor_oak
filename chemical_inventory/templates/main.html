@@ -13,8 +13,8 @@
   Welcome to the chemical inventory. You currenty have
   {{ inventory_size }} chemicals.
 </p>
-
-<div class="row">
+<div class="container no_padding">
+<div class="row-float">
 
   <div class="col-md-2 col">
     <a href="{% url 'add_container' %}" class="btn btn-primary">
@@ -25,6 +25,8 @@
     <a href="{% url 'chemical_list' %}" class="btn btn-default">
       View list of chemicals</a>
   </div>
+</div>
+	<img src="{{ xkcd_url }}" title="{{ xkcd_alt }}" width="40%" style="text-center"></img>
 
-
+</div>
 {% endblock %}
