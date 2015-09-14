@@ -78,21 +78,6 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/angularjs-toaster/0.4.15/toaster.min.js"></script>
     <script src="{% static 'djangular/js/django-angular.js' %}"></script>
 
-    <!-- MathJax stuff -->
-    <script type="text/x-mathjax-config">
-      MathJax.Hub.Config({
-	  extensions: ["tex2jax.js"],
-	  jax: ["input/TeX", "output/HTML-CSS"],
-	  tex2jax: {
-	      inlineMath: [ ['$','$'], ["\\(","\\)"] ],
-	      displayMath: [ ['$$','$$'], ["\\[","\\]"] ],
-	      processEscapes: true
-	  },
-	  "HTML-CSS": { availableFonts: ["Arial"] }
-      });
-    </script>
-    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-
     <!-- chemical_inventory angular files -->
     <script src="{% static 'chemical_inventory/inventory_init.js' %}"></script>
     <script src="{% static 'chemical_inventory/inventory_controllers.js' %}"></script>

@@ -25,7 +25,7 @@
 	 title="Detailed information on chemical {{ chemical.name|lower }}">
 	{{ chemical.name }}</a>
     </td>
-    <td>{{ chemical.formula|subscript }}</td>
+    <td>{{ chemical.formula|formula_markup }}</td>
     <td>
       {% if chemical.is_in_stock %}Yes
       {% else %}No

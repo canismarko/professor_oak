@@ -18,12 +18,13 @@ from .serializers import ChemicalSerializer, ContainerSerializer
 def main(request):
     """This view function returns a generic landing page response."""
     # A 'context' is the data that the template can use
+    comic = xkcd.Comic(xkcd.getLatestComicNum())
     context = {
-	'inventory_size': len(Container.objects.filter(is_empty=False)),
-	'xkcd_url': xkcd.Comic(xkcd.getLatestComicNum()).getImageLink(),
-	'xkcd_alt': xkcd.Comic(xkcd.getLatestComicNum()).getAsciiAltText(),
-	'xkcd_title': xkcd.Comic(xkcd.getLatestComicNum()).getAsciiTitle()
-	}
+    'inventory_size': Container.objects.filter(is_empty=False).count(),
+    'xkcd_url': comic.getImageLink(),
+    'xkcd_alt': comic.getAsciiAltText(),
+    'xkcd_title': comic.getAsciiTitle()
+    }
     # Now put the context together with a template
     # Look in chemical_inventory/templates/main.html for the actual html
     # 'request' is the HTTP request submitted by the browser
