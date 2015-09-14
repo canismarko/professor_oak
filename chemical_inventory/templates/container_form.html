@@ -6,32 +6,9 @@
 
 {% block content %}
 
-<<<<<<< HEAD
-<h1>Add to Inventory</h1>
-
-<div class="row">
-  <div ng-controler="containerForm" class="col-md-6">
-
-    <form>
-
-      <!-- Prevents cross site request forgery -->
-      {% csrf_token %}
-
-      {{ chemical_form }}
-
-      <hr />
-
-      {{ container_form }}
-
-      <button type="submit" class="btn btn-primary">Save</button>
-      <a href="{% url 'chemical_list' %}" class="btn btn-link">Cancel</a>
-
-    </form>
-=======
 <h2>
   Add to Inventory
 </h2>
->>>>>>> 23065a55014cb6d245b6aea85d743a01bb654d50
 
 <div ng-controller="addContainer" oak-add-container>
   <p>

@@ -4,11 +4,6 @@ from django.core.urlresolvers import reverse
 from django.db import models
 from django.contrib.auth.models import User
 from django.conf import settings
-<<<<<<< HEAD
-=======
-from chemspipy import ChemSpider
-# from django.utils.safestring import mark_safe
->>>>>>> 23065a55014cb6d245b6aea85d743a01bb654d50
 
 # Create your models here.
 class Chemical(models.Model):
@@ -62,16 +57,6 @@ class Chemical(models.Model):
 
     def structure_url(self):
         try:
-<<<<<<< HEAD
-            cs = ChemSpider(settings.CHEMSPIDER_KEY)
-        except AttributeError:
-            image_url = 'http://img-9gag-fun.9cache.com/photo/avLeQWn_460sa.gif'
-        else:
-            CAS = self.cas_number
-            search_result = cs.simple_search(CAS)
-            image_url = search_result[0].image_url
-        return image_url
-=======
             cs_key = settings.CHEMSPIDER_KEY
         except AttributeError:
             url = 'http://discovermagazine.com/~/media/Images/Zen%20Photo/N/nanoputian/3487.gif'
@@ -81,7 +66,6 @@ class Chemical(models.Model):
             search_results = cs.simple_search(CAS)
             url = search_results[0].image_url
         return url
->>>>>>> 23065a55014cb6d245b6aea85d743a01bb654d50
 
 class Glove(models.Model):
     """Different chemicals have different glove compatibility. The `name`
