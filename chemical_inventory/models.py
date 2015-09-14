@@ -3,8 +3,12 @@ import datetime
 from django.core.urlresolvers import reverse
 from django.db import models
 from django.contrib.auth.models import User
-from chemspipy import ChemSpider
 from django.conf import settings
+<<<<<<< HEAD
+=======
+from chemspipy import ChemSpider
+# from django.utils.safestring import mark_safe
+>>>>>>> 23065a55014cb6d245b6aea85d743a01bb654d50
 
 # Create your models here.
 class Chemical(models.Model):
@@ -25,7 +29,7 @@ class Chemical(models.Model):
         (4, 'Danger (4)'),
     ]
     NFPA_HAZARDS = [
-        ('W', '̶Water reactive (̶W'),
+        ('W', '̶Water reactive (̶W)'),
         ('OX', 'Oxidizer (OX)'),
         ('SA', 'Simple asphyxiant (SA)'),
     ]
@@ -58,6 +62,7 @@ class Chemical(models.Model):
 
     def structure_url(self):
         try:
+<<<<<<< HEAD
             cs = ChemSpider(settings.CHEMSPIDER_KEY)
         except AttributeError:
             image_url = 'http://img-9gag-fun.9cache.com/photo/avLeQWn_460sa.gif'
@@ -66,6 +71,17 @@ class Chemical(models.Model):
             search_result = cs.simple_search(CAS)
             image_url = search_result[0].image_url
         return image_url
+=======
+            cs_key = settings.CHEMSPIDER_KEY
+        except AttributeError:
+            url = 'http://discovermagazine.com/~/media/Images/Zen%20Photo/N/nanoputian/3487.gif'
+        else:
+            cs = ChemSpider(cs_key)
+            CAS = self.cas_number
+            search_results = cs.simple_search(CAS)
+            url = search_results[0].image_url
+        return url
+>>>>>>> 23065a55014cb6d245b6aea85d743a01bb654d50
 
 class Glove(models.Model):
     """Different chemicals have different glove compatibility. The `name`
@@ -93,10 +109,10 @@ class Container(models.Model):
     expiration_date = models.DateField()
     state = models.CharField(max_length=10)
     container_type = models.CharField(max_length=50)
-    owner = models.ForeignKey(User)
+    owner = models.ForeignKey(User, blank=True, null=True)
     quantity = models.FloatField(null=True, blank=True)
-    unit_of_measure = models.CharField(max_length=20, null=True)
-    empty_status = models.BooleanField(default=False)
+    unit_of_measure = models.CharField(max_length=20, null=True, blank=True)
+    is_empty = models.BooleanField(default=False)
     emptied_by = models.ForeignKey(User, null=True, blank=True, related_name='emptied_containers')
     barcode = models.CharField(max_length=30, blank=True)
     supplier = models.ForeignKey('Supplier', null=True, blank=True)
@@ -106,12 +122,24 @@ class Container(models.Model):
         return string.format(chemical=self.chemical,
                              container_type=self.container_type,
                              location=self.location)
-							 
+
     def edit_url(self):
         """Return the url for the detailed view of this chemical and all the
         containers of it. Looked up in urls.py."""
         url = reverse('container_edit', kwargs={'pk': self.pk})
         return url
+
+    def detail_url(self):
+        """Return the url for the detailed view of this chemical and all the
+        containers of it. Looked up in urls.py."""
+        url = reverse('chemical_detail', kwargs={'pk': self.pk})
+        return url
+
+    def save(self, *args, **kwargs):
+        """Automatically set the user if necessary."""
+        ret = super().save(*args, **kwargs)
+        return ret
+
 
 class Location(models.Model):
     name = models.CharField(max_length=50, blank=True)

@@ -6,17 +6,24 @@ from django.views.generic.base import TemplateView
 from django.views.generic.detail import DetailView
 from django.views.generic.edit import CreateView
 from django.views.generic.edit import UpdateView
-from rest_framework import viewsets, permissions
+from rest_framework import viewsets, permissions, response, status
+from django.utils.safestring import mark_safe
 
 from .forms import ChemicalForm, ContainerForm
 from .models import Chemical, Container
-from .serializers import ChemicalSerializer
+import xkcd
+from .serializers import ChemicalSerializer, ContainerSerializer
 
 
 def main(request):
     """This view function returns a generic landing page response."""
     # A 'context' is the data that the template can use
-    context = {'inventory_size': len(Chemical.objects.all())}
+    context = {
+	'inventory_size': len(Container.objects.filter(is_empty=False)),
+	'xkcd_url': xkcd.Comic(xkcd.getLatestComicNum()).getImageLink(),
+	'xkcd_alt': xkcd.Comic(xkcd.getLatestComicNum()).getAsciiAltText(),
+	'xkcd_title': xkcd.Comic(xkcd.getLatestComicNum()).getAsciiTitle()
+	}
     # Now put the context together with a template
     # Look in chemical_inventory/templates/main.html for the actual html
     # 'request' is the HTTP request submitted by the browser
@@ -54,7 +61,8 @@ class ChemicalDetailView(DetailView):
         # Get the default context
         context = super().get_context_data(*args, **kwargs)
         # Add list of containers to context
-        context['container_list'] = chemical.container_set.all()
+        container_list = chemical.container_set.order_by('is_empty')
+        context['container_list'] = container_list
         return context
 
 class AddContainerView(TemplateView):
@@ -97,16 +105,16 @@ class EditChemicalView(UpdateView):
 class EditContainerView(UpdateView):
     template_name = 'container_edit.html'
     model = Container
-    fields = ['chemical', 'location', 'batch', 'date_opened', 'expiration_date','state', 'container_type', 'owner', 'quantity', 'unit_of_measure','supplier', 'empty_status'] 
+    fields = ['chemical', 'location', 'batch', 'date_opened', 'expiration_date','state', 'container_type', 'owner', 'quantity', 'unit_of_measure','supplier', 'is_empty'] 
 
 	# Do I have to do this again here?
-def get_object(self):
-	"""Return the specific chemical by its primary key ('pk')."""
-	# Find the primary key from the url
-	pk = self.kwargs['pk']
-	# Get the actual Chemical object
-	container = Container.objects.get(barcode=barcode)
-	return chemical
+    def get_object(self):
+        """Return the specific chemical by its primary key ('pk')."""
+        # Find the primary key from the url
+        pk = self.kwargs['pk']
+        # Get the actual Chemical object
+        container = Container.objects.get(pk=pk)
+        return container
 
 # Browseable API viewsets
 # =======================
@@ -121,3 +129,24 @@ class ChemicalViewSet(viewsets.ModelViewSet):
     # Require user be logged in to post to this endpoint
     permission_classes = (permissions.IsAuthenticatedOrReadOnly,)
 
+
+class ContainerViewSet(viewsets.ModelViewSet):
+    """Viewset for the Chemical model. User is required to be logged in to
+    post."""
+    # Determine which object to list
+    queryset = Container.objects.all()
+    # Decide how to convert to JSON
+    serializer_class = ContainerSerializer
+    # Require user be logged in to post to this endpoint
+    permission_classes = (permissions.IsAuthenticatedOrReadOnly,)
+
+    def create(self, request, *args, **kwargs):
+        # (Copied from rest_framework.mixins with modification)
+        data = request.data.copy()
+        # Set the owner to be the request user
+        data['owner'] = request.user.id
+        serializer = self.get_serializer(data=data)
+        serializer.is_valid(raise_exception=True)
+        self.perform_create(serializer)
+        headers = self.get_success_headers(serializer.data)
+        return response.Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)

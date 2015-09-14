@@ -1,9 +1,88 @@
+/* Site-wide styles */
 .main-content {
     margin-top: 15px;
 }
-img.structure_display {
-	position: relative;
-	vertical-align: text-top;
-	right: auto
 
+.header h1 {
+    display: inline-block;
+    margin-top: 10px;
+}
+
+.header h1 a:hover {
+    text-decoration: none;
+}
+.header img.oak-sprite {
+    display: inline-block;
+    margin-top: -20px;
+    margin-right: 8px;
+    max-height: 40px;
+}
+
+.current-user {
+    margin-top: 5px;
+}
+
+/* General styles for chemical inventory */
+.inventory-icon {
+    height: 24px;
+}
+
+.col {
+  padding-top:0px;
+  padding-bottom:10px;
+  padding-left:0px;
+}
+.no_padding {
+  padding-left:0px;
+}
+
+.some_padding {
+  padding-left:5px;
+}
+
+/* List of containers of a given chemical */
+.chemical-list tr.empty {
+    opacity: 0.4;
+    /* color: silver; */
+    font-style: italic;
+}
+
+/* NFPA Hazard Diamond */
+.nfpa-diamond polygon {
+    stroke-width: 1px;
+    stroke: black;
+}
+.nfpa-diamond text {
+    text-anchor: middle;
+    alignment-baseline: middle;
+    fill: black;
+}
+
+/* ChemSpider chemical structures */
+img.structure_display {
+    position: relative;
+    vertical-align: text-bottom;
+    right: auto
+}
+
+/* Djang-angular forms */
+form label {
+    margin-bottom: 0px;
+    margin-top: 10px;
+}
+label {
+    font-weight: normal;
+}
+label.required {
+    font-weight: bold;
+}
+
+/* Form validation */
+ul.djng-form-control-feedback {
+    margin-bottom: 0px;
+    list-style-type: none;
+}
+li.invalid {
+    color: red;
+    font-weight: bold;
 }

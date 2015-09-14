@@ -1,0 +1,130 @@
+[
+{
+    "fields": {
+        "flammability": 2,
+        "instability": 2,
+        "cas_number": "7439-93-2",
+        "formula": "Li",
+        "name": "Lithium",
+        "special_hazards": "W",
+        "glove": 1,
+        "health": 2
+    },
+    "pk": 1,
+    "model": "chemical_inventory.chemical"
+},
+{
+    "fields": {
+        "flammability": 0,
+        "instability": 0,
+        "cas_number": "7732-18-5",
+        "formula": "H_2O",
+        "name": "Dihydrogen monoxide",
+        "special_hazards": "",
+        "glove": 1,
+        "health": 0
+    },
+    "pk": 2,
+    "model": "chemical_inventory.chemical"
+},
+{
+    "fields": {
+        "supplier": [],
+        "name": "Nitrile"
+    },
+    "pk": 1,
+    "model": "chemical_inventory.glove"
+},
+{
+    "fields": {
+        "state": "Solid",
+        "batch": "",
+        "chemical": 1,
+        "date_added": "2015-09-11T14:22:47.043Z",
+        "unit_of_measure": "g",
+        "quantity": 75.0,
+        "emptied_by": null,
+        "barcode": "",
+        "supplier": null,
+        "location": 4,
+        "empty_status": false,
+        "date_opened": "2015-09-03",
+        "owner": 2,
+        "container_type": "Pouch",
+        "expiration_date": "2016-09-03"
+    },
+    "pk": 14,
+    "model": "chemical_inventory.container"
+},
+{
+    "fields": {
+        "state": "foil",
+        "batch": "98567",
+        "chemical": 1,
+        "date_added": "2015-09-12T18:57:37.000Z",
+        "unit_of_measure": "g",
+        "quantity": 75.0,
+        "emptied_by": null,
+        "barcode": "",
+        "supplier": null,
+        "location": 4,
+        "empty_status": false,
+        "date_opened": "2015-09-12",
+        "owner": null,
+        "container_type": "Pouch",
+        "expiration_date": "2016-09-12"
+    },
+    "pk": 26,
+    "model": "chemical_inventory.container"
+},
+{
+    "fields": {
+        "msds_location": "Upper shelf",
+        "building": "SES",
+        "room_number": "4163",
+        "name": "Chemical cabinet"
+    },
+    "pk": 1,
+    "model": "chemical_inventory.location"
+},
+{
+    "fields": {
+        "msds_location": "",
+        "building": "SES",
+        "room_number": "4130",
+        "name": "Battery Lab"
+    },
+    "pk": 2,
+    "model": "chemical_inventory.location"
+},
+{
+    "fields": {
+        "msds_location": "",
+        "building": "SES",
+        "room_number": "4319",
+        "name": "XRD Lab"
+    },
+    "pk": 3,
+    "model": "chemical_inventory.location"
+},
+{
+    "fields": {
+        "msds_location": "",
+        "building": "SES",
+        "room_number": "4130",
+        "name": "Glovebox"
+    },
+    "pk": 4,
+    "model": "chemical_inventory.location"
+},
+{
+    "fields": {
+        "msds_location": "",
+        "building": "SES",
+        "room_number": "4163",
+        "name": "Glovebox"
+    },
+    "pk": 5,
+    "model": "chemical_inventory.location"
+}
+]

@@ -1,0 +1,18 @@
+<svg width="{{ size }}" height="{{ size }}" font-size="{{ font_size }}" class="nfpa-diamond">
+
+  <!-- Health -->
+  <polygon points="{{ health.points }}" style="{{ health.style }}"></polygon>
+  <!-- Flammability -->
+  <polygon points="{{ flammability.points }}" style="{{ flammability.style }}"></polygon>
+  <!-- Instability -->
+  <polygon points="{{ instability.points }}" style="{{ instability.style }}"></polygon>
+  <!-- Special Hazards -->
+  <polygon points="{{ special_hazards.points }}" style="{{ special_hazards.style }}"></polygon>
+
+  <!-- Show ratings as text -->
+  <text {{ health.text_position }}>{{ health.rating }}</text>
+  <text {{ flammability.text_position }}>{{ flammability.rating }}</text>
+  <text {{ instability.text_position }}>{{ instability.rating }}</text>
+  <text {{ special_hazards.text_position }}>{{ special_hazards.rating }}</text>
+
+</svg>

@@ -55,6 +55,7 @@ BROWSERID_CREATE_USER = False
 LOGIN_REDIRECT_URL_FAILURE = '/unauthorized/'
 
 MIDDLEWARE_CLASSES = (
+    'djangular.middleware.DjangularUrlMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',

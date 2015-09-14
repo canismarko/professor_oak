@@ -1,52 +1,90 @@
 {% extends 'base.html' %}
-
+{% load custom_filters %}
+{% load inventory_extras %}
 {% block title %}{{ chemical.name }}{% endblock %}
 
 {% block content %}
 <h2>{{ chemical.name }}</h2>
 
-<dl>
-  <dt>Formula</dt>
-  <dd>{{ chemical.formula }}</dd>
+<div class="row">
+  <div class="col-md-4">
 
-  <dt>CAS Number</dt>
-  <dd>{{ chemical.cas_number }}</dd>
+    <p>
+      <a href="{{ chemical.edit_url }}"
+	 title="Edit chemical information for {{ chemical.name|lower }}" class="btn btn-primary">
+	Edit Information</a>
+      <a href="{% url 'chemical_list' %}" title="Return to list of chemicals" class="btn btn-link">
+	Back</a>
+    </p>
 
-  <dt>NFPA Ratings</dt>
-  <dd>Health: {{ chemical.health }}</dd>
-  <dd>Flammability: {{ chemical.flammability }}</dd>
-  <dd>Instability: {{ chemical.instability }}</dd>
-  <dd>Special Hazards: {{ chemical.special_hazards }}</dd>
+    <dl>
+      <dt>Formula</dt>
+      <dd>{{ chemical.formula|subscript }}</dd>
 
-  <dt>Gloves</dt>
-  <dd>{{ chemical.glove }}</dd>
+      <dt>CAS Number</dt>
+      <dd>{{ chemical.cas_number }}</dd>
 
-</dl>
+      <dt>Gloves</dt>
+      <dd>{{ chemical.glove }}</dd>
 
-<p>
-    <a href="{{ chemical.edit_url }}"
-		title="Edit information for {{ chemical.name }}" class="btn btn-primary">
-		Edit Information</a>
-</p>
+    </dl>
 
+  </div>
+
+  <div class="col-md-4">
+    {% nfpa_diamond chemical 160 %}
+  </div>
+
+<<<<<<< HEAD
 <img src="{{ chemical.structure_url }}" title="Chemical structure of {{ chemical.name }}" class=structure_display></img>
+=======
+  <div class="col-md-4">
+    <img src="{{ chemical.structure_url }}"
+	 class="img-responsive"
+	 title="Chemical structure of {{ chemical.name|lower }}"></img>
+  </div>
+</div>
+>>>>>>> 23065a55014cb6d245b6aea85d743a01bb654d50
 
 <h2>Containers</h2>
 
-<table class="table">
+<table class="table chemical-list">
   <th>Location</th>
   <th>Quantity</th>
   <th>Expiration Date</th>
   <th>Contact Person</th>
+  <th class="text-center">Empty?</th>
+  <th></th>
   {% for container in container_list %}
-  <tr>
+  <tr ng-controller="chemicalList"
+      ng-init="chemicalId={{ container.pk }}; isEmpty={{ container.is_empty | lower }}"
+      ng-class="{empty: isEmpty}">
     <td>{{ container.location }}</td>
     <td>{{ container.quantity }} {{ container.unit_of_measure }}</td>
     <td>{{ container.expiration_date }}</td>
+<<<<<<< HEAD
     <td>{{ container.owner.get_full_name }}</td>
 	<td> <a href="{{ container.edit_url }}"
 		title="Edit container of {{ chemical.name }}" >
 		Edit</a> </td>
+=======
+    <td>
+      <a href="mailto:{{ container.owner.email }}"
+	 title="Send {{ container.owner.get_short_name }} an email" >
+	{{ container.owner.get_full_name }}</a>
+    </td>
+    <td class="text-center">
+      <input type="checkbox"
+	     ng-model="isEmpty" ng-change="updateStatus()">
+    </td>
+    <td>
+      <a href="{{ container.edit_url }}"
+	 title="Edit this container of {{ chemical.name|lower }}" >
+	<span class="glyphicon glyphicon-pencil"></span>
+	<!-- Edit -->
+      </a>
+    </td>
+>>>>>>> 23065a55014cb6d245b6aea85d743a01bb654d50
   </tr>
   {% endfor %}
 </table>

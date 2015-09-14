@@ -1,5 +1,5 @@
 {% extends 'base.html' %}
-
+{% load custom_filters %}
 {% block title %}Edit Chemical Information{% endblock %}
 
 {% block content %}
@@ -19,6 +19,7 @@
       <td>&nbsp</td>
       <td>
 	<button type="submit">Save</button>
+	<a href="{{ chemical.detail_url }}" title="Return to list of chemicals" class="btn btn-link">Back</a>
       </td>
     </tr>
   </table>
