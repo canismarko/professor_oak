@@ -94,9 +94,18 @@
     <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
 
     <!-- chemical_inventory angular files -->
-    <script src="{% static 'inventory_init.js' %}"></script>
-    <script src="{% static 'inventory_controllers.js' %}"></script>
-    <script src="{% static 'inventory_directives.js' %}"></script>
+    <script src="{% static 'chemical_inventory/inventory_init.js' %}"></script>
+    <script src="{% static 'chemical_inventory/inventory_controllers.js' %}"></script>
+    <script src="{% static 'chemical_inventory/inventory_directives.js' %}"></script>
+
+    <!-- Inject static url for angular template loading -->
+    <script type="text/javascript">
+      angular.module('chemicalInventory').factory('staticUrls', function() {
+	  return {
+	      nfpaDiamond: '{% static 'chemical_inventory/nfpa-diamond.html' %}',
+	  };
+      });
+    </script>
 
   </body>
 

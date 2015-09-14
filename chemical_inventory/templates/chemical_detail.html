@@ -1,5 +1,6 @@
 {% extends 'base.html' %}
 {% load custom_filters %}
+{% load inventory_extras %}
 {% block title %}{{ chemical.name }}{% endblock %}
 
 {% block content %}
@@ -23,12 +24,6 @@
       <dt>CAS Number</dt>
       <dd>{{ chemical.cas_number }}</dd>
 
-      <!-- <dt>NFPA Hazards</dt> -->
-      <!-- <dd>Health: {{ chemical.health }}</dd> -->
-      <!-- <dd>Flammability: {{ chemical.flammability }}</dd> -->
-      <!-- <dd>Instability: {{ chemical.instability }}</dd> -->
-      <!-- <dd>Special Hazards: {{ chemical.special_hazards }}</dd> -->
-
       <dt>Gloves</dt>
       <dd>{{ chemical.glove }}</dd>
 
@@ -37,20 +32,7 @@
   </div>
 
   <div class="col-md-4">
-      <canvas oak-nfpa-diamond
-	      health="{{ chemical.health }}"
-	      flammability="{{ chemical.flammability }}"
-	      instability="{{ chemical.instability }}"
-	      special-hazards="{{ chemical.special_hazards }}">
-	<!-- Fallback for those without Javascript -->
-	<dl>
-	  <dt>NFPA Hazards</dt>
-	  <dd>Health: {{ chemical.health }}</dd>
-	  <dd>Flammability: {{ chemical.flammability }}</dd>
-	  <dd>Instability: {{ chemical.instability }}</dd>
-	  <dd>Special Hazards: {{ chemical.special_hazards }}</dd>
-	</dl>
-      </canvas>
+    {% nfpa_diamond chemical 160 %}
   </div>
 
   <div class="col-md-4">

@@ -47,6 +47,17 @@
     font-style: italic;
 }
 
+/* NFPA Hazard Diamond */
+.nfpa-diamond polygon {
+    stroke-width: 1px;
+    stroke: black;
+}
+.nfpa-diamond text {
+    text-anchor: middle;
+    alignment-baseline: middle;
+    fill: black;
+}
+
 /* ChemSpider chemical structures */
 img.structure_display {
     position: relative;
