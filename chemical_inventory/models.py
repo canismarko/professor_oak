@@ -5,6 +5,7 @@ from django.db import models
 from django.contrib.auth.models import User
 from django.conf import settings
 
+
 # Create your models here.
 class Chemical(models.Model):
     """The general idea of a chemical (eg Lithium hydroxide). It is *not*
@@ -56,6 +57,7 @@ class Chemical(models.Model):
         return True
 
     def structure_url(self):
+        from chemspipy import ChemSpider 
         try:
             cs_key = settings.CHEMSPIDER_KEY
         except AttributeError:
