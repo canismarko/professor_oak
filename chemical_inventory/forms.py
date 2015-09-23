@@ -15,23 +15,51 @@ class DateInput(forms.widgets.DateInput):
 class ContainerForm(Bootstrap3FormMixin, NgModelFormMixin, NgFormValidationMixin, NgModelForm):
     scope_prefix = 'container'
     form_name = 'container_form'
-    date_opened = forms.DateField(widget=DateInput())
+    location = forms.ModelChoiceField(label="Location (SDS § 7)",
+                                      queryset=models.Location.objects.all())
+    date_opened = forms.DateField(widget=DateInput(),
+                                  required=False)
     expiration_date = forms.DateField(widget=DateInput())
+    state = forms.CharField(widget=forms.TextInput(attrs={'placeholder': 'Solid, liquid, foil, etc.'}))
+    unit_of_measure = forms.CharField(widget=forms.TextInput(attrs={'placeholder': 'g, mL, etc'}),
+                                      required=False)
+    batch = forms.CharField(label='Batch/Lot Number', required=False)
+    container_type = forms.CharField(widget=forms.TextInput(
+        attrs={'placeholder': 'Glass bottle, metal pouch, etc.'}
+    ))
     class Meta:
         model = models.Container
         fields = ['location', 'batch', 'date_opened', 'expiration_date',
                   'state', 'container_type', 'quantity', 'unit_of_measure',
                   'supplier']
 
+# Set un-selected value
+NFPA_RATINGS = [('', '----------')] + models.Chemical.NFPA_RATINGS
+NFPA_HAZARDS = [('', '----------')] + models.Chemical.NFPA_HAZARDS
 
 class ChemicalForm(Bootstrap3FormMixin, NgModelFormMixin, NgFormValidationMixin, NgModelForm):
     scope_prefix = 'chemical'
     form_name = 'chemical_form'
+    cas_number = forms.CharField(label="CAS Number (SDS § 1)", required=False,
+                                 widget=forms.TextInput(attrs={'placeholder': 'eg. 7732-18-5'}))
+    formula = forms.CharField(label="Formula (SDS § 3)", required=False,
+                              widget=forms.TextInput(attrs={'placeholder': 'eg. H_2O'}))
+    health = forms.ChoiceField(label="Health NFPA Rating (SDS § 15 or 16)",
+                               choices=NFPA_RATINGS)
+    flammability = forms.ChoiceField(label="Flammability NFPA Rating (SDS § 16)",
+                                     choices=NFPA_RATINGS)
+    instability = forms.ChoiceField(label="Instability NFPA Rating (SDS § 16)",
+                                    choices=NFPA_RATINGS)
+    special_hazards = forms.ChoiceField(label="Special Hazards (SDS § 16)",
+                                        choices=NFPA_HAZARDS, required=False)
+    glove = forms.ModelChoiceField(label="Gloves (SDS § 8.2)",
+                                   queryset=models.Glove.objects.all())
     class Meta:
         model = models.Chemical
         fields = ['name', 'cas_number', 'formula',
                   'health', 'flammability', 'instability', 'special_hazards',
                   'glove']
+
 
 class GloveForm(Bootstrap3FormMixin, NgModelFormMixin, NgFormValidationMixin, NgModelForm):
     scope_prefix = 'glove'

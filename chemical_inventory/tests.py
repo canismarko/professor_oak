@@ -46,3 +46,20 @@ class ContainerAPITest(TestCase):
             savedContainer.owner,
             self.user
         )
+
+    def test_iso_datestrings(self):
+        """Javascript passes all dates with a time component. Does the
+        serializer properly strip this time part."""
+        # Make sure it only fixes it if the field is changed
+        response = self.client.post(
+            '/chemical_inventory/api/containers/',
+            {'is_empty': True}
+        )
+        response = self.client.post(
+            '/chemical_inventory/api/containers/',
+            {'date_opened': '2015-09-21T19:39:41Z',
+             'expiration_date': '2015-09-21T19:39:41Z'}
+        )
+        # List of errors should not contain anything for date_opened
+        self.assertNotContains(response, 'date_opened', status_code=400)
+        self.assertNotContains(response, 'expiration_date', status_code=400)
