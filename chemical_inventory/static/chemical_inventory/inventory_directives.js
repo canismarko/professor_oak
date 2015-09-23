@@ -1,6 +1,6 @@
 angular.module('chemicalInventory')
 
-    .directive('oakAddContainer', ['$filter', function($filter) {
+    .directive('oakAddContainer', ['$filter', '$resource', 'djangoUrl', 'toaster', function($filter, $resource, djangoUrl, toaster) {
 	function link(scope, elem, attrs) {
 	    // Add classes to labels of required fields
 	    $inputs = elem.find('input[ng-required],select[ng-required]');
@@ -9,6 +9,56 @@ angular.module('chemicalInventory')
 		$label = $($input.prevAll('label')[0]);
 		$label.addClass('required');
 	    }
+	    // Setup helper for adding new select options on the fly
+	    function insertAddButton($select, $modal, Resource) {
+		$select.wrap('<div class="row"><div class="col-md-10"></div></div>');
+		var column = $select.parent();
+		column.after('<div class="col-md-2"><button class="btn btn-default"><span class="glyphicon glyphicon-plus"></span> New</button></div>');
+		var addButton = column.parent().find('button');
+		addButton.bind('click', function() {
+		    $modal.modal('show');
+		});
+		// Handler for button click -> show dialog for new glove
+		scope.addThing
+	    }
+	    // Prepare for adding new glove on the fly
+	    var gloveSelect = elem.find('select#id_glove');
+	    var gloveModal = elem.find('#glove-modal');
+	    insertAddButton(gloveSelect, gloveModal);
+	    var Glove = $resource(djangoUrl.reverse('api:glove-list'));
+	    // Handler for submitting a new glove to the server
+	    scope.addGlove = function(data) {
+		Glove.save(scope.glove).$promise.then(function(newGlove) {
+		    // Show user feedback for successfully saving new glove
+		    gloveModal.modal('hide');
+		    msg = 'Added ' + newGlove.name + " glove. It's super effective!";
+		    toaster.success('Saved', msg);
+		    // Add new glove to select input. TODO: Figure out how to select it
+		    var option = '<option value="'+newGlove.id+'">';
+		    option += newGlove.name;
+		    option += '</option>';
+		    gloveSelect.append(option);
+		});
+	    };
+	    // Prepare for adding new supplier on the fly
+	    var supplierSelect = elem.find('select#id_supplier');
+	    var supplierModal = elem.find('#supplier-modal');
+	    insertAddButton(supplierSelect, supplierModal);
+	    // Handler for submitting new supplier to the server
+	    var Supplier = $resource(djangoUrl.reverse('api:supplier-list'));
+	    scope.addSupplier = function(data) {
+		Supplier.save(scope.supplier).$promise.then(function(newSupplier) {
+		    // Show user feedback for successfully saving new supplier
+		    supplierModal.modal('hide');
+		    msg = 'Added ' + newSupplier.name + ". It's super effective!";
+		    toaster.success('Saved', msg);
+		    // Add new supplier to select input. TODO: Figure out how to select it
+		    var option = '<option value="'+newSupplier.id+'">';
+		    option += newSupplier.name;
+		    option += '</option>';
+		    supplierSelect.append(option);
+		});
+	    };
 	    // Search for a new chemical when a user types a name
 	    scope.$watch('chemical_name', function(newName) {
 		scope.existing_chemicals.$promise.then(function(existing_chemicals) {

@@ -57,7 +57,7 @@ class Chemical(models.Model):
         return True
 
     def structure_url(self):
-        from chemspipy import ChemSpider 
+        from chemspipy import ChemSpider
         try:
             cs_key = settings.CHEMSPIDER_KEY
         except AttributeError:
@@ -142,6 +142,9 @@ class Location(models.Model):
 
 class Supplier(models.Model):
     name = models.CharField(max_length=50)
+
+    def __str__(self):
+        return self.name
 
 
 class SafetyDataSheet(models.Model):

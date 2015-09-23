@@ -10,13 +10,19 @@
   Add to Inventory
 </h2>
 
-<div ng-controller="addContainer" oak-add-container>
+<!-- Save and cancel buttons; loaded via angular ng-include -->
+<script type="text/ng-template" id="save-buttons">
   <p>
     <input type="submit" class="btn btn-primary" value="Add"
 	   ng-click="save()"
 	   ng-disabled="{{ chemical_form.form_name }}.$invalid || {{ container_form.form_name }}.$invalid" />
     <a href="{% url 'chemical_list' %}" class="btn btn-link">Cancel</a>
   </p>
+</script>
+
+<div ng-controller="addContainer" oak-add-container>
+
+  <div ng-include="'save-buttons'"></div>
 
   <!-- Prevents cross site request forgery -->
   {% csrf_token %}
@@ -70,16 +76,59 @@
     </div>
 
     <div class="col-md-6">
+      <p>
+	<form name="{{ container_form.form_name }}" novalidate>
+	  {{ container_form }}
+	</form>
+      </p>
 
-      <form name="{{ container_form.form_name }}" novalidate>
-	{{ container_form }}
-      </form>
+      <div ng-include="'save-buttons'"></div>
+    </div><!-- /.col-md-6 -->
 
-    </div>
-  </div>
+  </div><!-- /.row -->
 
-</form>
+  <!-- Dialog for adding a new glove -->
+  <div class="modal fade" id="glove-modal">
+    <div class="modal-dialog">
+      <div class="modal-content">
+	<div class="modal-header">
+	  <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+	  <h4 class="modal-title">New Glove</h4>
+	</div>
+	<div class="modal-body">
+	  <form name="{{ glove_form.form_name }}" novalidate>
+	    {{ glove_form }}
+	  </form>
+	</div>
+	<div class="modal-footer">
+	  <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+	  <button type="button" class="btn btn-primary" ng-click="addGlove()">Save glove</button>
+	</div>
+      </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+  </div><!-- /.modal -->
 
-</div>
+  <!-- Dialog for adding a new supplier -->
+  <div class="modal fade" id="supplier-modal">
+    <div class="modal-dialog">
+      <div class="modal-content">
+	<div class="modal-header">
+	  <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+	  <h4 class="modal-title">New Supplier</h4>
+	</div>
+	<div class="modal-body">
+	  <form name="{{ supplier_form.form_name }}" novalidate>
+	    {{ supplier_form }}
+	  </form>
+	</div>
+	<div class="modal-footer">
+	  <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+	  <button type="button" class="btn btn-primary" ng-click="addSupplier()">Save supplier</button>
+	</div>
+      </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+  </div><!-- /.modal -->
+
+</div><!-- /[oak-add-container] -->
 
 {% endblock %}

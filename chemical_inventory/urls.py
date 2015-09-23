@@ -31,6 +31,8 @@ urlpatterns = [
 router = routers.DefaultRouter()
 router.register(r'chemicals', views.ChemicalViewSet, base_name="chemical")
 router.register(r'containers', views.ContainerViewSet, base_name="container")
+router.register(r'gloves', views.GloveViewSet, base_name="glove")
+router.register(r'suppliers', views.SupplierViewSet, base_name="supplier")
 
 # Add API URLs to Django's urls
 urlpatterns += [

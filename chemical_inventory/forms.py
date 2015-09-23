@@ -32,3 +32,17 @@ class ChemicalForm(Bootstrap3FormMixin, NgModelFormMixin, NgFormValidationMixin,
         fields = ['name', 'cas_number', 'formula',
                   'health', 'flammability', 'instability', 'special_hazards',
                   'glove']
+
+class GloveForm(Bootstrap3FormMixin, NgModelFormMixin, NgFormValidationMixin, NgModelForm):
+    scope_prefix = 'glove'
+    form_name = 'glove_form'
+    class Meta:
+        model = models.Glove
+        fields = ['name']
+
+class SupplierForm(Bootstrap3FormMixin, NgModelFormMixin, NgFormValidationMixin, NgModelForm):
+    scope_prefix = 'supplier'
+    form_name = 'supplier_form'
+    class Meta:
+        model = models.Supplier
+        fields = ['name']

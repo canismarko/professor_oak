@@ -9,10 +9,10 @@ from django.views.generic.edit import UpdateView
 from rest_framework import viewsets, permissions, response, status
 from django.utils.safestring import mark_safe
 
-from .forms import ChemicalForm, ContainerForm
-from .models import Chemical, Container
+from .forms import ChemicalForm, ContainerForm, GloveForm, SupplierForm
+from .models import Chemical, Container, Glove, Supplier
 import xkcd
-from .serializers import ChemicalSerializer, ContainerSerializer
+from .serializers import ChemicalSerializer, ContainerSerializer, GloveSerializer, SupplierSerializer
 
 
 def main(request):
@@ -74,6 +74,8 @@ class AddContainerView(TemplateView):
         # Load the angular forms for container and chemical
         context.update(chemical_form=ChemicalForm())
         context.update(container_form=ContainerForm())
+        context.update(glove_form=GloveForm())
+        context.update(supplier_form=SupplierForm())
         return context
 
     @property
@@ -119,6 +121,27 @@ class EditContainerView(UpdateView):
 
 # Browseable API viewsets
 # =======================
+class SupplierViewSet(viewsets.ModelViewSet):
+    """Viewset for the Chemical model. User is required to be logged in to
+    post."""
+    # Determine which object to list
+    queryset = Supplier.objects.all()
+    # Decide how to convert to JSON
+    serializer_class = SupplierSerializer
+    # Require user be logged in to post to this endpoint
+    permission_classes = (permissions.IsAuthenticatedOrReadOnly,)
+
+
+class GloveViewSet(viewsets.ModelViewSet):
+    """Viewset for the Chemical model. User is required to be logged in to
+    post."""
+    # Determine which object to list
+    queryset = Glove.objects.all()
+    # Decide how to convert to JSON
+    serializer_class = GloveSerializer
+    # Require user be logged in to post to this endpoint
+    permission_classes = (permissions.IsAuthenticatedOrReadOnly,)
+
 
 class ChemicalViewSet(viewsets.ModelViewSet):
     """Viewset for the Chemical model. User is required to be logged in to

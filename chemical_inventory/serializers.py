@@ -1,6 +1,15 @@
 from rest_framework import serializers
 
-from .models import Chemical, Container
+from .models import Chemical, Container, Glove, Supplier
+
+class GloveSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Glove
+
+
+class SupplierSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Supplier
 
 
 class ChemicalSerializer(serializers.ModelSerializer):
