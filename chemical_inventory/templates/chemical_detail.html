@@ -11,7 +11,7 @@
 
     <p>
       <a href="{{ chemical.edit_url }}"
-	 title="Edit chemical information for {{ chemical.name|lower }}" class="btn btn-primary">
+	 title="Edit chemical information for {{ chemical.name|lower }}" class="btn btn-default">
 	Edit Information</a>
       <a href="{% url 'chemical_list' %}" title="Return to list of chemicals" class="btn btn-link">
 	Back</a>
@@ -41,8 +41,7 @@
   {% elif chemical.structure_url == "" %}
     <strong>Structure not available</strong>
   {% else %}
-	<img 
-	src="{{ chemical.structure_url }}"
+    <img src="{{ chemical.structure_url }}"
 	 class="img-responsive"
 	 title="Chemical structure of {{ chemical.name|lower }}"></img>
   {% endif %}
