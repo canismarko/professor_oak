@@ -167,9 +167,19 @@ def import_chemicals_csv(csvfile):
         cas_number = line[1]
         name = line[2]
         formula = line[3]
-        health = line[4]
-        flammability = line[5]
-        instability = line[6]
+        # Default to maximum hazard
+        try:
+            health = int(line[4])
+        except ValueError:
+            health = 4
+        try:
+            flammability = int(line[5])
+        except ValueError:
+            flammability = 4
+        try:
+            instability = int(line[6])
+        except ValueError:
+            instability = 4
         special_hazards = line[7]
         # Create chemical object
         chemical = Chemical(
@@ -201,6 +211,7 @@ def import_containers_csv(csvfile):
         container = Container()
         # Look up existing chemical
         cas_number = line[1].strip('"')
+        print(cas_number)
         try:
             chemical = Chemical.objects.get(cas_number=cas_number)
         except Chemical.DoesNotExist as e:
