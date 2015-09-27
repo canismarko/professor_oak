@@ -94,7 +94,7 @@ class EditChemicalView(UpdateView):
 	template_name = 'chemical_edit.html'
 	template_object_name = Chemical
 	model = Chemical
-	fields = ['cas_number', 'name', 'formula', 'health', 'flammability', 'instability', 'special_hazards', 'glove'] 
+	fields = ['cas_number', 'name', 'formula', 'health', 'flammability', 'instability', 'special_hazards', 'gloves'] 
 
 	# Do I have to do this again here?
 	def get_object(self):

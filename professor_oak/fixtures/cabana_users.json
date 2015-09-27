@@ -24,7 +24,7 @@
         "groups": [],
         "is_superuser": true,
         "is_staff": true,
-        "first_name": "Michael",
+        "first_name": "Mike",
         "email": "plews2@uic.edu",
         "user_permissions": [],
         "last_login": "2015-09-11T14:23:37.340Z",
@@ -33,6 +33,24 @@
         "is_active": true
     },
     "pk": 2,
+    "model": "auth.user"
+},
+    {
+    "fields": {
+        "password": "!",
+        "last_name": "Yi",
+        "groups": [],
+        "is_superuser": false,
+        "is_staff": false,
+        "first_name": "Tanghong",
+        "email": "",
+        "user_permissions": [],
+        "last_login": "2015-01-01T00:04:02Z",
+        "date_joined": "2015-01-01T00:04:02Z",
+        "username": "tanghon",
+        "is_active": false
+    },
+    "pk": 3,
     "model": "auth.user"
 }
 ]

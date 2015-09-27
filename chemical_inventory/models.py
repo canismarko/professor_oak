@@ -1,10 +1,11 @@
 import datetime
+import csv
+import re
 
 from django.core.urlresolvers import reverse
 from django.db import models
 from django.contrib.auth.models import User
 from django.conf import settings
-
 
 # Create your models here.
 class Chemical(models.Model):
@@ -33,7 +34,7 @@ class Chemical(models.Model):
     flammability = models.IntegerField(choices=NFPA_RATINGS)
     instability = models.IntegerField(choices=NFPA_RATINGS)
     special_hazards = models.CharField(max_length=2, choices=NFPA_HAZARDS, blank=True)
-    glove = models.ForeignKey('Glove')
+    gloves = models.ManyToManyField('Glove')
 
     def __str__(self):
         return "{name} ({formula})".format(name=self.name, formula=self.formula)
@@ -68,6 +69,7 @@ class Chemical(models.Model):
             search_results = cs.simple_search(CAS)
             url = search_results[0].image_url
         return url
+
 
 class Glove(models.Model):
     """Different chemicals have different glove compatibility. The `name`
@@ -151,3 +153,103 @@ class SafetyDataSheet(models.Model):
     sds_file = models.FileField()
     chemical = models.ForeignKey('Chemical')
     supplier = models.ForeignKey('Supplier')
+
+
+def import_chemicals_csv(csvfile):
+    """Parses a csv file exported from our old Access database and
+    converts it to model instances."""
+    f = open(csvfile)
+    csvreader = csv.reader(f)
+    default_glove = Glove.objects.get(name='Nitrile')
+    # for line in [list(csvreader)[0]]:
+    for line in csvreader:
+        # Translate attributes from csv file
+        cas_number = line[1]
+        name = line[2]
+        formula = line[3]
+        health = line[4]
+        flammability = line[5]
+        instability = line[6]
+        special_hazards = line[7]
+        # Create chemical object
+        chemical = Chemical(
+            cas_number=cas_number,
+            name=name,
+            formula=formula,
+            health=health,
+            flammability=flammability,
+            instability=instability,
+        )
+        chemical.save()
+        # Add gloves
+        glove_string = line[9]
+        for glove_name in glove_string.split(';'):
+            glove_name = glove_name.strip()
+            if Glove.objects.filter(name=glove_name).exists():
+                glove = Glove.objects.get(name=glove_name)
+            else:
+                # Create glove first
+                glove = Glove(name=glove_name)
+                glove.save()
+            chemical.gloves.add(glove)
+
+def import_containers_csv(csvfile):
+    f = open(csvfile)
+    csvreader = csv.reader(f, quoting=csv.QUOTE_NONE)
+    default_glove = Glove.objects.get(name='Nitrile')
+    for line in csvreader:
+        container = Container()
+        # Look up existing chemical
+        cas_number = line[1].strip('"')
+        try:
+            chemical = Chemical.objects.get(cas_number=cas_number)
+        except Chemical.DoesNotExist as e:
+            # Cannot find associated chemical
+            print('Cannot find chemical for {}'.format(line))
+            break
+        # Continue creating container
+        container.chemical = chemical
+        # Find location
+        location_name = line[2].strip('"')
+        try:
+            location = Location.objects.get(name=location_name)
+        except Location.DoesNotExist:
+            location = Location(name=location_name, room_number='NA', building='NA')
+            location.save()
+        finally:
+            container.location = location
+        # Find or add supplier
+        supplier_name = line[4].strip('"')
+        try:
+            supplier = Supplier.objects.get(name=supplier_name)
+        except Supplier.DoesNotExist:
+            supplier = Supplier(name=supplier_name)
+            supplier.save()
+        container.supplier = supplier
+        # Set added and expiration date
+        added_string = line[5].strip('"')[0:10]
+        try:
+            added_date = datetime.datetime.strptime(added_string, '%Y-%m-%d')
+        except ValueError:
+            added_date = datetime.datetime.now()
+        container.expiration_date = added_date + datetime.timedelta(days=365)
+        # Find and set owner
+        owner_string = line[9].strip('"')
+        if not owner_string == '':
+            try:
+                owner = User.objects.get(first_name=owner_string)
+            except User.DoesNotExist:
+                # User does not exist, so print a message
+                print('Cannot find user {} for container {}'.format(owner_string, line[0]))
+            else:
+                container.owner = owner
+        # Split up the quantity string
+        quantity_string = line[10].strip('"').strip()
+        match = re.match('([0-9.]+)\s?([a-zA-Z]+)', quantity_string)
+        if match:
+            container.quantity, container.unit_of_measure = match.groups()
+        # Other simple values
+        container.batch = line[3].strip('"')
+        container.state = line[7].strip('"')
+        container.container_type = line[8].strip('"')
+        container.save()

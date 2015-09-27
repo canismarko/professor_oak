@@ -7,7 +7,7 @@
         "formula": "Li",
         "name": "Lithium",
         "special_hazards": "W",
-        "glove": 1,
+        "gloves": [1],
         "health": 2
     },
     "pk": 1,
@@ -21,7 +21,7 @@
         "formula": "H_2O",
         "name": "Dihydrogen monoxide",
         "special_hazards": "",
-        "glove": 1,
+        "gloves": [1],
         "health": 0
     },
     "pk": 2,

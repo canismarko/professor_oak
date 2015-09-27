@@ -22,7 +22,7 @@ angular.module('chemicalInventory')
 		scope.addThing
 	    }
 	    // Prepare for adding new glove on the fly
-	    var gloveSelect = elem.find('select#id_glove');
+	    var gloveSelect = elem.find('select#id_gloves');
 	    var gloveModal = elem.find('#glove-modal');
 	    insertAddButton(gloveSelect, gloveModal);
 	    var Glove = $resource(djangoUrl.reverse('api:glove-list'));

@@ -52,13 +52,13 @@ class ChemicalForm(Bootstrap3FormMixin, NgModelFormMixin, NgFormValidationMixin,
                                     choices=NFPA_RATINGS)
     special_hazards = forms.ChoiceField(label="Special Hazards (SDS § 16)",
                                         choices=NFPA_HAZARDS, required=False)
-    glove = forms.ModelChoiceField(label="Gloves (SDS § 8.2)",
-                                   queryset=models.Glove.objects.all())
+    gloves = forms.ModelMultipleChoiceField(label="Gloves (SDS § 8.2)",
+                                            queryset=models.Glove.objects.all())
     class Meta:
         model = models.Chemical
         fields = ['name', 'cas_number', 'formula',
                   'health', 'flammability', 'instability', 'special_hazards',
-                  'glove']
+                  'gloves']
 
 
 class GloveForm(Bootstrap3FormMixin, NgModelFormMixin, NgFormValidationMixin, NgModelForm):
