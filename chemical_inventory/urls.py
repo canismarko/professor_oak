@@ -16,15 +16,15 @@ urlpatterns = [
     url(r'^chemicals/(?P<pk>[0-9]+)/$',
         views.ChemicalDetailView.as_view(),
         name='chemical_detail'),
-	url(r'^chemicals/edit/(?P<pk>[0-9]+)/$',
-		views.EditChemicalView.as_view(),
-		name='chemical_edit'),
+    url(r'^chemicals/edit/(?P<pk>[0-9]+)/$',
+	login_required(views.EditChemicalView.as_view()),
+	name='chemical_edit'),
     url(r'^containers/add/$',
         login_required(views.AddContainerView.as_view()),
         name='add_container'),
-	url(r'^containers/edit/(?P<pk>[0-9]+)/$',
-		views.EditContainerView.as_view(),
-		name='container_edit'),
+    url(r'^containers/edit/(?P<pk>[0-9]+)/$',
+	login_required(views.EditContainerView.as_view()),
+	name='container_edit'),
 ]
 
 # URLs for the browsable API
