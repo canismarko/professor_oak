@@ -7,7 +7,7 @@
 <h2>{{ chemical.name }}</h2>
 
 <div class="row">
-  <div class="col-md-4">
+  <div class="col-sm-4">
 
     <p>
       <a href="{{ chemical.edit_url }}"
@@ -31,11 +31,11 @@
 
   </div>
 
-  <div class="col-md-4">
+  <div class="col-sm-4">
     {% nfpa_diamond chemical 160 %}
   </div>
 
-  <div class="col-md-4">
+  <div class="col-sm-4">
   {% if chemical.cas_number == "" %}
 	<strong>Please enter a CAS number to display structure</strong>
   {% elif chemical.structure_url == "" %}

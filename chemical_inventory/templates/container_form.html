@@ -12,7 +12,7 @@
 
 <!-- Save and cancel buttons; loaded via angular ng-include -->
 <script type="text/ng-template" id="save-buttons">
-  <p>
+  <p class="add-container-buttons">
     <input type="submit" class="btn btn-primary" value="Add"
 	   ng-click="save()"
 	   ng-disabled="{{ chemical_form.form_name }}.$invalid || {{ container_form.form_name }}.$invalid" />
@@ -22,7 +22,7 @@
 
 <div ng-controller="addContainer" oak-add-container>
 
-  <div ng-include="'save-buttons'"></div>
+  <!-- <div ng-include="'save-buttons'"></div> -->
 
   <!-- Prevents cross site request forgery -->
   {% csrf_token %}
@@ -33,7 +33,7 @@
 
       <form name="{{ chemical_form.form_name }}" novalidate>
 
-	<div class="panel panel-primary">
+	<div class="panel panel-primary existing-chemical-panel">
 
 	  <div class="panel-heading">Search for Existing Chemicals</div>
 
@@ -75,12 +75,10 @@
 
     </div>
 
-    <div class="col-md-6">
-      <p>
+    <div class="col-md-6 container-form-col">
 	<form name="{{ container_form.form_name }}" novalidate>
 	  {{ container_form }}
 	</form>
-      </p>
 
       <div ng-include="'save-buttons'"></div>
     </div><!-- /.col-md-6 -->

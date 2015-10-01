@@ -5,28 +5,30 @@
 
 {% block content %}
 
-<h2>
-  Chemical Inventory
-</h2>
+<div class="row">
+  <div class="col-md-6">
+    <h2>
+      Chemical Inventory
+    </h2>
+    <p>
+      Welcome to the chemical inventory. You currenty have
+      {{ inventory_size }} chemicals.
+    </p>
+    <div class="row inventory-buttons">
+      <div class="col-md-4 col-md-offset-1">
+	<a href="{% url 'add_container' %}" class="btn btn-primary">
+	  Add chemical</a>
+      </div>
 
-<p>
-  Welcome to the chemical inventory. You currenty have
-  {{ inventory_size }} chemicals.
-</p>
-<div class="container no_padding">
-<div class="row-float">
-
-  <div class="col-md-2 col">
-    <a href="{% url 'add_container' %}" class="btn btn-primary">
-      Add chemical</a>
+      <div class="col-md-4">
+	<a href="{% url 'chemical_list' %}" class="btn btn-default">
+	  View list of chemicals</a>
+      </div>
+    </div><!-- /.row -->
+  </div><!-- /.col-md-6 -->
+  <div class="col-md-6">
+    <img src="{{ xkcd_url }}" title="{{ xkcd_alt }}" class="xkcd img-responsive"></img>
   </div>
+</div><!-- /.row -->
 
-  <div class="col-md-2 col">
-    <a href="{% url 'chemical_list' %}" class="btn btn-default">
-      View list of chemicals</a>
-  </div>
-</div>
-	<img src="{{ xkcd_url }}" title="{{ xkcd_alt }}" width="40%" style="text-center"></img>
-
-</div>
 {% endblock %}

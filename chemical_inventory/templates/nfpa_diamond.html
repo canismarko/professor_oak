@@ -13,6 +13,6 @@
   <text {{ health.text_position }}>{{ health.rating }}</text>
   <text {{ flammability.text_position }}>{{ flammability.rating }}</text>
   <text {{ instability.text_position }}>{{ instability.rating }}</text>
-  <text {{ special_hazards.text_position }}>{{ special_hazards.rating }}</text>
+  <text {% if special_hazards.rating == 'W' %}class="water-hazard" {% endif %}{{ special_hazards.text_position }}>{{ special_hazards.rating }}</text>
 
 </svg>

@@ -1,6 +1,7 @@
 /* Site-wide styles */
 .main-content {
     margin-top: 15px;
+    margin-bottom: 50px;
 }
 
 .header h1 {
@@ -32,17 +33,18 @@
     height: 24px;
 }
 
-.col {
-  padding-top:0px;
-  padding-bottom:10px;
-  padding-left:0px;
+.inventory-buttons {
+    margin-top: 40px;
+    margin-bottom: 50px;
 }
-.no_padding {
-  padding-left:0px;
+.inventory-buttons .btn {
+    margin-top: 1px;
+    margin-bottom: 5px;
 }
 
-.some_padding {
-  padding-left:5px;
+/* XKCD Comic displayed on the landing page for chemical_inventory */
+.xkcd {
+    margin-top: 20px;
 }
 
 /* List of containers of a given chemical */
@@ -62,6 +64,9 @@
     alignment-baseline: middle;
     fill: black;
 }
+.nfpa-diamond text.water-hazard {
+    text-decoration: line-through;
+}
 
 /* ChemSpider chemical structures */
 img.structure_display {
@@ -80,6 +85,19 @@ label {
 }
 label.required {
     font-weight: bold;
+}
+
+/* Adding a new container */
+.existing-chemical-panel {
+    /* margin-top: 25px; */
+}
+
+.add-container-buttons {
+    margin-top: 15px;
+}
+
+.container-form-col {
+    margin-top: -25px;
 }
 
 /* Form validation */

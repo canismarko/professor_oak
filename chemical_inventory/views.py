@@ -38,7 +38,7 @@ class ChemicalListView(ListView):
     def get_queryset(self):
         """Return the list of chemicals. The parent class (ListView) handles
         the rest."""
-        qs = Chemical.objects.all()
+        qs = Chemical.objects.all().order_by('name')
         return qs
 
 
@@ -62,7 +62,7 @@ class ChemicalDetailView(DetailView):
         # Get the default context
         context = super().get_context_data(*args, **kwargs)
         # Add list of containers to context
-        container_list = chemical.container_set.order_by('is_empty')
+        container_list = chemical.container_set.order_by('is_empty', 'expiration_date')
         context['container_list'] = container_list
         return context
 
