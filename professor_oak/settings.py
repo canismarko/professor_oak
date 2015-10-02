@@ -120,6 +120,9 @@ STATIC_ROOT = 'static_files/'
 
 STATIC_URL = '/static/'
 
+MEDIA_ROOT = 'media_files/'
+MEDIA_URL = '/media/'
+
 try:
     from .localsettings import *
 except ImportError:

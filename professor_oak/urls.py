@@ -18,6 +18,7 @@ from django.contrib import admin
 from django.views.generic.base import RedirectView
 from django.views.generic import TemplateView
 from django.core.urlresolvers import reverse
+from django.conf import settings
 
 from . import views
 import chemical_inventory.urls
@@ -36,3 +37,11 @@ urlpatterns = [
         TemplateView.as_view(template_name='login.html'),
         name='login'),
 ]
+
+# User uploaded content
+if settings.DEBUG:
+        # static files (images, css, javascript, etc.)
+        urlpatterns.append(
+            url(r'^media/(?P<path>.*)$', 'django.views.static.serve',
+                { 'document_root': settings.MEDIA_ROOT }
+            ))

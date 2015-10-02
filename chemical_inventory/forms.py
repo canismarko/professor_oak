@@ -58,7 +58,7 @@ class ChemicalForm(Bootstrap3FormMixin, NgModelFormMixin, NgFormValidationMixin,
         model = models.Chemical
         fields = ['name', 'cas_number', 'formula',
                   'health', 'flammability', 'instability', 'special_hazards',
-                  'gloves']
+                  'gloves', 'safety_data_sheet']
 
 
 class GloveForm(Bootstrap3FormMixin, NgModelFormMixin, NgFormValidationMixin, NgModelForm):

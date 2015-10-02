@@ -35,6 +35,7 @@ class Chemical(models.Model):
     instability = models.IntegerField(choices=NFPA_RATINGS)
     special_hazards = models.CharField(max_length=2, choices=NFPA_HAZARDS, blank=True)
     gloves = models.ManyToManyField('Glove')
+    safety_data_sheet = models.FileField(upload_to='safety_data_sheets', null=True)
 
     def __str__(self):
         return "{name} ({formula})".format(name=self.name, formula=self.formula)

@@ -3,4 +3,5 @@
 __pycache__
 .venv
 static_files
+media_files
 localsettings.py

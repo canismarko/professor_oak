@@ -94,9 +94,7 @@ class EditChemicalView(UpdateView):
 	template_name = 'chemical_edit.html'
 	template_object_name = Chemical
 	model = Chemical
-	fields = ['cas_number', 'name', 'formula', 'health', 'flammability', 'instability', 'special_hazards', 'gloves'] 
-
-	# Do I have to do this again here?
+	fields = ['cas_number', 'name', 'formula', 'health', 'flammability', 'instability', 'special_hazards', 'gloves', 'safety_data_sheet'] 
 	def get_object(self):
 		"""Return the specific chemical by its primary key ('pk')."""
 		# Find the primary key from the url
@@ -105,12 +103,12 @@ class EditChemicalView(UpdateView):
 		chemical = Chemical.objects.get(pk=pk)
 		return chemical
 
+
 class EditContainerView(UpdateView):
     template_name = 'container_edit.html'
     model = Container
     fields = ['chemical', 'location', 'batch', 'date_opened', 'expiration_date','state', 'container_type', 'owner', 'quantity', 'unit_of_measure','supplier', 'is_empty'] 
 
-	# Do I have to do this again here?
     def get_object(self):
         """Return the specific chemical by its primary key ('pk')."""
         # Find the primary key from the url
@@ -118,6 +116,7 @@ class EditContainerView(UpdateView):
         # Get the actual Chemical object
         container = Container.objects.get(pk=pk)
         return container
+
 
 # Browseable API viewsets
 # =======================
