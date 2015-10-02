@@ -16,7 +16,7 @@ class Chemical(models.Model):
 
     """
     name = models.CharField(max_length=200)
-    cas_number = models.CharField(max_length=10, db_index=True, blank=True)
+    cas_number = models.CharField(max_length=100, db_index=True, blank=True)
     formula = models.CharField(max_length=50, blank=True)
     NFPA_RATINGS = [
         (0, 'None (0)'),
