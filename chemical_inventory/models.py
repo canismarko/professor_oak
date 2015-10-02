@@ -55,8 +55,9 @@ class Chemical(models.Model):
     def is_in_stock(self):
         """Return True if a chemical has a container with material in it,
         otherwise return False."""
-        # Stubbed for development
-        return True
+        if Container.objects.filter(chemical__id=self.pk, is_empty=False).count() != 0:
+            return True
+        return False
 
     def structure_url(self):
         from chemspipy import ChemSpider
@@ -71,6 +72,8 @@ class Chemical(models.Model):
             url = search_results[0].image_url
         return url
 
+    def get_absolute_url(self):
+        return reverse('chemical_detail', kwargs={'pk': self.pk}) 
 
 class Glove(models.Model):
     """Different chemicals have different glove compatibility. The `name`

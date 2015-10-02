@@ -8,6 +8,7 @@ from django.views.generic.edit import CreateView
 from django.views.generic.edit import UpdateView
 from rest_framework import viewsets, permissions, response, status
 from django.utils.safestring import mark_safe
+from django.http import HttpResponseRedirect
 
 from .forms import ChemicalForm, ContainerForm, GloveForm, SupplierForm
 from .models import Chemical, Container, Glove, Supplier
@@ -91,18 +92,23 @@ class AddContainerView(TemplateView):
 
 
 class EditChemicalView(UpdateView):
-	template_name = 'chemical_edit.html'
-	template_object_name = Chemical
-	model = Chemical
-	fields = ['cas_number', 'name', 'formula', 'health', 'flammability', 'instability', 'special_hazards', 'gloves', 'safety_data_sheet'] 
-	def get_object(self):
-		"""Return the specific chemical by its primary key ('pk')."""
-		# Find the primary key from the url
-		pk = self.kwargs['pk']
-		# Get the actual Chemical object
-		chemical = Chemical.objects.get(pk=pk)
-		return chemical
+    template_name = 'chemical_edit.html'
+    template_object_name = Chemical
+    model = Chemical
+    fields = ['cas_number', 'name', 'formula', 'health', 'flammability', 'instability', 'special_hazards', 'gloves', 'safety_data_sheet'] 
+    def get_object(self):
+        """Return the specific chemical by its primary key ('pk')."""
+        # Find the primary key from the url
+        pk = self.kwargs['pk']
+        # Get the actual Chemical object
+        chemical = Chemical.objects.get(pk=pk)
+        return chemical
 
+    def form_valid(self,form):
+        obj = form.save(commit=False)
+        obj.author = self.request.user
+        obj.save()
+        return HttpResponseRedirect(self.get_success_url())
 
 class EditContainerView(UpdateView):
     template_name = 'container_edit.html'
