@@ -88,11 +88,11 @@ class OldDatabaseTest(TestCase):
         self.assertEqual(lithium.name, 'Lithium')
         self.assertEqual(lithium.formula, 'Li')
         self.assertEqual(lithium.health, 3)
+        # Default glove is set?
+        self.assertIn(self.nitrile_glove, lithium.gloves.all())
         # Other gloves set
         castor_oil = models.Chemical.objects.get(pk=12)
         assert castor_oil.name == 'Castor Oil'
-        # Default glove is set?
-        self.assertIn(self.nitrile_glove, castor_oil.gloves.all())
         latex_glove = models.Glove.objects.get(name='Latex')
         self.assertIn(latex_glove, castor_oil.gloves.all())
 

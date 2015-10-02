@@ -25,7 +25,9 @@
       <dd>{{ chemical.cas_number }}</dd>
 
       <dt>Gloves</dt>
-      <dd>{{ chemical.glove }}</dd>
+      {% for glove in chemical.gloves.all %}
+      <dd>{{ glove.name }}</dd>
+      {% endfor %}
 
     </dl>
 

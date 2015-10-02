@@ -193,15 +193,19 @@ def import_chemicals_csv(csvfile):
         chemical.save()
         # Add gloves
         glove_string = line[9]
-        for glove_name in glove_string.split(';'):
-            glove_name = glove_name.strip()
-            if Glove.objects.filter(name=glove_name).exists():
-                glove = Glove.objects.get(name=glove_name)
-            else:
-                # Create glove first
-                glove = Glove(name=glove_name)
-                glove.save()
-            chemical.gloves.add(glove)
+        glove_names = glove_string.split(';')
+        if glove_names == [""]:
+            # Default glove
+            chemical.gloves.add(default_glove)
+        else:
+            for glove_name in glove_names:
+                if Glove.objects.filter(name=glove_name).exists():
+                    glove = Glove.objects.get(name=glove_name)
+                else:
+                    # Create glove first
+                    glove = Glove(name=glove_name)
+                    glove.save()
+                chemical.gloves.add(glove)
 
 def import_containers_csv(csvfile):
     f = open(csvfile)
@@ -211,7 +215,6 @@ def import_containers_csv(csvfile):
         container = Container()
         # Look up existing chemical
         cas_number = line[1].strip('"')
-        print(cas_number)
         try:
             chemical = Chemical.objects.get(cas_number=cas_number)
         except Chemical.DoesNotExist as e:

@@ -47,10 +47,64 @@
         "user_permissions": [],
         "last_login": "2015-01-01T00:04:02Z",
         "date_joined": "2015-01-01T00:04:02Z",
-        "username": "tanghon",
+        "username": "tyi",
         "is_active": false
     },
     "pk": 3,
+    "model": "auth.user"
+},
+{
+    "fields": {
+        "password": "!",
+        "last_name": "",
+        "groups": [],
+        "is_superuser": false,
+        "is_staff": false,
+        "first_name": "Chunjoong",
+        "email": "",
+        "user_permissions": [],
+        "last_login": "2015-01-01T00:04:02Z",
+        "date_joined": "2015-01-01T00:04:02Z",
+        "username": "chunjoong",
+        "is_active": false
+    },
+    "pk": 4,
+    "model": "auth.user"
+},
+{
+    "fields": {
+        "password": "!",
+        "last_name": "Kwon",
+        "groups": [],
+        "is_superuser": false,
+        "is_staff": false,
+        "first_name": "Bobjin",
+        "email": "",
+        "user_permissions": [],
+        "last_login": "2015-01-01T00:04:02Z",
+        "date_joined": "2015-01-01T00:04:02Z",
+        "username": "bkwon",
+        "is_active": false
+    },
+    "pk": 5,
+    "model": "auth.user"
+},
+{
+    "fields": {
+        "password": "!",
+        "last_name": "May",
+        "groups": [],
+        "is_superuser": false,
+        "is_staff": false,
+        "first_name": "Brian",
+        "email": "",
+        "user_permissions": [],
+        "last_login": "2015-01-01T00:04:02Z",
+        "date_joined": "2015-01-01T00:04:02Z",
+        "username": "bmay",
+        "is_active": false
+    },
+    "pk": 6,
     "model": "auth.user"
 }
 ]
