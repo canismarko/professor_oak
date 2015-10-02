@@ -101,7 +101,9 @@ angular.module('chemicalInventory')
 		    newChemical.health = newChemical.health.toString();
 		    newChemical.flammability = newChemical.flammability.toString();
 		    newChemical.instability = newChemical.instability.toString();
-		    newChemical.glove = newChemical.glove.toString();
+		    for (var i=0; i<newChemical.gloves.length; i++) {
+			newChemical.gloves[i] = newChemical.gloves[i].toString();
+		    }
 		    // Disable the chemical entry if an existing chemical has been selected
 		    inputs = elem.find('.chemical-form input,.chemical-form select');
 		    if (newId > 0) {

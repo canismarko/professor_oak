@@ -20,7 +20,7 @@ angular.module('chemicalInventory')
 		flammability: '',
 		instability: '',
 		special_hazards: '',
-		glove: '',
+		gloves: [],
 		$displayName: '[New chemical]',
 	    };
 	    chemicalList.splice(0, 0, dummyChemical);
