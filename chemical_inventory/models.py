@@ -60,16 +60,17 @@ class Chemical(models.Model):
         return False
 
     def structure_url(self):
-        from chemspipy import ChemSpider
-        try:
-            cs_key = settings.CHEMSPIDER_KEY
-        except AttributeError:
-            url = 'http://discovermagazine.com/~/media/Images/Zen%20Photo/N/nanoputian/3487.gif'
-        else:
-            cs = ChemSpider(cs_key)
-            CAS = self.cas_number
-            search_results = cs.simple_search(CAS)
-            url = search_results[0].image_url
+        # from chemspipy import ChemSpider
+        # try:
+            # cs_key = settings.CHEMSPIDER_KEY
+        # except AttributeError:
+            # url = 'http://discovermagazine.com/~/media/Images/Zen%20Photo/N/nanoputian/3487.gif'
+        # else:
+            # cs = ChemSpider(cs_key)
+            # CAS = self.cas_number
+            # search_results = cs.simple_search(CAS)
+            # url = search_results[0].image_url
+        url = ""
         return url
 
     def get_absolute_url(self):
