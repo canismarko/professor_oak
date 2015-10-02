@@ -35,7 +35,7 @@ class Chemical(models.Model):
     instability = models.IntegerField(choices=NFPA_RATINGS)
     special_hazards = models.CharField(max_length=2, choices=NFPA_HAZARDS, blank=True)
     gloves = models.ManyToManyField('Glove')
-    safety_data_sheet = models.FileField(upload_to='safety_data_sheets', null=True)
+    safety_data_sheet = models.FileField(upload_to='safety_data_sheets', null=True, blank=True)
 
     def __str__(self):
         return "{name} ({formula})".format(name=self.name, formula=self.formula)
@@ -162,12 +162,15 @@ def import_chemicals_csv(csvfile):
     f = open(csvfile)
     csvreader = csv.reader(f)
     default_glove = Glove.objects.get(name='Nitrile')
+    formula_regex = re.compile('(\d)')
     # for line in [list(csvreader)[0]]:
     for line in csvreader:
         # Translate attributes from csv file
         cas_number = line[1]
         name = line[2]
+        # Make numbers subscripted in the formula
         formula = line[3]
+        formula = formula_regex.sub(r'_\1', formula)
         # Default to maximum hazard
         try:
             health = int(line[4])

@@ -95,6 +95,9 @@ class OldDatabaseTest(TestCase):
         assert castor_oil.name == 'Castor Oil'
         latex_glove = models.Glove.objects.get(name='Latex')
         self.assertIn(latex_glove, castor_oil.gloves.all())
+        # Test if formula numbers are subscripted
+        magnesium_hydroxide = models.Chemical.objects.get(name='Magnesium Hydroxide')
+        self.assertEqual(magnesium_hydroxide.formula, 'Mg(OH)_2')
 
     def test_convert_containers(self):
         # Delete current container list
