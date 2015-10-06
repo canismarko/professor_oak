@@ -37,6 +37,7 @@ class ChemicalListView(ListView):
     """View shows a list of currently available chemicals."""
 
     template_name = 'chemical_list.html'
+    model = Chemical
 
     def _fetch_avail_keyword_glossary_filters(glossary_filters, other_filters={}):
         """
