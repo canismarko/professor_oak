@@ -1,3 +1,8 @@
+/* ngCloak hides unloaded element flicker */
+[ng\:cloak], [ng-cloak], [data-ng-cloak], [x-ng-cloak], .ng-cloak, .x-ng-cloak {
+    display: none !important;
+}
+
 /* Site-wide styles */
 .main-content {
     margin-top: 15px;

@@ -62,7 +62,10 @@
   </div>
 </div>
 
-<h2>Containers</h2>
+<h2>Containers
+  <a href="{% url 'add_container' %}?chemical_id={{ chemical.id }}"
+     class="btn btn-default">Add chemical</a>
+</h2>
 
 <table class="table chemical-list">
   <th>Location</th>
