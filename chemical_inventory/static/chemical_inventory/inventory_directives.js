@@ -1,6 +1,6 @@
 angular.module('chemicalInventory')
 
-    .directive('oakAddContainer', ['$filter', '$resource', '$location', 'djangoUrl', 'toaster', function($filter, $resource, $location, djangoUrl, toaster) {
+    .directive('oakAddContainer', ['$filter', '$resource', 'djangoUrl', 'toaster', function($filter, $resource, djangoUrl, toaster) {
 	function link(scope, elem, attrs) {
 	    // Add classes to labels of required fields
 	    $inputs = elem.find('input[ng-required],select[ng-required]');

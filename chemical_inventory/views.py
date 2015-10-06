@@ -38,11 +38,6 @@ class ChemicalListView(ListView):
 
     template_name = 'chemical_list.html'
 
-    def get_queryset(self):
-        """Return the list of chemicals. The parent class (ListView) handles
-        the rest."""
-        qs = Chemical.objects.all().order_by('name')
-        return qs
     def _fetch_avail_keyword_glossary_filters(glossary_filters, other_filters={}):
         """
         Processes the glossary filters and checks for available records.
@@ -52,7 +47,6 @@ class ChemicalListView(ListView):
         # If not filters passed, bail out gracefully.
         if not glossary_filters:
             return {}
- 
         filters = []
         for filter in glossary_filters:
             avail = False
@@ -64,7 +58,7 @@ class ChemicalListView(ListView):
             else:
                 # For regular alpha characters filter with a case insensitive __istartswith
                 results = Keyword.objects.filter(keyword__istartswith=filter)
- 
+
             if other_filters:
                 for filter_name, filter_info in other_filters.items():
                     tmp = ''
@@ -80,7 +74,7 @@ class ChemicalListView(ListView):
                         # For all other filters that are not a keyword search, apply them ad a field value pair.
                         if 'field' in info and 'value' in info:
                             tmp = 'results = results.filter(%s="%s")' % (filter_info['field'],filter_info['value'])
- 
+
                     # Generally I am not a fan of doing exec's in any language, so make sure you've 
                     # done your validation thoroughly when you accepted your GET or POST variables. 
                     if tmp:
