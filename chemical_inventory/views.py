@@ -251,7 +251,7 @@ class ChemicalDetailView(DetailView):
         return context
 
 class AddContainerView(TemplateView):
-    template_name = 'container_form.html'
+    template_name = 'container_add.html'
 
     def get_context_data(self, *args, **kwargs):
         context = super().get_context_data(*args, **kwargs)
