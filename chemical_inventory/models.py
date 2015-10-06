@@ -16,7 +16,7 @@ class Chemical(models.Model):
 
     """
     name = models.CharField(max_length=200)
-    cas_number = models.CharField(max_length=10, db_index=True, blank=True)
+    cas_number = models.CharField(max_length=100, db_index=True, blank=True)
     formula = models.CharField(max_length=50, blank=True)
     NFPA_RATINGS = [
         (0, 'None (0)'),
@@ -55,22 +55,26 @@ class Chemical(models.Model):
     def is_in_stock(self):
         """Return True if a chemical has a container with material in it,
         otherwise return False."""
-        # Stubbed for development
-        return True
+        if Container.objects.filter(chemical__id=self.pk, is_empty=False).count() != 0:
+            return True
+        return False
 
     def structure_url(self):
-        from chemspipy import ChemSpider
-        try:
-            cs_key = settings.CHEMSPIDER_KEY
-        except AttributeError:
-            url = 'http://discovermagazine.com/~/media/Images/Zen%20Photo/N/nanoputian/3487.gif'
-        else:
-            cs = ChemSpider(cs_key)
-            CAS = self.cas_number
-            search_results = cs.simple_search(CAS)
-            url = search_results[0].image_url
+        # from chemspipy import ChemSpider
+        # try:
+            # cs_key = settings.CHEMSPIDER_KEY
+        # except AttributeError:
+            # url = 'http://discovermagazine.com/~/media/Images/Zen%20Photo/N/nanoputian/3487.gif'
+        # else:
+            # cs = ChemSpider(cs_key)
+            # CAS = self.cas_number
+            # search_results = cs.simple_search(CAS)
+            # url = search_results[0].image_url
+        url = ""
         return url
 
+    def get_absolute_url(self):
+        return reverse('chemical_detail', kwargs={'pk': self.pk}) 
 
 class Glove(models.Model):
     """Different chemicals have different glove compatibility. The `name`
