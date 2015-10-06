@@ -35,12 +35,7 @@ class ChemicalListView(ListView):
     """View shows a list of currently available chemicals."""
 
     template_name = 'chemical_list.html'
-
-    def get_queryset(self):
-        """Return the list of chemicals. The parent class (ListView) handles
-        the rest."""
-        qs = Chemical.objects.all().order_by('name')
-        return qs
+    model = Chemical
 
 
 class ChemicalDetailView(DetailView):
