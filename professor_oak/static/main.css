@@ -42,6 +42,10 @@
     margin-bottom: 5px;
 }
 
+.red_alert {
+    color: #D63333
+}
+
 /* XKCD Comic displayed on the landing page for chemical_inventory */
 .xkcd {
     margin-top: 20px;

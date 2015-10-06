@@ -11,7 +11,12 @@
     Add chemical</a>
 	<a href="{% url 'inventory_main' %}" title="Return to list of chemicals" class="btn btn-link">Home</a>
 </p>
-
+<ul class="glossary" id="glossary">
+    <li data-id="all" class="{% if active_glossary %}avail{% else %}active{% endif %}">All</li>
+    {% for opt in glossary_filters %}
+        <li data-id="{{ opt.value }}" class="{% if opt.avail %}avail{% endif %}{% if opt.active %} active{% endif %}">{{ opt.display }}</li>
+    {% endfor %}
+</ul>
 <table class="table">
   <tr>
     <th>Name</th>
@@ -19,15 +24,23 @@
     <th>In stock</th>
   </tr>
   {% for chemical in object_list %}
+
+    {% if chemical.has_expired and chemical.is_in_stock %}
+  <tr class="danger">
+    {% else %}
   <tr>
+    {% endif %}
     <td>
       <a href="{{ chemical.detail_url }}"
 	 title="Detailed information on chemical {{ chemical.name|lower }}">
 	{{ chemical.name }}</a>
+        {% if chemical.has_expired and chemical.is_in_stock %}
+        <span class="glyphicon glyphicon-alert red_alert" title="{{ chemical.name }} has an expired container"></span>
+        {% endif %} 
     </td>
     <td>{{ chemical.formula|formula_markup }}</td>
     <td>
-      {% if chemical.is_in_stock %}Yes
+      {% if chemical.is_in_stock %}Yes 
       {% else %}No
       {% endif %}
     </td>

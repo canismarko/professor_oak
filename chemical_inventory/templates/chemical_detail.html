@@ -77,7 +77,11 @@
       ng-class="{empty: isEmpty}">
     <td>{{ container.location }}</td>
     <td>{{ container.quantity }} {{ container.unit_of_measure }}</td>
-    <td>{{ container.expiration_date }}</td>
+    <td>{{ container.expiration_date }}
+    {% if container.is_expired and container.is_empty == False %}
+        <span class="glyphicon glyphicon-alert red_alert" title="This container has expired"></span>
+    {% endif %}
+    </td>
     <td>
       <a href="mailto:{{ container.owner.email }}"
 	 title="Send {{ container.owner.get_short_name }} an email" >

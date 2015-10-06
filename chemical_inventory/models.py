@@ -76,6 +76,11 @@ class Chemical(models.Model):
     def get_absolute_url(self):
         return reverse('chemical_detail', kwargs={'pk': self.pk}) 
 
+    def has_expired(self):
+        if Container.objects.filter(chemical__id=self.pk, expiration_date__lte=datetime.date.today()).count() != 0:
+            return True
+        return False
+        
 class Glove(models.Model):
     """Different chemicals have different glove compatibility. The `name`
     field should provide some indication of the material from which it is
@@ -125,7 +130,7 @@ class Container(models.Model):
     def detail_url(self):
         """Return the url for the detailed view of this chemical and all the
         containers of it. Looked up in urls.py."""
-        url = reverse('chemical_detail', kwargs={'pk': self.pk})
+        url = reverse('chemical_detail', kwargs={'pk': self.chemical_id})
         return url
 
     def save(self, *args, **kwargs):
@@ -133,6 +138,13 @@ class Container(models.Model):
         ret = super().save(*args, **kwargs)
         return ret
 
+    def is_expired(self):
+        if self.expiration_date <= datetime.date.today():
+            return True
+        return False
+        
+    def get_absolute_url(self):
+        return reverse('chemical_detail', kwargs={'pk': self.chemical_id})
 
 class Location(models.Model):
     name = models.CharField(max_length=50, blank=True)
