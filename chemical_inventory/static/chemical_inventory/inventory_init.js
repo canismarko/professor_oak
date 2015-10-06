@@ -1,5 +1,13 @@
 angular.module('chemicalInventory', ['ngResource', 'ngAnimate', 'toaster', 'ng.django.urls'])
 
+// Set HTML5 mode for urls
+    .config(function($locationProvider){
+	// $locationProvider.html5Mode({
+	//     enabled: true,
+	//     requireBase: false,
+	// });
+    })
+
 // Set csrf token and AJAX header
     .config(function($httpProvider) {
 	$httpProvider.defaults.xsrfCookieName = 'csrftoken';

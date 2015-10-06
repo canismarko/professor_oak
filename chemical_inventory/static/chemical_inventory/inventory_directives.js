@@ -1,6 +1,6 @@
 angular.module('chemicalInventory')
 
-    .directive('oakAddContainer', ['$filter', '$resource', 'djangoUrl', 'toaster', function($filter, $resource, djangoUrl, toaster) {
+    .directive('oakAddContainer', ['$filter', '$resource', '$location', 'djangoUrl', 'toaster', function($filter, $resource, $location, djangoUrl, toaster) {
 	function link(scope, elem, attrs) {
 	    // Add classes to labels of required fields
 	    $inputs = elem.find('input[ng-required],select[ng-required]');
@@ -59,6 +59,15 @@ angular.module('chemicalInventory')
 		    supplierSelect.append(option);
 		});
 	    };
+	    // Check for an initial chemical passed in the url
+	    var defaultChemicalId;
+	    var regex = /chemical_id=([0-9]+)/i;
+	    var match = regex.exec(window.location.search);
+	    if (match) {
+		defaultChemicalId = parseInt(match[1], 10);
+	    } else {
+		defaultChemicalId = 0;
+	    }
 	    // Search for a new chemical when a user types a name
 	    scope.$watch('chemical_name', function(newName) {
 		scope.existing_chemicals.$promise.then(function(existing_chemicals) {
@@ -78,8 +87,8 @@ angular.module('chemicalInventory')
 			// First (real) chemical on list is default
 			scope.active_chemical_id = [newArray[1].id];
 		    } else {
-			//     // "New chemical" is default
-			scope.active_chemical_id = [0];
+			// "New chemical" is default
+			scope.active_chemical_id = [defaultChemicalId];
 		    }
 		    // Update the id=0 dummy chemical
 		    existing_chemicals[0].name = newName;
@@ -88,10 +97,11 @@ angular.module('chemicalInventory')
 		});
 	    });
 	    // Update the form fields when the user changes chemicals
-	    scope.$watch('active_chemical_id', function(newId) {
-		newId = newId ? newId[0] : 0;
+	    scope.$watch('active_chemical_id', changeChemical);
+	    function changeChemical(newId) {
+		var newId = newId ? newId[0] : 0;
 		// Retrieve the chemical object
-		newChemical = scope.existing_chemicals.filter(function(obj) {
+		var newChemical = scope.existing_chemicals.filter(function(obj) {
 		    return obj.id == newId;
 		})[0];
 		// Prepare model data
@@ -112,7 +122,7 @@ angular.module('chemicalInventory')
 			inputs.removeAttr('disabled');
 		    }
 		}
-	    });
+	    } // end of function changeChemical
 	}
 	return {
 	    link: link

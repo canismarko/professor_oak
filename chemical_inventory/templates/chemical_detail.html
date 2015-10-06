@@ -11,9 +11,13 @@
 
     <p>
       <a href="{{ chemical.edit_url }}"
-	 title="Edit chemical information for {{ chemical.name|lower }}" class="btn btn-default">
-	Edit Information</a>
-      <a href="{% url 'chemical_list' %}" title="Return to list of chemicals" class="btn btn-link">
+	 title="Edit chemical information for {{ chemical.name|lower }}"
+	 class="btn btn-default">
+	<span class="glyphicon glyphicon-pencil"></span>
+	Edit Information
+      </a>
+      <a href="{% url 'chemical_list' %}" title="Return to list of chemicals"
+	 class="btn btn-link">
 	Back</a>
     </p>
 
@@ -62,7 +66,12 @@
   </div>
 </div>
 
-<h2>Containers</h2>
+<h2>Containers
+  <a href="{% url 'add_container' %}?chemical_id={{ chemical.id }}"
+     class="btn btn-default">
+    <span class="glyphicon glyphicon-plus"></span> Add chemical
+  </a>
+</h2>
 
 <table class="table chemical-list">
   <th>Location</th>

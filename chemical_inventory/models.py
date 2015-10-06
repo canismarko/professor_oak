@@ -37,6 +37,9 @@ class Chemical(models.Model):
     gloves = models.ManyToManyField('Glove')
     safety_data_sheet = models.FileField(upload_to='safety_data_sheets', null=True, blank=True)
 
+    class Meta:
+        ordering = ['name']
+
     def __str__(self):
         return "{name} ({formula})".format(name=self.name, formula=self.formula)
 
