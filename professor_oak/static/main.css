@@ -118,3 +118,10 @@ li.invalid {
     color: red;
     font-weight: bold;
 }
+
+/* glossary navigation custom sizing */
+
+.glossarytabs li a {
+  padding-right: 13px;
+  padding-left: 13px;
+}
