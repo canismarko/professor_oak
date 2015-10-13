@@ -4,19 +4,30 @@
 
 {% block content %}
 
-<h2>Chemicals currently in your lab</h2>
+<h2>Chemicals currently in your lab    
+    <form method="get" action="." class="navbar-form pull-right">
+        <input type="text" class="input-small search-query" name="search" placeholder="Search">
+        <input type="submit" class="btn" value="Search" >
+</form></h2>
 
 <p>
   <a href="{% url 'add_container' %}" class="btn btn-primary">
     Add chemical</a>
 	<a href="{% url 'inventory_main' %}" title="Return to list of chemicals" class="btn btn-link">Home</a>
+
 </p>
-<ul class="glossary" id="glossary">
-    <li data-id="all" class="{% if active_glossary %}avail{% else %}active{% endif %}">All</li>
-    {% for opt in glossary_filters %}
-        <li data-id="{{ opt.value }}" class="{% if opt.avail %}avail{% endif %}{% if opt.active %} active{% endif %}">{{ opt.display }}</li>
+
+<ul class="nav nav-tabs glossarytabs" id="glossary">
+    <li{% if not active_filter %} class="active"{% endif %}>
+        <a href="{% url 'chemical_list' %}?search={{ search }}" data-id="all" >All</a>
+    </li>
+    {% for filter in glossary_filters %}
+    <li{% if filter == active_filter %} class="active"{% endif%}>
+        <a href="{% url 'chemical_list' %}?filter={{ filter }}&search={{ search }}" data-id="{{ filter }}" >{{ filter }}</a>
+    </li>
     {% endfor %}
 </ul>
+
 <table class="table">
   <tr>
     <th>Name</th>

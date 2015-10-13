@@ -43,11 +43,6 @@ INSTALLED_APPS = (
     'chemical_inventory',
 )
 
-#Glossary filters for list_of_chemicals
-GLOSSARY_FILTERS = (
-	'#', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z',
-)
-
 # Add the django_browserid authentication backend.
 AUTHENTICATION_BACKENDS = (
     'django.contrib.auth.backends.ModelBackend',
