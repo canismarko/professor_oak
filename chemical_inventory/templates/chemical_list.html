@@ -4,17 +4,26 @@
 
 {% block content %}
 
-<h2>Chemicals currently in your lab    
+<div class="row">
+  <div class="col-md-6">
+    <h2>Chemicals currently in your lab</h2>
+  </div>
+  <div class="col-md-6">
     <form method="get" action="." class="navbar-form pull-right">
-        <input type="text" class="input-small search-query" name="search" placeholder="Search">
-        <input type="submit" class="btn" value="Search" >
-</form></h2>
+      <div class="input-group">
+	<input type="text" class="input-small form-control search-query"
+	       name="search" placeholder="Name or formula..."
+	       value="{{ active_search }}">
+	<span class="input-group-btn">
+	  <input type="submit" class="btn btn-default" value="Search">
+	</span>
+      </div>
+    </form>
+  </div>
+</div>
 
 <p>
-  <a href="{% url 'add_container' %}" class="btn btn-primary">
-    Add chemical</a>
-	<a href="{% url 'inventory_main' %}" title="Return to list of chemicals" class="btn btn-link">Home</a>
-
+  <a href="{% url 'add_container' %}" class="btn btn-primary">Add chemical</a>
 </p>
 
 <ul class="nav nav-tabs glossarytabs" id="glossary">
@@ -28,7 +37,9 @@
     {% endfor %}
 </ul>
 
-<table class="table">
+{% if object_list %}
+<!-- Chemicals were found, so show them -->
+<table class="table chemical-list">
   <tr>
     <th>Name</th>
     <th>Formula</th>
@@ -39,24 +50,35 @@
     {% if chemical.has_expired and chemical.is_in_stock %}
   <tr class="danger">
     {% else %}
-  <tr>
+  <tr{% if not chemical.is_in_stock %} class="empty"{% endif %}>
     {% endif %}
     <td>
       <a href="{{ chemical.detail_url }}"
 	 title="Detailed information on chemical {{ chemical.name|lower }}">
 	{{ chemical.name }}</a>
         {% if chemical.has_expired and chemical.is_in_stock %}
-        <span class="glyphicon glyphicon-alert red_alert" title="{{ chemical.name }} has an expired container"></span>
-        {% endif %} 
+      <span class="glyphicon glyphicon-alert red_alert"
+	    title="{{ chemical.name }} has an expired container"></span>
+        {% endif %}
     </td>
     <td>{{ chemical.formula|formula_markup }}</td>
     <td>
-      {% if chemical.is_in_stock %}Yes 
-      {% else %}No
+      {% if chemical.is_in_stock %}
+      Yes
+      {% else %}
+      No
       {% endif %}
     </td>
   </tr>
   {% endfor %}
 </table>
+
+{% else %}
+<!-- No chemicals were found -->
+<div class="alert alert-warning no-chemicals">
+  No chemicals match your criteria. Please try another tab or search string.
+</div>
+
+{% endif %}
 
 {% endblock %}

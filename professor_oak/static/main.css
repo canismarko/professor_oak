@@ -14,7 +14,7 @@
     margin-bottom: 50px;
 }
 
-.main-content > h2 {
+.main-content h2 {
     margin-top: 0px;
 }
 
@@ -65,10 +65,18 @@
     margin-top: 20px;
 }
 
+/* List of chemical in the lab */
+.chemical-list th {
+    border-top: none !important;
+}
+
+.no-chemicals {
+    margin-top: 15px;
+}
+
 /* List of containers of a given chemical */
-.chemical-list tr.empty {
+.empty {
     opacity: 0.4;
-    /* color: silver; */
     font-style: italic;
 }
 
