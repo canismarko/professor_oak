@@ -13,7 +13,11 @@
       <div class="input-group">
 	<input type="text" class="input-small form-control search-query"
 	       name="search" placeholder="Name or formula..."
-	       value="{{ active_search }}">
+		   {% if active_search == None %}
+			value=""
+			{% else %}
+	       value="{{ active_search }}"
+		   {% endif %}>
 	<span class="input-group-btn">
 	  <input type="submit" class="btn btn-default" value="Search">
 	</span>
