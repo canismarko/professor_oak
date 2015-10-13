@@ -4,9 +4,18 @@
 }
 
 /* Site-wide styles */
+.breadcrumb {
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+
 .main-content {
-    margin-top: 15px;
+    margin-top: 5px;
     margin-bottom: 50px;
+}
+
+.main-content > h2 {
+    margin-top: 0px;
 }
 
 .header h1 {

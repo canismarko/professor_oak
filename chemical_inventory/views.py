@@ -1,5 +1,7 @@
+from collections import namedtuple
+
 from django.contrib.auth.decorators import login_required
-from django.core.urlresolvers import reverse
+from django.core.urlresolvers import reverse, reverse_lazy
 from django.shortcuts import render
 from django.views.generic.list import ListView
 from django.views.generic.base import TemplateView
@@ -17,7 +19,32 @@ from .models import Chemical, Container, Glove, Supplier
 import xkcd
 from .serializers import ChemicalSerializer, ContainerSerializer, GloveSerializer, SupplierSerializer
 
+breadcrumb = namedtuple('breadcrumb', ('name', 'url'))
+def main_breadcrumb():
+    return breadcrumb('Chemical Inventory', reverse_lazy('inventory_main'))
 
+class breadcrumbs():
+    """Modifies the request to include a list of ancestor pages, should be
+    closely aligned with the URL. If each list item is a string, it will
+    be resolved to a url, otherwise it will be treated as a tuple of
+    (name, url)."""
+    trail = []
+
+    def __init__(self, trail):
+        self.trail = trail
+
+    def __call__(self, view_function):
+        # This is the actual decorator
+        self.view_function = view_function
+        return self.set_breadcrumbs
+
+    def set_breadcrumbs(self, request, *args, **kwargs):
+        """Add data to the request indicating what the breadcrumb trail is."""
+        request.breadcrumbs = self.trail
+        return self.view_function(request, *args, **kwargs)
+
+
+@breadcrumbs([main_breadcrumb()])
 def main(request):
     """This view function returns a generic landing page response."""
     # A 'context' is the data that the template can use
@@ -32,6 +59,7 @@ def main(request):
     # Look in chemical_inventory/templates/main.html for the actual html
     # 'request' is the HTTP request submitted by the browser
     return render(request, 'main.html', context)
+
 
 class ChemicalListView(ListView):
     """View shows a list of currently available chemicals."""
@@ -80,20 +108,20 @@ class ChemicalListView(ListView):
                     # done your validation thoroughly when you accepted your GET or POST variables. 
                     if tmp:
                         exec (tmp)
- 
+
             if results:
             # If results were found from the final query, set this filters avail flag to True.
                 avail = True
- 
+
             # Add this filter with it's availability flag to the dict that will be returned.
             filters.append({
                 'value': filter,
                 'display': filter,
                 'avail': avail,
             })
- 
+
         return filters
-        
+
     def keywords_page(request):
         """
         Keywords page
@@ -105,12 +133,12 @@ class ChemicalListView(ListView):
             'domains': Url.objects.values('domain').distinct().order_by('domain'),  # I'm pulling in possible domain values from a Url model.
             'sort_opts': SORT_OPTS_KEYWORDS,    # This is another global in my settings.py
         }
-     
+
         # The main query. If no options or filters are set, this is all it needs.
         keyword_list = Keyword.objects.all()
-     
+
         set_filters = {}
-     
+
         # Check for the domain filter.
         if 'domain' in request.GET:
             for domain in variables['domains']:
@@ -123,7 +151,7 @@ class ChemicalListView(ListView):
                         'field': 'urls__domain',
                         'value': domain['domain'],
                     }
-     
+
         # Check for search filter.
         if 'search' in request.GET:
             # Do some scrubbing of the user input string.
@@ -137,10 +165,10 @@ class ChemicalListView(ListView):
                 'fields': ['keyword__icontains', 'urls__title__icontains'],   # Using a list here since we have multiple fields.
                 'value': search_string,
             }
-     
+
         # Here is where we make sure the list of filters in the glossary are available for the template.
         variables['glossary_filters'] = _fetch_avail_keyword_glossary_filters(GLOSSARY_FILTERS, set_filters)
-     
+
         # Check for glossary filter and apply it if set.
         if 'glossary' in request.GET:
             # Only apply a filter if we already know about it in the list of possible filters.
@@ -160,7 +188,7 @@ class ChemicalListView(ListView):
                     set_filters['Glossary'] = {
                         'value': glossary['value'],
                     }
-     
+
         # Check for sort.    
         if 'sort' in request.GET:
             # Only apply the sort if we knew about it in the list of possible sorts.
@@ -184,27 +212,27 @@ class ChemicalListView(ListView):
             for opt in NUM_SHOW_OPTS:
                 if int(opt['value']) == int(request.GET['show']):
                     cur_num_show = int(request.GET['show'])
-     
+
         if cur_num_show == 0:
             for opt in NUM_SHOW_OPTS:
                 if 'default' in opt and opt['default']:
                     cur_num_show = int(opt['value'])
-     
+
         variables['num_show_opts'] = NUM_SHOW_OPTS
         for opt in variables['num_show_opts']:
             if int(opt['value']) == int(cur_num_show):
                 opt['default'] = True
             else:
                 opt['default'] = False
-     
+
         # Let's use the Django Paginator
         paginator = Paginator(keyword_list, cur_num_show)
-     
+
         # Check for the current page, default to 1.
         cur_page = 1
         if 'page' in request.GET and request.GET['page'].isdigit():
             cur_page = int(request.GET['page'])
-     
+
         keywords = {}
         try:
             keywords = paginator.page(cur_page)
@@ -213,14 +241,16 @@ class ChemicalListView(ListView):
         except EmptyPage:
             # If page is out of range (e.g. 9999), deliver last page of results.
             keywords = paginator.page(paginator.num_pages)
-     
+
         variables['keywords'] = keywords
-     
+
         return render_to_response(
             'keywords.html',
             variables,
             context_instance=RequestContext(request)
-    )
+        )
+
+
 class ChemicalDetailView(DetailView):
     """This view shows detailed information about one chemical. Also gets
     the list of containers that this chemical is in."""
@@ -236,8 +266,18 @@ class ChemicalDetailView(DetailView):
         chemical = Chemical.objects.get(pk=pk)
         return chemical
 
+    @staticmethod
+    def breadcrumbs(chemical):
+        return [
+            main_breadcrumb(),
+            'chemical_list',
+            breadcrumb(chemical.name, reverse('chemical_detail', kwargs={'pk': chemical.pk}))
+        ]
+
     def get_context_data(self, *args, **kwargs):
         chemical = self.get_object()
+        # Add breadcrumbs
+        self.request.breadcrumbs = self.breadcrumbs(chemical)
         # Get the default context
         context = super().get_context_data(*args, **kwargs)
         # Add list of containers to context
@@ -245,10 +285,19 @@ class ChemicalDetailView(DetailView):
         context['container_list'] = container_list
         return context
 
+
 class AddContainerView(TemplateView):
     template_name = 'container_add.html'
 
     def get_context_data(self, *args, **kwargs):
+        # Add breadcrumbs
+        chemical_id = self.request.GET.get('chemical_id')
+        if chemical_id is not None:
+            chemical = Chemical.objects.get(pk=chemical_id)
+            self.request.breadcrumbs = ChemicalDetailView.breadcrumbs(chemical)
+        else:
+            self.request.breadcrumbs = [main_breadcrumb()]
+        self.request.breadcrumbs.append(('Add to Inventory', reverse('add_container')))
         context = super().get_context_data(*args, **kwargs)
         # Load the angular forms for container and chemical
         context.update(chemical_form=ChemicalForm())
@@ -288,6 +337,14 @@ class EditChemicalView(UpdateView):
         obj.save()
         return HttpResponseRedirect(self.get_success_url())
 
+    def get_context_data(self, *args, **kwargs):
+        # Set the breadcrumb navigation
+        self.request.breadcrumbs = ChemicalDetailView.breadcrumbs(self.object)
+        new_breadcrumb = ('Edit', reverse('chemical_edit', kwargs={'pk': self.object.pk}))
+        self.request.breadcrumbs.append(new_breadcrumb)
+        return super().get_context_data(*args, **kwargs)
+
+
 class EditContainerView(UpdateView):
     template_name = 'container_edit.html'
     model = Container
@@ -300,6 +357,14 @@ class EditContainerView(UpdateView):
         # Get the actual Chemical object
         container = Container.objects.get(pk=pk)
         return container
+
+    def get_context_data(self, *args, **kwargs):
+        # Set the breadcrumb navigation
+        self.request.breadcrumbs = ChemicalDetailView.breadcrumbs(self.object.chemical)
+        new_breadcrumb = ('Edit Container',
+                          reverse('container_edit', kwargs={'pk': self.object.pk}))
+        self.request.breadcrumbs.append(new_breadcrumb)
+        return super().get_context_data(*args, **kwargs)
 
 
 # Browseable API viewsets

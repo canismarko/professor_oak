@@ -16,6 +16,7 @@ class ChemicalTest(TestCase):
     def test_is_in_stock(self):
         self.assertFalse(self.chemical.is_in_stock())
 
+
 class ContainerAPITest(TestCase):
     fixtures = ['cabana_users.json', 'inventory_test_data.json']
     def setUp(self):
@@ -83,7 +84,7 @@ class OldDatabaseTest(TestCase):
         # Load new chemicals
         self.convert_chemicals(self.chemicalfile)
         # Check first imported material
-        lithium = models.Chemical.objects.first()
+        lithium = models.Chemical.objects.get(name='Lithium')
         self.assertEqual(lithium.cas_number, '7439-93-2')
         self.assertEqual(lithium.name, 'Lithium')
         self.assertEqual(lithium.formula, 'Li')

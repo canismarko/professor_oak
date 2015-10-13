@@ -73,6 +73,17 @@
 
       {% include 'includes/navigation.html' %}
 
+      <!-- Breadcrumb navigation -->
+      {% if breadcrumbs %}
+      <ol class="breadcrumb">
+	<li><a href="/"><span class="glyphicon glyphicon-home"></span></a></li>
+	{% for step in breadcrumbs %}
+	<li><a href="{{ step.url }}">{{ step.name }}</a></li>
+	<!-- {% if not forloop.last %} > {% endif %} -->
+	{% endfor %}
+      </ol>
+      {% endif %}
+
       <div class="main-content">
 	{% block content %}{% endblock %}
       </div>

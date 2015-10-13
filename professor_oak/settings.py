@@ -84,6 +84,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'professor_oak.context_processors.breadcrumbs',
                 'professor_oak.context_processors.skynet',
             ],
         },
