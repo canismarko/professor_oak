@@ -62,7 +62,13 @@ class Chemical(models.Model):
         if Container.objects.filter(chemical__id=self.pk, is_empty=False).count() != 0:
             return True
         return False
-
+    
+    def stock_is_null(self):
+        """Returns whether a chemical has no containers"""
+        if Container.objects.filter(chemical__id=self.pk).count() == 0:
+            return True
+        return False
+    
     def structure_url(self):
         from chemspipy import ChemSpider
         try:
@@ -121,7 +127,7 @@ class Container(models.Model):
     emptied_by = models.ForeignKey(User, null=True, blank=True, related_name='emptied_containers')
     barcode = models.CharField(max_length=30, blank=True)
     supplier = models.ForeignKey('Supplier', null=True, blank=True)
-    comment = models.TextField(blank=True)
+    comment = models.TextField(blank=True, default = '')
 
     def __str__(self):
         string = "{chemical} {container_type} in {location}"

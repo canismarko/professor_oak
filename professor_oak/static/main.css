@@ -60,6 +60,10 @@
     color: #D63333
 }
 
+.blue_info {
+    color: #0099FF
+}
+
 /* XKCD Comic displayed on the landing page for chemical_inventory */
 .xkcd {
     margin-top: 20px;
