@@ -1,5 +1,22 @@
 angular.module('chemicalInventory')
 
+    .directive('fileModel', ['$parse', function($parse) {
+	// https://uncorkedstudios.com/blog/multipartformdata-file-upload-with-angularjs
+	return {
+	    restrict: 'A',
+	    link: function(scope, element, attrs) {
+		var model = $parse(attrs.fileModel);
+		var modelSetter = model.assign;
+
+		element.bind('change', function() {
+		    scope.$apply(function() {
+			modelSetter(scope, element[0].files[0]);
+		    });
+		});
+	    }
+	};
+    }])
+
     .directive('oakAddContainer', ['$filter', '$resource', 'djangoUrl', 'toaster', function($filter, $resource, djangoUrl, toaster) {
 	function link(scope, elem, attrs) {
 	    // Add classes to labels of required fields

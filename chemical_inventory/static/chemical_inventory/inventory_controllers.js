@@ -1,9 +1,7 @@
 angular.module('chemicalInventory')
 
-    .controller('addContainer', ['$scope', '$resource', 'toaster', function($scope, $resource, toaster) {
-	var Chemical;
+    .controller('addContainer', ['$scope', '$resource', 'toaster', 'Chemical', function($scope, $resource, toaster, Chemical) {
 	// Get the list of currently existing chemicals the user can choose from
-	Chemical = $resource('/chemical_inventory/api/chemicals/');
 	$scope.existing_chemicals = Chemical.query();
 	$scope.existing_chemicals.$promise.then(function(chemicalList) {
 	    var chemical;
@@ -78,8 +76,8 @@ angular.module('chemicalInventory')
 		save_container($scope.container);
 	    } else {
 		// New chemical -> send the new chemical to the server first
-		var newChemical = Chemical.save($scope.chemical);
-		newChemical.$promise.then(function(chemical) {
+		var promise = Chemical.save($scope.chemical);
+		promise.success(function(chemical) {
 		    // On completion, save the container
 		    $scope.container.chemical = chemical.id;
 		    save_container($scope.container);

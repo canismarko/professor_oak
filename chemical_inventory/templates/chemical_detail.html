@@ -41,7 +41,9 @@
 
     {% if chemical.safety_data_sheet %}
     <a href="{{ chemical.safety_data_sheet.url }}">
-      <b>Material Safety Datasheet (SDS) for {{ chemical.name }}</b>
+      <b>
+	<span class="glyphicon glyphicon-file"></span>
+	Safety Datasheet for {{ chemical.name }}</b>
     </a>
     {% else %}
     Material Safety Datasheet (SDS) not available.

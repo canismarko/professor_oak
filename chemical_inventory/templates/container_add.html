@@ -15,7 +15,8 @@
   <p class="add-container-buttons">
     <input type="submit" class="btn btn-primary" value="Add"
 	   ng-click="save()"
-	   ng-disabled="{{ chemical_form.form_name }}.$invalid || {{ container_form.form_name }}.$invalid" />
+	   ng-disabled="{{ chemical_form.form_name }}.$invalid || {{ container_form.form_name }}.$invalid"
+	   />
     <a href="{% url 'chemical_list' %}" class="btn btn-link">Cancel</a>
   </p>
 </script>

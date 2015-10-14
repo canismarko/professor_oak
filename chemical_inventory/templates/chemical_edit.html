@@ -6,7 +6,7 @@
 
 <h1>Edit Chemical Information for {{ chemical.name }}</h1>
 
-<form action="." method="post">
+<form enctype="multipart/form-data" action="." method="post">
 
   <!-- Prevents cross site request forgery -->
   {% csrf_token %}

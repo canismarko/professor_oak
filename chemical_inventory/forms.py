@@ -40,20 +40,32 @@ NFPA_HAZARDS = [('', '----------')] + models.Chemical.NFPA_HAZARDS
 class ChemicalForm(Bootstrap3FormMixin, NgModelFormMixin, NgFormValidationMixin, NgModelForm):
     scope_prefix = 'chemical'
     form_name = 'chemical_form'
-    cas_number = forms.CharField(label="CAS Number (SDS § 1)", required=False,
-                                 widget=forms.TextInput(attrs={'placeholder': 'eg. 7732-18-5'}))
-    formula = forms.CharField(label="Formula (SDS § 3)", required=False,
-                              widget=forms.TextInput(attrs={'placeholder': 'eg. H_2O'}))
-    health = forms.ChoiceField(label="Health NFPA Rating (SDS § 15 or 16)",
-                               choices=NFPA_RATINGS)
-    flammability = forms.ChoiceField(label="Flammability NFPA Rating (SDS § 16)",
-                                     choices=NFPA_RATINGS)
-    instability = forms.ChoiceField(label="Instability NFPA Rating (SDS § 16)",
-                                    choices=NFPA_RATINGS)
-    special_hazards = forms.ChoiceField(label="Special Hazards (SDS § 16)",
-                                        choices=NFPA_HAZARDS, required=False)
-    gloves = forms.ModelMultipleChoiceField(label="Gloves (SDS § 8.2)",
-                                            queryset=models.Glove.objects.all())
+    cas_number = forms.CharField(
+        label="CAS Number (SDS § 1)",
+        required=False,
+        widget=forms.TextInput(attrs={'placeholder': 'eg. 7732-18-5'}))
+    formula = forms.CharField(
+        label="Formula (SDS § 3)",
+        required=False,
+        widget=forms.TextInput(attrs={'placeholder': 'eg. H_2O'}))
+    health = forms.ChoiceField(
+        label="Health NFPA Rating (SDS § 15 or 16)",
+        choices=NFPA_RATINGS)
+    flammability = forms.ChoiceField(
+        label="Flammability NFPA Rating (SDS § 16)",
+        choices=NFPA_RATINGS)
+    instability = forms.ChoiceField(
+        label="Instability NFPA Rating (SDS § 16)",
+        choices=NFPA_RATINGS)
+    special_hazards = forms.ChoiceField(
+        label="Special Hazards (SDS § 16)",
+        choices=NFPA_HAZARDS, required=False)
+    gloves = forms.ModelMultipleChoiceField(
+        label="Gloves (SDS § 8.2)",
+        queryset=models.Glove.objects.all())
+    safety_data_sheet = forms.FileField(
+        label="Safety Data Sheet (MSDS)",
+        widget=forms.FileInput(attrs={'file-model': 'chemical.safety_data_sheet'}))
     class Meta:
         model = models.Chemical
         fields = ['name', 'cas_number', 'formula',
