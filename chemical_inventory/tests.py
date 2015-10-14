@@ -119,3 +119,8 @@ class OldDatabaseTest(TestCase):
         self.assertEqual(container.owner.first_name, 'Mike')
         self.assertEqual(container.quantity, 25)
         self.assertEqual(container.unit_of_measure, 'g')
+        # Check automatic comment
+        today = datetime.date.today()
+        expected_string = 'Imported from old inventory on {}'.format(
+            today.strftime('%Y-%m-%d'))
+        self.assertEqual(container.comment, expected_string)

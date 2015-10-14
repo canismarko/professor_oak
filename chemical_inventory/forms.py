@@ -31,7 +31,7 @@ class ContainerForm(Bootstrap3FormMixin, NgModelFormMixin, NgFormValidationMixin
         model = models.Container
         fields = ['location', 'batch', 'date_opened', 'expiration_date',
                   'state', 'container_type', 'quantity', 'unit_of_measure',
-                  'supplier']
+                  'supplier', 'comment']
 
 # Set un-selected value
 NFPA_RATINGS = [('', '----------')] + models.Chemical.NFPA_RATINGS

@@ -15,9 +15,9 @@ class Chemical(models.Model):
     among other things.
 
     """
-    name = models.CharField(max_length=200)
+    name = models.CharField(max_length=200, db_index=True)
     cas_number = models.CharField(max_length=100, db_index=True, blank=True)
-    formula = models.CharField(max_length=50, blank=True)
+    formula = models.CharField(max_length=50, db_index=True, blank=True)
     NFPA_RATINGS = [
         (0, 'None (0)'),
         (1, 'Low (1)'),
@@ -35,7 +35,8 @@ class Chemical(models.Model):
     instability = models.IntegerField(choices=NFPA_RATINGS)
     special_hazards = models.CharField(max_length=2, choices=NFPA_HAZARDS, blank=True)
     gloves = models.ManyToManyField('Glove')
-    safety_data_sheet = models.FileField(upload_to='safety_data_sheets', null=True, blank=True)
+    safety_data_sheet = models.FileField(upload_to='safety_data_sheets',
+                                         null=True, blank=True)
 
     class Meta:
         ordering = ['name']
@@ -79,13 +80,14 @@ class Chemical(models.Model):
         return url
 
     def get_absolute_url(self):
-        return reverse('chemical_detail', kwargs={'pk': self.pk}) 
+        return reverse('chemical_detail', kwargs={'pk': self.pk})
 
     def has_expired(self):
         if Container.objects.filter(chemical__id=self.pk, expiration_date__lte=datetime.date.today()).count() != 0:
             return True
         return False
-        
+
+
 class Glove(models.Model):
     """Different chemicals have different glove compatibility. The `name`
     field should provide some indication of the material from which it is
@@ -119,6 +121,7 @@ class Container(models.Model):
     emptied_by = models.ForeignKey(User, null=True, blank=True, related_name='emptied_containers')
     barcode = models.CharField(max_length=30, blank=True)
     supplier = models.ForeignKey('Supplier', null=True, blank=True)
+    comment = models.TextField(blank=True)
 
     def __str__(self):
         string = "{chemical} {container_type} in {location}"
@@ -147,10 +150,11 @@ class Container(models.Model):
         if self.expiration_date <= datetime.date.today():
             return True
         return False
-        
+
     def get_absolute_url(self):
         return reverse('chemical_detail', kwargs={'pk': self.chemical_id})
-        
+
+
 class Location(models.Model):
     name = models.CharField(max_length=50, blank=True)
     room_number = models.CharField(max_length=20)
@@ -236,8 +240,12 @@ def import_containers_csv(csvfile):
     f = open(csvfile)
     csvreader = csv.reader(f, quoting=csv.QUOTE_NONE)
     default_glove = Glove.objects.get(name='Nitrile')
+    # Prepare a string indicated this container was automatically imported
+    today = datetime.date.today()
+    commentstring = 'Imported from old inventory on {datestring}'.format(
+        datestring=today.strftime('%Y-%m-%d'))
     for line in csvreader:
-        container = Container()
+        container = Container(comment=commentstring)
         # Look up existing chemical
         cas_number = line[1].strip('"')
         try:
