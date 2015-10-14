@@ -89,7 +89,7 @@ class ChemicalListView(ListView):
         #searchstring = searchstring.replace("_","").replace("^","")
         #Search in name and formula
         if searchstring is not None: #ignores empty searchstring (if this ever happens)
-            queryset = queryset.filter(Q(formula__icontains=searchstring) | Q(name__icontains=searchstring))
+            queryset = queryset.filter(Q(formula__icontains=searchstring) | Q(name__icontains=searchstring) | Q(stripped_formula__icontains=searchstring))
         #For leading digits
         if filterstring == '0..9':
             queryset = queryset.filter(name__regex=r'^\d').exclude(name__isnull=True)

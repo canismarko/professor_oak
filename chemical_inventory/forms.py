@@ -38,7 +38,7 @@ class ContainerForm(Bootstrap3FormMixin, NgModelFormMixin, NgFormValidationMixin
 NFPA_RATINGS = [('', '----------')] + models.Chemical.NFPA_RATINGS
 NFPA_HAZARDS = [('', '----------')] + models.Chemical.NFPA_HAZARDS
 
-class ChemicalForm(NgModelFormMixin, NgFormValidationMixin, Bootstrap3FormMixin, NgModelForm):
+class ChemicalForm(NgFormValidationMixin, Bootstrap3FormMixin, NgModelForm):
     scope_prefix = 'chemical'
     form_name = 'chemical_form'
     cas_number = forms.CharField(
@@ -66,7 +66,8 @@ class ChemicalForm(NgModelFormMixin, NgFormValidationMixin, Bootstrap3FormMixin,
         queryset=models.Glove.objects.all())
     safety_data_sheet = forms.FileField(
         label="Safety Data Sheet (MSDS)",
-        widget=forms.FileInput(attrs={'file-model': 'chemical.safety_data_sheet'}))
+        widget=forms.FileInput(attrs={'file-model': 'chemical.safety_data_sheet'}),
+        required=False)
     class Meta:
         model = models.Chemical
         fields = ['name', 'cas_number', 'formula',
