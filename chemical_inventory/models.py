@@ -150,7 +150,7 @@ class Container(models.Model):
         
     def get_absolute_url(self):
         return reverse('chemical_detail', kwargs={'pk': self.chemical_id})
-
+        
 class Location(models.Model):
     name = models.CharField(max_length=50, blank=True)
     room_number = models.CharField(max_length=20)
