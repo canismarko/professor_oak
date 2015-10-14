@@ -127,7 +127,7 @@ class Container(models.Model):
     emptied_by = models.ForeignKey(User, null=True, blank=True, related_name='emptied_containers')
     barcode = models.CharField(max_length=30, blank=True)
     supplier = models.ForeignKey('Supplier', null=True, blank=True)
-    comment = models.TextField(blank=True, default = '')
+    comment = models.TextField(blank=True)
 
     def __str__(self):
         string = "{chemical} {container_type} in {location}"

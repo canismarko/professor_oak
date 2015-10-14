@@ -54,7 +54,7 @@
     {% if chemical.has_expired and chemical.is_in_stock %}
   <tr class="danger">
     {% elif chemical.stock_is_null %}
-  <tr class="info">
+  <tr class="info empty">
     {% else %}
   <tr{% if not chemical.is_in_stock %} class="empty"{% endif %}>
     {% endif %}
