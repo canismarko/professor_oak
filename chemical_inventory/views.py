@@ -12,7 +12,7 @@ from rest_framework import viewsets, permissions, response, status
 from django.utils.safestring import mark_safe
 from django.http import HttpResponseRedirect
 from django.conf import settings
-from django.db.models import Q
+from django.db.models import Q, Count
 
 from .forms import ChemicalForm, ContainerForm, GloveForm, SupplierForm
 from .models import Chemical, Container, Glove, Supplier
@@ -96,6 +96,7 @@ class ChemicalListView(ListView):
         #For everything else
         elif filterstring is not None:  #Ignores empty returns
             queryset = queryset.filter(name__istartswith=filterstring).exclude(name__isnull=True)
+        queryset = queryset.all().annotate(null_position=Count('container__is_empty')).order_by('-null_position', 'container__is_empty','name')
         return queryset
 
 
