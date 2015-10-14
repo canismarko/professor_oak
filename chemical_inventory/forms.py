@@ -38,7 +38,7 @@ class ContainerForm(Bootstrap3FormMixin, NgModelFormMixin, NgFormValidationMixin
 NFPA_RATINGS = [('', '----------')] + models.Chemical.NFPA_RATINGS
 NFPA_HAZARDS = [('', '----------')] + models.Chemical.NFPA_HAZARDS
 
-class ChemicalForm(NgFormValidationMixin, Bootstrap3FormMixin, NgModelForm):
+class ChemicalForm(NgModelFormMixin, NgFormValidationMixin, Bootstrap3FormMixin, NgModelForm):
     scope_prefix = 'chemical'
     form_name = 'chemical_form'
     cas_number = forms.CharField(
