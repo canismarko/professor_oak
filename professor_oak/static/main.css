@@ -114,11 +114,8 @@ label.required {
 }
 
 /* Adding a new container */
-.existing-chemical-panel {
-    /* margin-top: 25px; */
-}
 
-.add-container-buttons {
+.oak-form-buttons {
     margin-top: 15px;
 }
 
@@ -127,7 +124,8 @@ label.required {
 }
 
 /* Form validation */
-ul.djng-form-control-feedback {
+ul.djng-form-control-feedback,
+ul.djng-field-errors {
     margin-bottom: 0px;
     list-style-type: none;
 }

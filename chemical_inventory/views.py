@@ -171,7 +171,7 @@ class EditChemicalView(UpdateView):
     template_name = 'chemical_edit.html'
     template_object_name = Chemical
     model = Chemical
-    fields = ['cas_number', 'name', 'formula', 'health', 'flammability', 'instability', 'special_hazards', 'gloves', 'safety_data_sheet'] 
+    form_class = ChemicalForm
     def get_object(self):
         """Return the specific chemical by its primary key ('pk')."""
         # Find the primary key from the url
@@ -197,7 +197,7 @@ class EditChemicalView(UpdateView):
 class EditContainerView(UpdateView):
     template_name = 'container_edit.html'
     model = Container
-    fields = ['chemical', 'location', 'batch', 'date_opened', 'expiration_date','state', 'container_type', 'owner', 'quantity', 'unit_of_measure','supplier', 'is_empty'] 
+    form_class = ContainerForm
 
     def get_object(self):
         """Return the specific chemical by its primary key ('pk')."""

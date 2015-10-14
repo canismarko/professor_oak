@@ -1,5 +1,5 @@
 from django import forms
-from djangular.forms import NgFormValidationMixin, NgModelFormMixin, NgModelForm
+from djangular.forms import NgFormValidationMixin, NgModelFormMixin, NgModelForm, NgForm
 from djangular.styling.bootstrap3.forms import Bootstrap3FormMixin
 
 from . import models
@@ -33,11 +33,12 @@ class ContainerForm(Bootstrap3FormMixin, NgModelFormMixin, NgFormValidationMixin
                   'state', 'container_type', 'quantity', 'unit_of_measure',
                   'supplier', 'comment']
 
-# Set un-selected value
+
+# Insert "none" value into list of options
 NFPA_RATINGS = [('', '----------')] + models.Chemical.NFPA_RATINGS
 NFPA_HAZARDS = [('', '----------')] + models.Chemical.NFPA_HAZARDS
 
-class ChemicalForm(Bootstrap3FormMixin, NgModelFormMixin, NgFormValidationMixin, NgModelForm):
+class ChemicalForm(NgModelFormMixin, NgFormValidationMixin, Bootstrap3FormMixin, NgModelForm):
     scope_prefix = 'chemical'
     form_name = 'chemical_form'
     cas_number = forms.CharField(

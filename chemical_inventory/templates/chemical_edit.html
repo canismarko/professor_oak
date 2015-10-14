@@ -6,24 +6,28 @@
 
 <h1>Edit Chemical Information for {{ chemical.name }}</h1>
 
-<form enctype="multipart/form-data" action="." method="post">
+<div class="row">
+  <div class="col-md-6">
 
-  <!-- Prevents cross site request forgery -->
-  {% csrf_token %}
+    <form action="." method="post" name="{{ form.form_name }}"
+	  enctype="multipart/form-data" novalidate oak-form-validation>
 
-  <table>
+      <!-- Prevents cross site request forgery -->
+      {% csrf_token %}
 
-    {{ form.as_table }}
+      {{ form }}
 
-    <tr>
-      <td>&nbsp</td>
-      <td>
-	<button type="submit">Save</button>
-	<a href="{{ chemical.detail_url }}" title="Return to list of chemicals" class="btn btn-link">Back</a>
-      </td>
-    </tr>
-  </table>
+      <!-- Form submission buttons -->
+      <div class="oak-form-buttons">
+	<button type="submit" class="btn btn-primary"
+		ng-disabled="{{ form.form_name }}.$invalid">Save</button>
+	<a href="{{ chemical.detail_url }}" title="Return to list of chemicals"
+	   class="btn btn-link">Cancel</a>
+      </div>
 
-</form>
+    </form>
+
+  </div>
+</div>
 
 {% endblock %}

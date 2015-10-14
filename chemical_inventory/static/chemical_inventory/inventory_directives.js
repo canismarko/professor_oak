@@ -17,6 +17,21 @@ angular.module('chemicalInventory')
 	};
     }])
 
+    .directive('oakFormValidation', [function() {
+    	function link(scope, elem, attrs) {
+    	    // Add classes to labels of required fields
+    	    $inputs = elem.find('input[ng-required],select[ng-required]');
+    	    for ( var i=0; i<$inputs.length; i++) {
+    		$input = $($inputs[i]);
+    		$label = $($input.prevAll('label')[0]);
+    		$label.addClass('required');
+    	    }
+    	}
+	return {
+	    link: link
+	};
+    }])
+
     .directive('oakAddContainer', ['$filter', '$resource', 'djangoUrl', 'toaster', function($filter, $resource, djangoUrl, toaster) {
 	function link(scope, elem, attrs) {
 	    // Add classes to labels of required fields

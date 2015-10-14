@@ -37,17 +37,20 @@
 	</ul>
       </dd>
 
-    </dl>
+      <dt>Safety Data Sheet</dt>
+      <dd>
+	{% if chemical.safety_data_sheet %}
+	<a href="{{ chemical.safety_data_sheet.url }}">
+	  <b>
+	    <span class="glyphicon glyphicon-file"></span>
+	    Safety Datasheet for {{ chemical.name }}</b>
+	</a>
+	{% else %}
+	Safety Datasheet (SDS) not available.
+	{% endif %}
+      </dd>
 
-    {% if chemical.safety_data_sheet %}
-    <a href="{{ chemical.safety_data_sheet.url }}">
-      <b>
-	<span class="glyphicon glyphicon-file"></span>
-	Safety Datasheet for {{ chemical.name }}</b>
-    </a>
-    {% else %}
-    Material Safety Datasheet (SDS) not available.
-    {% endif %}
+    </dl>
 
   </div>
 
