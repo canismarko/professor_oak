@@ -6,6 +6,8 @@ from django.core.urlresolvers import reverse
 from django.db import models
 from django.contrib.auth.models import User
 from django.conf import settings
+from django.dispatch import receiver
+from django.db.models import signals
 
 
 # Create your models here.
@@ -19,6 +21,7 @@ class Chemical(models.Model):
     name = models.CharField(max_length=200, db_index=True)
     cas_number = models.CharField(max_length=100, db_index=True, blank=True)
     formula = models.CharField(max_length=50, db_index=True, blank=True)
+    stripped_formula = models.CharField(max_length=50, db_index=True, blank=True)
     NFPA_RATINGS = [
         (0, 'None (0)'),
         (1, 'Low (1)'),
@@ -94,6 +97,10 @@ class Chemical(models.Model):
             return True
         return False
 
+@receiver(signals.pre_save, sender=Chemical)
+def strip_formula(sender, instance, raw, using, update_fields, *args, **kwargs):
+    """Strips the formula supplied to remove underscores and carrots, saves it as the stripped_formula field. Used for formula searching."""
+    instance.stripped_formula = instance.formula.replace("_","").replace("^","")
 
 class Glove(models.Model):
     """Different chemicals have different glove compatibility. The `name`

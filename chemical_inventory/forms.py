@@ -66,7 +66,8 @@ class ChemicalForm(NgModelFormMixin, NgFormValidationMixin, Bootstrap3FormMixin,
         queryset=models.Glove.objects.all())
     safety_data_sheet = forms.FileField(
         label="Safety Data Sheet (MSDS)",
-        widget=forms.FileInput(attrs={'file-model': 'chemical.safety_data_sheet'}))
+        widget=forms.FileInput(attrs={'file-model': 'chemical.safety_data_sheet'}),
+        required=False)
     class Meta:
         model = models.Chemical
         fields = ['name', 'cas_number', 'formula',

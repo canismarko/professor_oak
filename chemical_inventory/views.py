@@ -86,15 +86,14 @@ class ChemicalListView(ListView):
         queryset = super().get_queryset(*args, **kwargs)
         filterstring = self.request.GET.get('filter')
         searchstring = self.request.GET.get('search')
-        #searchstring = searchstring.replace("_","").replace("^","")
-        #Search in name and formula
+        # searchstring = searchstring.replace("_","").replace("^","")
+        # Search in name and formula
         if searchstring is not None: #ignores empty searchstring (if this ever happens)
-            queryset = queryset.filter(Q(formula__icontains=searchstring) | Q(name__icontains=searchstring))
-
-        #For leading digits
+            queryset = queryset.filter(Q(formula__icontains=searchstring) | Q(name__icontains=searchstring) | Q(stripped_formula__icontains=searchstring))
+        # For leading digits
         if filterstring == '0..9':
             queryset = queryset.filter(name__regex=r'^\d').exclude(name__isnull=True)
-        #For everything else
+        # For everything else
         elif filterstring is not None:  #Ignores empty returns
             queryset = queryset.filter(name__istartswith=filterstring).exclude(name__isnull=True)
         queryset = sorted(queryset, key=lambda x: x.is_in_stock(), reverse=True)

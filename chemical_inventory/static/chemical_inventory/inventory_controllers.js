@@ -1,6 +1,6 @@
 angular.module('chemicalInventory')
 
-    .controller('addContainer', ['$scope', '$resource', 'toaster', 'Chemical', function($scope, $resource, toaster, Chemical) {
+    .controller('addContainer', ['$scope', '$resource', 'djangoUrl', 'toaster', 'Chemical', function($scope, $resource, djangoUrl, toaster, Chemical) {
 	// Get the list of currently existing chemicals the user can choose from
 	$scope.existing_chemicals = Chemical.query();
 	$scope.existing_chemicals.$promise.then(function(chemicalList) {
@@ -43,30 +43,30 @@ angular.module('chemicalInventory')
 	    }
 	}
 	resetContainer();
+	// Handler for error feedback
+	function showError(reason) {
+	    // Display visual feedback of error
+	    var message = "Chemical not added. Please contact your administrator";
+	    toaster.pop({
+		type: 'error',
+		title: 'Error!',
+		body: message,
+		timeout: 0,
+		showCloseButton: true
+	    });
+	    console.log(reason);
+	}
 	// Save the entered form data
 	function save_container(container) {
+	    console.log(container)
 	    var Container = $resource('/chemical_inventory/api/containers/');
 	    var newContainer = Container.save(container);
 	    newContainer.$promise.then(function(container) {
-		// Display visual feedback of success
-		var message = "Added " +
-		    container.quantity + container.unit_of_measure +
-		    " of " + $scope.chemical.name +
-		    " to inventory. It's super effective!";
-		toaster.success('Success!', message);
-		resetContainer();
-	    }).catch(function(reason) {
-		// Display visual feedback of error
-		var message = "Chemical not added. Please contact your administrator";
-		toaster.pop({
-		    type: 'error',
-		    title: 'Error!',
-		    body: message,
-		    timeout: 0,
-		    showCloseButton: true
-		});
-		console.log(reason);
-	    });
+		// Get URL of chemical and redirect
+		var successUrl = djangoUrl.reverse('chemical_detail',
+						   {pk: container.chemical});
+		window.location = successUrl
+	    }, showError);
 	}
 	$scope.save = function() {
 	    // Check if a new chemical is being saved
@@ -76,12 +76,12 @@ angular.module('chemicalInventory')
 		save_container($scope.container);
 	    } else {
 		// New chemical -> send the new chemical to the server first
-		var promise = Chemical.save($scope.chemical);
-		promise.success(function(chemical) {
-		    // On completion, save the container
-		    $scope.container.chemical = chemical.id;
-		    save_container($scope.container);
-		});
+		Chemical.save($scope.chemical)
+		    .then(function(responseChemical) {
+			// On completion, save the container
+			$scope.container.chemical = responseChemical.data.id;
+			save_container($scope.container);
+		    }, showError);
 	    }
 	};
     }])

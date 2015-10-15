@@ -6,9 +6,11 @@ angular.module('chemicalInventory')
 	var Chemical = 	$resource('/chemical_inventory/api/chemicals')
 	Chemical.save = function(chemicalData) {
 	    var uploadUrl = '/chemical_inventory/api/chemicals/';
-	    // Make a new form with the given data (including the file)
+	    // Make a new form with the given data (including the file if necessary)
 	    var fd = new FormData();
-	    fd.append('safety_data_sheet', chemicalData.safety_data_sheet);
+	    if (chemicalData.safety_data_sheet) {
+		fd.append('safety_data_sheet', chemicalData.safety_data_sheet);
+	    }
 	    for ( var key in chemicalData ) {
 		// Make sure this is actually a field
 		if (chemicalData.hasOwnProperty(key) &&
@@ -19,11 +21,7 @@ angular.module('chemicalInventory')
 		transformRequest: angular.identity,
 		withCredentials: false,
 		headers: {'Content-Type': undefined}
-	    })
-	        .success(function(){
-		})
-	        .error(function(){
-		});
+	    });
 	};
 	return Chemical
     }])
