@@ -7,6 +7,7 @@ from django.db import models
 from django.contrib.auth.models import User
 from django.conf import settings
 
+
 # Create your models here.
 class Chemical(models.Model):
     """The general idea of a chemical (eg Lithium hydroxide). It is *not*
@@ -62,13 +63,13 @@ class Chemical(models.Model):
         if Container.objects.filter(chemical__id=self.pk, is_empty=False).count() != 0:
             return True
         return False
-    
+
     def stock_is_null(self):
         """Returns whether a chemical has no containers"""
         if Container.objects.filter(chemical__id=self.pk).count() == 0:
             return True
         return False
-    
+
     def structure_url(self):
         from chemspipy import ChemSpider
         try:
