@@ -66,16 +66,17 @@ class ContainerAPITest(TestCase):
         self.assertNotContains(response, 'date_opened', status_code=400)
         self.assertNotContains(response, 'expiration_date', status_code=400)
 
-        
+
 class SearchFormulaTest(TestCase):
-    
+
     def test_autosave(TestCase):
         """Tests for saving data before strip"""
         chemical = models.Chemical(formula='CoF_2', health='0', flammability='0', instability='0', name='Cobalt(II) Fluoride')
         chemical.save()
         cobalt = models.Chemical.objects.get(formula='CoF_2')
         assert cobalt.stripped_formula == 'CoF2'
-    
+
+
 class OldDatabaseTest(TestCase):
     """Tests for importing the old database."""
     fixtures = ['inventory_test_data', 'cabana_users']

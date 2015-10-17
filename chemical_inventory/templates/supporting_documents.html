@@ -51,4 +51,16 @@
 <hr />
 {% endfor %}
 
+<!-- Link to chemical's main safety datasheet -->
+{% if container.chemical.safety_data_sheet %}
+<h3>Safety Data Sheet for {{ container.chemical.name }}</h3>
+
+<a href="{{ container.chemical.safety_data_sheet.url }}"
+   title="Download safety datasheet"
+   class="btn btn-default">
+  <span class="glyphicon glyphicon-save"></span>
+  Download
+</a>
+{% endif %}
+
 {% endblock %}

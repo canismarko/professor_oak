@@ -66,13 +66,13 @@ class ChemicalForm(NgModelFormMixin, NgFormValidationMixin, Bootstrap3FormMixin,
         label="Health NFPA Rating (SDS § 15 or 16)",
         choices=NFPA_RATINGS)
     flammability = forms.ChoiceField(
-        label="Flammability NFPA Rating (SDS § 16)",
+        label="Flammability NFPA Rating (SDS § 15 or 16)",
         choices=NFPA_RATINGS)
     instability = forms.ChoiceField(
-        label="Instability NFPA Rating (SDS § 16)",
+        label="Instability NFPA Rating (SDS § 15 or 16)",
         choices=NFPA_RATINGS)
     special_hazards = forms.ChoiceField(
-        label="Special Hazards (SDS § 16)",
+        label="Special Hazards (SDS § 15 or 16)",
         choices=NFPA_HAZARDS, required=False)
     gloves = forms.ModelMultipleChoiceField(
         label="Gloves (SDS § 8.2)",

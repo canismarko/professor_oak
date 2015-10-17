@@ -222,15 +222,16 @@ def import_chemicals_csv(csvfile):
         try:
             health = int(line[4])
         except ValueError:
-            health = 4
+            # Health not known
+            health = -1
         try:
             flammability = int(line[5])
         except ValueError:
-            flammability = 4
+            flammability = -1
         try:
             instability = int(line[6])
         except ValueError:
-            instability = 4
+            instability = -1
         special_hazards = line[7]
         # Create chemical object
         chemical = Chemical(

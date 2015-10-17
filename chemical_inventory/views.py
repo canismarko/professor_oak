@@ -155,7 +155,8 @@ class SupportingDocumentView(FormView):
                                          self.get_success_url()))
         # Inherit parent context
         context = super().get_context_data(*args, **kwargs)
-        # Add list of current documents
+        # Set our own context entries
+        context['container'] = self.container
         context['documents'] = self.container.supportingdocument_set.order_by('-date_added')
         return context
 
