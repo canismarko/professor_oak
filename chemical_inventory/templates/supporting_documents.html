@@ -1,0 +1,54 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<h2>Supporting Documents</h2>
+
+<div class="row">
+  <div class="col-md-4">
+    <form method="POST" action="." name="{{ form.form_name }}"
+	  enctype="multipart/form-data" novalidate oak-form-validation>
+      {% csrf_token %}
+
+      {{ form }}
+
+      <div class="oak-form-buttons">
+	<button type="submit" class="btn btn-primary"
+		ng-disabled="{{ form.form_name }}.$invalid">Upload</button>
+      </div>
+    </form>
+  </div>
+  <div class="col-md-8">
+  </div>
+</div>
+
+<hr />
+
+{% if not documents %}
+<div class="alert alert-info">
+  <p>
+    No supporting documents have been uploaded. Please use the form to
+    upload some.
+  </p>
+</div>
+{% endif %}
+
+{% for document in documents %}
+<h3>{{ document.name }}</h3>
+<dl>
+  <dt>Date</dt>
+  <dd>{{ document.date_added }}</dd>
+  <dt>Owner</dt>
+  <dd>{{ document.owner.get_full_name }}</dd>
+  <dt>Filename</dt>
+  <dd>{{ document.file.name }}</dd>
+</dl>
+<a href="{{ document.file.url }}" title="Download {{ document.name }}"
+   class="btn btn-default">
+  <span class="glyphicon glyphicon-save"></span>
+  Download
+</a>
+<hr />
+{% endfor %}
+
+{% endblock %}

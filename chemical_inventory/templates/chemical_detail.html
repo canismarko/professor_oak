@@ -84,7 +84,8 @@
   <th>Expiration Date</th>
   <th>Contact Person</th>
   <th class="text-center">Empty?</th>
-  <th></th>
+  <th>XRD/TGA/etc</th><!-- For document icon -->
+  <th></th><!-- For edit icon -->
   {% for container in container_list %}
   <tr ng-controller="chemicalList"
       ng-init="chemicalId={{ container.pk }}; isEmpty={{ container.is_empty | lower }}"
@@ -106,10 +107,18 @@
 	     ng-model="isEmpty" ng-change="updateStatus()">
     </td>
     <td>
+      <!-- Supporting documents -->
+      <a href="{% url 'supporting_documents' container.id %}"
+	 title="View supporting documents for this container">
+	<span class="glyphicon glyphicon-file"></span>
+	{{ container.supportingdocument_set.count }}
+      </a>
+    </td>
+    <td>
+      <!-- Edit -->
       <a href="{{ container.edit_url }}"
 	 title="Edit this container of {{ chemical.name|lower }}" >
 	<span class="glyphicon glyphicon-pencil"></span>
-	<!-- Edit -->
       </a>
     </td>
   </tr>

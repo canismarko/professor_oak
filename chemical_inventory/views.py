@@ -6,16 +6,15 @@ from django.shortcuts import render
 from django.views.generic.list import ListView
 from django.views.generic.base import TemplateView
 from django.views.generic.detail import DetailView
-from django.views.generic.edit import CreateView
-from django.views.generic.edit import UpdateView
+from django.views.generic.edit import CreateView, UpdateView, FormView
 from rest_framework import viewsets, permissions, response, status
 from django.utils.safestring import mark_safe
 from django.http import HttpResponseRedirect
 from django.conf import settings
 from django.db.models import Q, Count
 
-from .forms import ChemicalForm, ContainerForm, GloveForm, SupplierForm
-from .models import Chemical, Container, Glove, Supplier
+from .forms import ChemicalForm, ContainerForm, GloveForm, SupplierForm, SupportingDocumentForm
+from .models import Chemical, Container, Glove, Supplier, SupportingDocument
 import xkcd
 from .serializers import ChemicalSerializer, ContainerSerializer, GloveSerializer, SupplierSerializer
 
@@ -133,6 +132,42 @@ class ChemicalDetailView(DetailView):
         container_list = chemical.container_set.order_by('is_empty', 'expiration_date')
         context['container_list'] = container_list
         return context
+
+
+class SupportingDocumentView(FormView):
+    template_name = 'supporting_documents.html'
+    form_class = SupportingDocumentForm
+
+    def dispatch(self, *args, **kwargs):
+        # Set container for later use
+        self.container = Container.objects.get(pk=self.kwargs['container_pk'])
+        return super().dispatch(*args, **kwargs)
+
+    def get_success_url(self):
+        container_pk = self.kwargs['container_pk']
+        return reverse('supporting_documents',
+                       kwargs={'container_pk': container_pk})
+
+    def get_context_data(self, *args, **kwargs):
+        # Set breadcrumbs
+        self.request.breadcrumbs = ChemicalDetailView.breadcrumbs(self.container.chemical)
+        self.request.breadcrumbs.append(('Supporting Documents',
+                                         self.get_success_url()))
+        # Inherit parent context
+        context = super().get_context_data(*args, **kwargs)
+        # Add list of current documents
+        context['documents'] = self.container.supportingdocument_set.order_by('-date_added')
+        return context
+
+    def form_valid(self, form):
+        # Set some attributes and save container
+        document = form.save(commit=False)
+        document.owner = self.request.user
+        document.container = self.container
+        document.save()
+        self.object = document
+        # Redirect to new url
+        return HttpResponseRedirect(self.get_success_url())
 
 
 class AddContainerView(TemplateView):

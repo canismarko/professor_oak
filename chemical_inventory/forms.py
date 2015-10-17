@@ -34,6 +34,19 @@ class ContainerForm(Bootstrap3FormMixin, NgModelFormMixin, NgFormValidationMixin
                   'supplier', 'comment']
 
 
+class SupportingDocumentForm(NgModelFormMixin, NgFormValidationMixin, Bootstrap3FormMixin, NgModelForm):
+# class SupportingDocumentForm(forms.ModelForm):
+    form_name = 'supporting_document_form'
+    comment = forms.CharField(
+        required=False,
+        widget=forms.Textarea(attrs={'rows': '3'})
+        )
+
+    class Meta:
+        model = models.SupportingDocument
+        fields = ['name', 'file', 'comment']
+
+
 # Insert "none" value into list of options
 NFPA_RATINGS = [('', '----------')] + models.Chemical.NFPA_RATINGS
 NFPA_HAZARDS = [('', '----------')] + models.Chemical.NFPA_HAZARDS

@@ -25,6 +25,9 @@ urlpatterns = [
     url(r'^containers/edit/(?P<pk>[0-9]+)/$',
 	login_required(views.EditContainerView.as_view()),
 	name='container_edit'),
+    url(r'^containers/(?P<container_pk>[0-9]+)/supportingdocuments/$',
+        views.SupportingDocumentView.as_view(),
+        name='supporting_documents')
 ]
 
 # URLs for the browsable API

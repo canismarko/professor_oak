@@ -169,6 +169,20 @@ class Container(models.Model):
         return reverse('chemical_detail', kwargs={'pk': self.chemical_id})
 
 
+class SupportingDocument(models.Model):
+    """A document that characterizes the given container. Ex. XRD, TGA,
+    vendor CofA."""
+    name = models.CharField(max_length=50)
+    container = models.ForeignKey('Container')
+    file = models.FileField()
+    comment = models.TextField(blank=True)
+    owner = models.ForeignKey(User, blank=True, null=True)
+    date_added = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return self.name
+
+
 class Location(models.Model):
     name = models.CharField(max_length=50, blank=True)
     room_number = models.CharField(max_length=20)
@@ -187,12 +201,6 @@ class Supplier(models.Model):
 
     def __str__(self):
         return self.name
-
-
-class SafetyDataSheet(models.Model):
-    sds_file = models.FileField()
-    chemical = models.ForeignKey('Chemical')
-    supplier = models.ForeignKey('Supplier')
 
 
 def import_chemicals_csv(csvfile):
