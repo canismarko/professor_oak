@@ -89,6 +89,7 @@
   <th class="text-center">Empty?</th>
   <th>XRD/TGA/etc</th><!-- For document icon -->
   <th></th><!-- For edit icon -->
+  <th></th><!-- For Barcode icon -->
   {% for container in container_list %}
   <tr ng-controller="chemicalList"
       ng-init="chemicalId={{ container.pk }}; isEmpty={{ container.is_empty | lower }}"
@@ -122,6 +123,13 @@
       <a href="{{ container.edit_url }}"
 	 title="Edit this container of {{ chemical.name|lower }}" >
 	<span class="glyphicon glyphicon-pencil"></span>
+      </a>
+    </td>
+    <td>
+      <!--Barcode -->
+      <a href="{{ container.print_label }}"
+	 title="Print a label for this container of {{ chemical.name|lower }}" >
+	<span class="glyphicon glyphicon-barcode"></span>
       </a>
     </td>
   </tr>

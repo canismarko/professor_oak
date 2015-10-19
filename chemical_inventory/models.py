@@ -2,6 +2,7 @@ import datetime
 import csv
 import re
 import os
+import subprocess
 
 from django.core.urlresolvers import reverse
 from django.core.files import File
@@ -100,10 +101,12 @@ class Chemical(models.Model):
             return True
         return False
 
+
 @receiver(signals.pre_save, sender=Chemical)
 def strip_formula(sender, instance, raw, using, update_fields, *args, **kwargs):
     """Strips the formula supplied to remove underscores and carrots, saves it as the stripped_formula field. Used for formula searching."""
     instance.stripped_formula = instance.formula.replace("_","").replace("^","")
+
 
 class Glove(models.Model):
     """Different chemicals have different glove compatibility. The `name`
@@ -171,6 +174,11 @@ class Container(models.Model):
     def get_absolute_url(self):
         return reverse('chemical_detail', kwargs={'pk': self.chemical_id})
 
+    def print_label(self):
+        """Pass the information from the container to subprocess, convert it
+        to a csv file and merge with the gLabel template."""
+        # stubbed for  development
+        return
 
 class SupportingDocument(models.Model):
     """A document that characterizes the given container. Ex. XRD, TGA,
