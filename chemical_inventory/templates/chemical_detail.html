@@ -135,4 +135,13 @@
   </tr>
   {% endfor %}
 </table>
+
+{% if not container_list %}
+<!-- Notification to the user that no chemicals are added -->
+<div class="alert alert-info">
+  <span class="glyphicon glyphicon-info-sign"></span>
+  {{ chemical.name }} has no containers. Please check to see if
+  this chemical is in use in the lab.
+</div>
+{% endif %}
 {% endblock %}
