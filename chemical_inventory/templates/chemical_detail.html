@@ -125,9 +125,9 @@
 	<span class="glyphicon glyphicon-pencil"></span>
       </a>
     </td>
-    <td>
+    <td ng-controller="printButton">
       <!--Barcode -->
-      <a href="{{ container.print_label }}"
+      <a ng-click="sendPrintJob({{ container.pk }})"
 	 title="Print a label for this container of {{ chemical.name|lower }}" >
 	<span class="glyphicon glyphicon-barcode"></span>
       </a>

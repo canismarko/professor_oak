@@ -9,7 +9,7 @@ from django.views.generic.detail import DetailView
 from django.views.generic.edit import CreateView, UpdateView, FormView
 from rest_framework import viewsets, permissions, response, status
 from django.utils.safestring import mark_safe
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, JsonResponse
 from django.conf import settings
 from django.db.models import Q, Count
 
@@ -307,3 +307,11 @@ class ContainerViewSet(viewsets.ModelViewSet):
         self.perform_create(serializer)
         headers = self.get_success_headers(serializer.data)
         return response.Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
+
+@login_required
+def print_label(request, container_pk):
+        """Pass the information from the container to subprocess, convert it to a csv file and merge with the gLabel template."""
+        # stubbed for  development 
+        container = Container.objects.get(pk=container_pk)
+        container.print_label()
+        return JsonResponse({'status': 'success'})

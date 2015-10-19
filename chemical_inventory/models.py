@@ -166,9 +166,27 @@ class Container(models.Model):
     def get_absolute_url(self):
         return reverse('chemical_detail', kwargs={'pk': self.chemical_id})
 
-    def print_label(self):
+    def print_label(self, *args, **kwargs):
         """Pass the information from the container to subprocess, convert it to a csv file and merge with the gLabel template."""
         # stubbed for  development 
+        name = str(self.chemical.name)
+        location = str(self.location)
+        barcode_identifier = str(self.pk).zfill(6)
+        expiration = self.expiration_date.strftime("%m/%d/%y")
+        print (name)
+        print (location)
+        print (barcode_identifier)
+        print (expiration)
+        with open('chemical_inventory/label_printing/input.csv', 'w', newline='') as f:
+            input = csv.writer(f, delimiter=',')
+            data = (name, location, barcode_identifier, expiration)
+            input.writerow(data)
+        subprocess.call(['cd', '/srv/professor_oak/chemical_inventory/label_printing'])
+        subprocess.call(['glabels-3-batch', '--input=input.csv', '--output=output.pdf', 'gLabelsTest.glabels'])
+        subprocess.call(['scp', 'output.pdf', 'pi@10.19.193.103:/home/pi/label_printing'])
+        subprocess.call(['ssh', 'pi@10.19.193.103', '/home/pi/label_printing/bash_print.sh'])
+        subprocess.call(['rm', 'output.pdf'])
+        subprocess.call(['rm', 'input.csv'])
         return
 
 class SupportingDocument(models.Model):

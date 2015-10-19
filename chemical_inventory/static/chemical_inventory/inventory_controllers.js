@@ -99,3 +99,20 @@ angular.module('chemicalInventory')
 	    $http.patch(containerUrl, {is_empty: $scope.isEmpty});
 	};
     }])
+
+    // Controller to print a label to the pi
+    .controller('printButton',['$scope','djangoUrl', '$http', 'toaster', function($scope, djangoUrl, $http, toaster){
+        $scope.sendPrintJob=function(containerpk) {
+            printUrl = djangoUrl.reverse('print_label',{container_pk: containerpk});
+            console.log(printUrl)
+            $http.get(printUrl).then(function(response) {
+                toaster.pop({
+                type: 'success',
+                title: 'Success!',
+                body: "Your label has been printed in 4163 SES",
+                timeout: 0,
+                showCloseButton: true
+                });
+            })
+        }
+    }])
