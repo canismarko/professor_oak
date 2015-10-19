@@ -1,11 +1,17 @@
-import datetime, csv, re, subprocess
+import datetime
+import csv
+import re
+import os
+import subprocess
 
 from django.core.urlresolvers import reverse
+from django.core.files import File
 from django.db import models
 from django.contrib.auth.models import User
 from django.conf import settings
 from django.dispatch import receiver
 from django.db.models import signals
+from django.utils.text import slugify
 
 
 # Create your models here.
@@ -95,10 +101,12 @@ class Chemical(models.Model):
             return True
         return False
 
+
 @receiver(signals.pre_save, sender=Chemical)
 def strip_formula(sender, instance, raw, using, update_fields, *args, **kwargs):
     """Strips the formula supplied to remove underscores and carrots, saves it as the stripped_formula field. Used for formula searching."""
     instance.stripped_formula = instance.formula.replace("_","").replace("^","")
+
 
 class Glove(models.Model):
     """Different chemicals have different glove compatibility. The `name`
@@ -168,7 +176,6 @@ class Container(models.Model):
 
     def print_label(self, *args, **kwargs):
         """Pass the information from the container to subprocess, convert it to a csv file and merge with the gLabel template."""
-        # stubbed for  development 
         name = str(self.chemical.name)
         location = str(self.location)
         barcode_identifier = str(self.pk).zfill(6)
@@ -194,7 +201,7 @@ class SupportingDocument(models.Model):
     vendor CofA."""
     name = models.CharField(max_length=50)
     container = models.ForeignKey('Container')
-    file = models.FileField()
+    file = models.FileField(upload_to='supporting_documents')
     comment = models.TextField(blank=True)
     owner = models.ForeignKey(User, blank=True, null=True)
     date_added = models.DateTimeField(auto_now=True)
@@ -223,14 +230,14 @@ class Supplier(models.Model):
         return self.name
 
 
-def import_chemicals_csv(csvfile):
+def import_chemicals_csv(csvfile, sds_dir):
     """Parses a csv file exported from our old Access database and
     converts it to model instances."""
+    # Load the csv to import
     f = open(csvfile)
     csvreader = csv.reader(f)
     default_glove = Glove.objects.get(name='Nitrile')
     formula_regex = re.compile('(\d)')
-    # for line in [list(csvreader)[0]]:
     for line in csvreader:
         # Translate attributes from csv file
         cas_number = line[1]
@@ -262,6 +269,14 @@ def import_chemicals_csv(csvfile):
             flammability=flammability,
             instability=instability,
         )
+        # Import SDS
+        filename = line[10]
+        if filename:
+            relpath = os.path.join(sds_dir, filename)
+            sds = File(open(relpath, mode='rb'))
+            chemical.safety_data_sheet.save(slugify(name)+'.pdf', sds)
+            sds.close()
+        # Commit the new chemical to the database
         chemical.save()
         # Add gloves
         glove_string = line[9]

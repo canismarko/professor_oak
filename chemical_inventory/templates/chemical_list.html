@@ -1,6 +1,11 @@
 {% extends 'base.html' %}
 {% load custom_filters %}
-{% block title %}Current Inventory{% endblock %}
+{% block title %}
+  Current Inventory
+  {% if active_filter %}
+  ({{ active_filter }})
+  {% endif %}
+{% endblock %}
 
 {% block content %}
 

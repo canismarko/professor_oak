@@ -1,5 +1,6 @@
 import datetime
 import json
+import os
 
 from django.test import TestCase, RequestFactory
 from django.contrib.auth.models import User
@@ -92,7 +93,9 @@ class OldDatabaseTest(TestCase):
         models.Chemical.objects.all().delete()
         assert models.Chemical.objects.count() == 0
         # Load new chemicals
-        self.convert_chemicals(self.chemicalfile)
+        self.convert_chemicals(self.chemicalfile,
+                               sds_dir='chemical_inventory/sds_test/')
+
         # Check first imported material
         lithium = models.Chemical.objects.get(name='Lithium')
         self.assertEqual(lithium.cas_number, '7439-93-2')
@@ -101,6 +104,10 @@ class OldDatabaseTest(TestCase):
         self.assertEqual(lithium.health, 3)
         # Default glove is set?
         self.assertIn(self.nitrile_glove, lithium.gloves.all())
+        # Check for imported safety datasheet
+        self.assertTrue(
+            lithium.safety_data_sheet)
+        os.remove(lithium.safety_data_sheet.path)
         # Other gloves set
         castor_oil = models.Chemical.objects.get(pk=12)
         assert castor_oil.name == 'Castor Oil'

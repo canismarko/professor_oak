@@ -1,10 +1,10 @@
-1,"7439-93-2","Lithium","Li",3,3,3,"W",6.94,,"LithiumFoil_7439-93-2.pdf"
-3,"13963-57-0","Aluminum acetlyacetonate","Al(acac)3",3,0,0,,324.31,,"AluminiumAcetylacetonate_13963-57-0.pdf"
-5,"6018-89-9","Nickel acetate","Ni(ac)2.4H2O",2,0,0,,248.84,,"Nickel(II)AcetateTetrahydrate_6018-89-9.pdf"
-6,"1309-42-8","Magnesium Hydroxide","Mg(OH)2",2,0,0,,58.32,,"Magnesium(II)Hydroxide_1309-42-8.pdf"
-7,"1309-48-4","Magnesium Oxide","MgO",0,0,0,,40.30,,"Magnesium(II)Oxide_1309-48-4.pdf"
-8,"1310-66-3","Lithium Hydroxide Monohydrate","LiOH.H2O",3,0,0,,41.96,,"LithiumHydroxideMonohydrate_1310-66-3.pdf"
-9,"112-90-3","Oleylamine","C18H37N",3,1,0,,297.49,,"Oleylamine_112-90-3.pdf"
-10,"1184-78-7","Cobalt acetlyacetonate","Co(acac)3",0,0,0,,356.26,,"Cobalt(III)Acetylacetonate_21679-46-9.pdf"
-11,"21679-46-9","TRIMETHYLAMINE N-OXIDE","C3H9NO",2,0,0,,75.11,,"Trimethylamine-N-Oxide_1184-78-7.pdf"
-12,"8001-79-4","Castor Oil","N/A",,,,,,"Latex;Nitrile","CastorOil_8001-79-4.pdf"
+1,"7439-93-2","Lithium","Li",3,3,3,"W",6.94,,"lithium-msds.pdf"
+3,"13963-57-0","Aluminum acetlyacetonate","Al(acac)3",3,0,0,,324.31,,
+5,"6018-89-9","Nickel acetate","Ni(ac)2.4H2O",2,0,0,,248.84,,
+6,"1309-42-8","Magnesium Hydroxide","Mg(OH)2",2,0,0,,58.32,,
+7,"1309-48-4","Magnesium Oxide","MgO",0,0,0,,40.30,,
+8,"1310-66-3","Lithium Hydroxide Monohydrate","LiOH.H2O",3,0,0,,41.96,,
+9,"112-90-3","Oleylamine","C18H37N",3,1,0,,297.49,,
+10,"1184-78-7","Cobalt acetlyacetonate","Co(acac)3",0,0,0,,356.26,,
+11,"21679-46-9","TRIMETHYLAMINE N-OXIDE","C3H9NO",2,0,0,,75.11,,
+12,"8001-79-4","Castor Oil","N/A",,,,,,"Latex;Nitrile",
