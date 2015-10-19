@@ -1,6 +1,4 @@
-import datetime
-import csv
-import re
+import datetime, csv, re, subprocess
 
 from django.core.urlresolvers import reverse
 from django.db import models
@@ -168,6 +166,10 @@ class Container(models.Model):
     def get_absolute_url(self):
         return reverse('chemical_detail', kwargs={'pk': self.chemical_id})
 
+    def print_label(self):
+        """Pass the information from the container to subprocess, convert it to a csv file and merge with the gLabel template."""
+        # stubbed for  development 
+        return
 
 class SupportingDocument(models.Model):
     """A document that characterizes the given container. Ex. XRD, TGA,
