@@ -188,11 +188,10 @@ class Container(models.Model):
             input = csv.writer(f, delimiter=',')
             data = (name, location, barcode_identifier, expiration)
             input.writerow(data)
-        subprocess.call(['cd', '/srv/professor_oak/chemical_inventory/label_printing'])
-        subprocess.call(['glabels-3-batch', '--input=input.csv', '--output=output.pdf', 'gLabelsTest.glabels'])
-        subprocess.call(['scp', 'output.pdf', 'pi@10.19.193.103:/home/pi/label_printing'])
-        subprocess.call(['ssh', 'pi@10.19.193.103', '/home/pi/label_printing/bash_print.sh'])
-        subprocess.call(['rm', 'output.pdf'])
+        os.chdir('/srv/professor_oak/chemical_inventory/label_printing')
+        subprocess.call(['scp', '-o UserKnownHostsFile=' + settings.HOSTS, '-i '+ settings.PRINTER_KEY, 'input.csv', settings.PRINTING_IP + ':/home/pi/label_printing'])
+        subprocess.call(['ssh', '-o UserKnownHostsFile=' + settings.HOSTS, '-i '+ settings.PRINTER_KEY, settings.PRINTING_IP, '/home/pi/label_printing/bash_print.sh'])
+        os.remove('input.csv')
         subprocess.call(['rm', 'input.csv'])
         return
 
