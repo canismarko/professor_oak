@@ -144,3 +144,9 @@ li.invalid {
   padding-right: 13px;
   padding-left: 13px;
 }
+
+.table td a  {
+    cursor: pointer;
+    cursor: hand;
+}
+}
