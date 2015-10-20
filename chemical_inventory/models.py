@@ -176,8 +176,8 @@ class Container(models.Model):
 
     def print_label(self, *args, **kwargs):
         """Pass the information from the container to subprocess, convert it to a csv file and merge with the gLabel template."""
-        name = str(self.chemical.name)
-        location = str(self.location)
+        name = str(self.chemical.name)[:35]
+        location = str(self.location)[:30]
         barcode_identifier = str(self.pk).zfill(6)
         expiration = self.expiration_date.strftime("%m/%d/%y")
         with open('chemical_inventory/label_printing/input.csv', 'w', newline='') as f:
