@@ -180,19 +180,14 @@ class Container(models.Model):
         location = str(self.location)
         barcode_identifier = str(self.pk).zfill(6)
         expiration = self.expiration_date.strftime("%m/%d/%y")
-        print (name)
-        print (location)
-        print (barcode_identifier)
-        print (expiration)
         with open('chemical_inventory/label_printing/input.csv', 'w', newline='') as f:
             input = csv.writer(f, delimiter=',')
             data = (name, location, barcode_identifier, expiration)
             input.writerow(data)
         os.chdir('/srv/professor_oak/chemical_inventory/label_printing')
-        subprocess.call(['scp', '-o UserKnownHostsFile=' + settings.HOSTS, '-i '+ settings.PRINTER_KEY, 'input.csv', settings.PRINTING_IP + ':/home/pi/label_printing'])
-        subprocess.call(['ssh', '-o UserKnownHostsFile=' + settings.HOSTS, '-i '+ settings.PRINTER_KEY, settings.PRINTING_IP, '/home/pi/label_printing/bash_print.sh'])
+        subprocess.call(['scp', '-o UserKnownHostsFile=' + settings.HOSTS, '-i'+ settings.PRINTER_KEY, 'input.csv', settings.PRINTING_IP + ':/home/pi/label_printing'])
+        subprocess.call(['ssh', '-o UserKnownHostsFile=' + settings.HOSTS, '-i'+ settings.PRINTER_KEY, settings.PRINTING_IP, '/home/pi/label_printing/bash_print.sh'])
         os.remove('input.csv')
-        subprocess.call(['rm', 'input.csv'])
         return
 
 class SupportingDocument(models.Model):
