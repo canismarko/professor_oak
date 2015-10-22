@@ -85,6 +85,7 @@
   <th>Location</th>
   <th>Quantity</th>
   <th>Expiration Date</th>
+  <th>Batch#</th>
   <th>Contact Person</th>
   <th class="text-center">Empty?</th>
   <th>XRD/TGA/etc</th><!-- For document icon -->
@@ -101,6 +102,7 @@
         <span class="glyphicon glyphicon-alert red_alert" title="This container has expired"></span>
     {% endif %}
     </td>
+    <td>{{ container.batch }}</td>
     <td>
       <a href="mailto:{{ container.owner.email }}"
 	 title="Send {{ container.owner.get_short_name }} an email" >

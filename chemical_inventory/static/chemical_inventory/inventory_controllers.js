@@ -116,3 +116,38 @@ angular.module('chemicalInventory')
             })
         }
     }])
+    
+    // Controller to quick_empty a container from the pk
+    .controller('quickEmpty',['$scope','djangoUrl', '$http', 'toaster', '$resource', 'Chemical', 'currentUser', function($scope, djangoUrl, $http, toaster, $resource, Chemical, currentUser){
+        $scope.submit=function() {
+            quickEmptyUrl = djangoUrl.reverse('api:container-detail',{pk: $scope.containerpk});
+            $http.patch(quickEmptyUrl, {is_empty:true, emptied_by:currentUser.pk}).then(function(response) {
+                toaster.pop({
+                type: 'success',
+                title: 'Success!',
+                body: "Container number " + $scope.containerpk + " has been marked as empty",
+                timeout: 0,
+                showCloseButton: true
+                });
+            console.log(quickEmptyUrl);
+            $scope.containerpk = "";
+            }, function(response)
+             {
+                if (response.status == '500') {
+                    var message = "Please enter the containers barcode number in order to mark it as empty"
+                } else if (response.status == '404') {
+                    var message = "Container " + $scope.containerpk + " cannot be found. Are you sure you entered it correctly?"
+                } else {
+                    var message = "Unknown error, contact the site administrator"
+                }
+                toaster.pop({
+                type: 'error',
+                title: 'Error!',
+                body: message,
+                timeout: 0,
+                showCloseButton: true
+                });
+            console.log(quickEmptyUrl);
+            $scope.containerpk = "";
+             })
+    }}])

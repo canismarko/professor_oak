@@ -85,7 +85,6 @@ class ChemicalListView(ListView):
         queryset = super().get_queryset(*args, **kwargs)
         filterstring = self.request.GET.get('filter')
         searchstring = self.request.GET.get('search')
-        # searchstring = searchstring.replace("_","").replace("^","")
         # Search in name and formula
         if searchstring is not None: #ignores empty searchstring (if this ever happens)
             queryset = queryset.filter(Q(formula__icontains=searchstring) | Q(name__icontains=searchstring) | Q(stripped_formula__icontains=searchstring))
@@ -97,7 +96,6 @@ class ChemicalListView(ListView):
             queryset = queryset.filter(name__istartswith=filterstring).exclude(name__isnull=True)
         queryset = sorted(queryset, key=lambda x: x.is_in_stock(), reverse=True)
         return queryset
-
 
 class ChemicalDetailView(DetailView):
     """This view shows detailed information about one chemical. Also gets
@@ -314,4 +312,11 @@ def print_label(request, container_pk):
         # stubbed for  development 
         container = Container.objects.get(pk=container_pk)
         container.print_label()
+        return JsonResponse({'status': 'success'})
+        
+@login_required
+def get_quick_empty(request, container_pk):
+        """Take the input barcode number and marks the associated containeras empty. Returns success toaster"""
+        container = Container.object.get(pk=container_pk)
+        container.mark_as_empty()
         return JsonResponse({'status': 'success'})

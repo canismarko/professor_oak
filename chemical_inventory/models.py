@@ -190,6 +190,11 @@ class Container(models.Model):
         os.remove('input.csv')
         return
 
+    def mark_as_empty(self, *args, **kwargs):
+        self.container.is_empty = True
+        self.save()
+        return 
+        
 class SupportingDocument(models.Model):
     """A document that characterizes the given container. Ex. XRD, TGA,
     vendor CofA."""
