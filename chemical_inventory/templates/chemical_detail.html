@@ -127,7 +127,11 @@
 	<span class="glyphicon glyphicon-pencil"></span>
       </a>
     </td>
+    {% if request.user.pk == None %}
+    <td ng-controller="printButton" class="login_only">
+    {% else %}
     <td ng-controller="printButton">
+    {% endif %}
       <!--Barcode -->
       <a ng-click="sendPrintJob({{ container.pk }})"
 	 title="Print a label for this container of {{ chemical.name|lower }}" >
