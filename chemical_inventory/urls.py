@@ -31,9 +31,6 @@ urlpatterns = [
     url(r'^containers/(?P<container_pk>[0-9]+)/label/$',
         views.print_label,
         name='print_label'),
-    url(r'^containers/(?P<container_pk>[0-9]+)/empty/$',
-        views.get_quick_empty,
-        name='quick_empty'),
 ]
 
 # URLs for the browsable API
