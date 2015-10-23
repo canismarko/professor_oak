@@ -186,7 +186,7 @@ class Container(models.Model):
             input.writerow(data)
         os.chdir('/srv/professor_oak/chemical_inventory/label_printing')
         subprocess.call(['scp', '-o UserKnownHostsFile=' + settings.HOSTS, '-i'+ settings.PRINTER_KEY, 'input.csv', settings.PRINTING_IP + ':/home/pi/label_printing'])
-        subprocess.call(['ssh', '-o UserKnownHostsFile=' + settings.HOSTS, '-i'+ settings.PRINTER_KEY, settings.PRINTING_IP, '/home/pi/label_printing/bash_print.sh'])
+        subprocess.call.Popen(['ssh', '-o UserKnownHostsFile=' + settings.HOSTS, '-i'+ settings.PRINTER_KEY, settings.PRINTING_IP, '/home/pi/label_printing/bash_print.sh'])
         os.remove('input.csv')
         return
 
