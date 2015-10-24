@@ -116,6 +116,11 @@ class OldDatabaseTest(TestCase):
         assert castor_oil.name == 'Castor Oil'
         latex_glove = models.Glove.objects.get(name='Latex')
         self.assertIn(latex_glove, castor_oil.gloves.all())
+        # Assigns an N/A for default NFPA rating
+        self.assertEqual(
+            castor_oil.health,
+            models.Chemical.NFPA_NOT_AVAILABLE
+        )
         # Test if formula numbers are subscripted
         magnesium_hydroxide = models.Chemical.objects.get(name='Magnesium Hydroxide')
         self.assertEqual(magnesium_hydroxide.formula, 'Mg(OH)_2')

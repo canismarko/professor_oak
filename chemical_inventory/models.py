@@ -27,6 +27,7 @@ class Chemical(models.Model):
     cas_number = models.CharField(max_length=100, db_index=True, blank=True)
     formula = models.CharField(max_length=50, db_index=True, blank=True)
     stripped_formula = models.CharField(max_length=50, db_index=True, blank=True)
+    NFPA_NOT_AVAILABLE = -1
     NFPA_RATINGS = [
         (0, 'None (0)'),
         (1, 'Low (1)'),
@@ -261,15 +262,15 @@ def import_chemicals_csv(csvfile, sds_dir):
             health = int(line[4])
         except ValueError:
             # Health not known
-            health = -1
+            health = Chemical.NFPA_NOT_AVAILABLE
         try:
             flammability = int(line[5])
         except ValueError:
-            flammability = -1
+            flammability = Chemical.NFPA_NOT_AVAILABLE
         try:
             instability = int(line[6])
         except ValueError:
-            instability = -1
+            instability = Chemical.NFPA_NOT_AVAILABLE
         special_hazards = line[7]
         # Create chemical object
         chemical = Chemical(

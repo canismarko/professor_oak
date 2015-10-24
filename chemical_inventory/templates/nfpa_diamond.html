@@ -18,9 +18,24 @@
   </polygon>
 
   <!-- Show ratings as text -->
-  <text {{ health.text_position }}><title>Health Hazard</title>{{ health.rating }}</text>
-  <text {{ flammability.text_position }}><title>Flammability Hazard</title>{{ flammability.rating }}</text>
-  <text {{ instability.text_position }}><title>Instability Hazard</title>{{ instability.rating }}</text>
+  <text {{ health.text_position }}>
+    <title>Health Hazard</title>
+    {% if health.rating != chemical.NFPA_NOT_AVAILABLE %}
+    {{ health.rating }}
+    {% endif %}
+  </text>
+  <text {{ flammability.text_position }}>
+    <title>Flammability Hazard</title>
+    {% if flammability.rating != chemical.NFPA_NOT_AVAILABLE %}
+    {{ flammability.rating }}
+    {% endif %}
+  </text>
+  <text {{ instability.text_position }}>
+    <title>Instability Hazard</title>
+    {% if instability.rating != chemical.NFPA_NOT_AVAILABLE %}
+    {{ instability.rating }}
+    {% endif %}
+  </text>
   <text {% if special_hazards.rating == 'W' %}class="water-hazard" {% endif %}{{ special_hazards.text_position }}>
     <title>Special Hazard</title>{{ special_hazards.rating }}</text>
 
