@@ -7,8 +7,6 @@ from django.test import TestCase, RequestFactory
 from django.contrib.staticfiles.testing import StaticLiveServerTestCase
 from django.contrib.auth.models import User
 from django.core.urlresolvers import reverse
-from selenium import webdriver as selenium_webdriver
-from pytractor.webdriver import Chrome
 
 from . import models
 
@@ -146,39 +144,3 @@ class OldDatabaseTest(TestCase):
         expected_string = 'Imported from old inventory on {}'.format(
             today.strftime('%Y-%m-%d'))
         self.assertEqual(container.comment, expected_string)
-
-
-################################################
-# End-to-end integration tests with protractor
-################################################
-
-# class PytractorTestCase(StaticLiveServerTestCase):
-#     fixtures = ['test_users.json', 'cabana_users.json',
-#                 'inventory_test_data.json']
-
-#     @classmethod
-#     def setUpClass(cls):
-#         super().setUpClass()
-#         cls.driver = Chrome('http://localhost:8081', 'body')
-#         print(cls.driver)
-
-#     @classmethod
-#     def tearDownClass(cls):
-#         # cls.driver.quit()
-#         super().tearDownClass()
-
-#     def login(self):
-#         # self.driver = selenium_webdriver.Chrome()
-#         self.driver.get(reverse('backup_login'))
-#         username_input = self.driver.find_element_by_name("username")
-#         username_input.send_keys('test')
-#         password_input = self.driver.find_element_by_name("password")
-#         password_input.send_keys('secret')
-#         self.driver.find_element_by_id("submitButton").click()
-
-
-# class AddContainer(PytractorTestCase):
-#     def test_add_chemical(self):
-#         self.login()
-#         # self.driver.get(reverse('chemical_detail', kwargs={'pk': 1}))
-#         self.driver.get(reverse('add_container'))
