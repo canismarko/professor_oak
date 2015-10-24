@@ -298,11 +298,16 @@ class ContainerViewSet(viewsets.ModelViewSet):
     def create(self, request, *args, **kwargs):
         # (Copied from rest_framework.mixins with modification)
         data = request.data.copy()
+        print_label = data.pop('$print_label', False);
         # Set the owner to be the request user
         data['owner'] = request.user.id
         serializer = self.get_serializer(data=data)
         serializer.is_valid(raise_exception=True)
         self.perform_create(serializer)
+        # Print a label
+        if print_label:
+            container = Container.objects.get(id=serializer.data['id'])
+            container.print_label()
         headers = self.get_success_headers(serializer.data)
         return response.Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
 

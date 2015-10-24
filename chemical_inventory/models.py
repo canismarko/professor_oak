@@ -6,6 +6,7 @@ import subprocess
 
 from django.core.urlresolvers import reverse
 from django.core.files import File
+from django.core.exceptions import ImproperlyConfigured
 from django.db import models
 from django.contrib.auth.models import User
 from django.conf import settings
@@ -174,8 +175,12 @@ class Container(models.Model):
     def get_absolute_url(self):
         return reverse('chemical_detail', kwargs={'pk': self.chemical_id})
 
-    def print_label(self, *args, **kwargs):
+    def print_label(self):
         """Pass the information from the container to subprocess, convert it to a csv file and merge with the gLabel template."""
+        if settings.DEBUG:
+            # Can only be run in production mode
+            msg = 'Cannot print label with settings.DEBUG set to True'
+            raise ImproperlyConfigured(msg)
         name = str(self.chemical.name)[:35]
         location = str(self.location)[:30]
         barcode_identifier = str(self.pk).zfill(6)
@@ -185,16 +190,23 @@ class Container(models.Model):
             data = (name, location, barcode_identifier, expiration)
             input.writerow(data)
         os.chdir('/srv/professor_oak/chemical_inventory/label_printing')
-        subprocess.call(['scp', '-o UserKnownHostsFile=' + settings.HOSTS, '-i'+ settings.PRINTER_KEY, 'input.csv', settings.PRINTING_IP + ':/home/pi/label_printing'])
-        subprocess.Popen(['ssh', '-o UserKnownHostsFile=' + settings.HOSTS, '-i'+ settings.PRINTER_KEY, settings.PRINTING_IP, '/home/pi/label_printing/bash_print.sh'])
+        subprocess.call(['scp',
+                         '-o UserKnownHostsFile=' + settings.HOSTS,
+                         '-i'+ settings.PRINTER_KEY,
+                         'input.csv',
+                         settings.PRINTING_IP + ':/home/pi/label_printing'])
+        subprocess.Popen(['ssh',
+                          '-o UserKnownHostsFile=' + settings.HOSTS,
+                          '-i'+ settings.PRINTER_KEY,
+                          settings.PRINTING_IP,
+                          '/home/pi/label_printing/bash_print.sh'])
         os.remove('input.csv')
-        return
 
     def mark_as_empty(self, *args, **kwargs):
         self.container.is_empty = True
         self.save()
-        return 
-        
+
+
 class SupportingDocument(models.Model):
     """A document that characterizes the given container. Ex. XRD, TGA,
     vendor CofA."""
