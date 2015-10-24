@@ -30,7 +30,7 @@ urlpatterns = [
         name='supporting_documents'),
     url(r'^containers/(?P<container_pk>[0-9]+)/label/$',
         views.print_label,
-        name='print_label')
+        name='print_label'),
 ]
 
 # URLs for the browsable API

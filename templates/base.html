@@ -113,6 +113,11 @@
 	      nfpaDiamond: '{% static 'chemical_inventory/nfpa-diamond.html' %}',
 	  };
       });
+      angular.module('chemicalInventory').service('currentUser', function() {
+      return {
+          pk: {{ request.user.pk }}
+          };
+          });
     </script>
 
   </body>

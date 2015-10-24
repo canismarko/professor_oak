@@ -195,12 +195,16 @@ class Container(models.Model):
                          '-i'+ settings.PRINTER_KEY,
                          'input.csv',
                          settings.PRINTING_IP + ':/home/pi/label_printing'])
-        subprocess.call(['ssh',
-                         '-o UserKnownHostsFile=' + settings.HOSTS,
-                         '-i'+ settings.PRINTER_KEY,
-                         settings.PRINTING_IP,
-                         '/home/pi/label_printing/bash_print.sh'])
+        subprocess.Popen(['ssh',
+                          '-o UserKnownHostsFile=' + settings.HOSTS,
+                          '-i'+ settings.PRINTER_KEY,
+                          settings.PRINTING_IP,
+                          '/home/pi/label_printing/bash_print.sh'])
         os.remove('input.csv')
+
+    def mark_as_empty(self, *args, **kwargs):
+        self.container.is_empty = True
+        self.save()
 
 
 class SupportingDocument(models.Model):
