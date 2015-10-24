@@ -1,6 +1,6 @@
 angular.module('chemicalInventory')
 
-    .controller('addContainer', ['$scope', '$resource', 'djangoUrl', 'toaster', 'Chemical', function($scope, $resource, djangoUrl, toaster, Chemical) {
+    .controller('addContainer', ['$scope', '$resource', 'djangoUrl', 'toaster', 'Chemical', '$location', 'redirect', function($scope, $resource, djangoUrl, toaster, Chemical, $location, redirect) {
 	// Get the list of currently existing chemicals the user can choose from
 	$scope.existing_chemicals = Chemical.query();
 	$scope.existing_chemicals.$promise.then(function(chemicalList) {
@@ -28,7 +28,6 @@ angular.module('chemicalInventory')
 	// var date_opened = today.toISOString().split('T')[0];
 	var expiration_date = new Date();
 	expiration_date.setFullYear(1+expiration_date.getFullYear());
-	// expiration_date = expiration_date.toISOString().split('T')[0];
 	// Helper function resets the container form to an empty pristine state
 	function resetContainer() {
 	    $scope.container = {
@@ -38,7 +37,6 @@ angular.module('chemicalInventory')
 		unit_of_measure: 'g',
 	    };
 	    if (typeof $scope.container_form != 'undefined' ) {
-		console.log('form pristine');
 		$scope.container_form.$setPristine();
 	    }
 	}
@@ -54,33 +52,39 @@ angular.module('chemicalInventory')
 		timeout: 0,
 		showCloseButton: true
 	    });
-	    console.log(reason);
 	}
 	// Save the entered form data
-	function save_container(container) {
-	    console.log(container)
-	    var Container = $resource('/chemical_inventory/api/containers/');
+	function save_container(container, options) {
+	    var Container = $resource(djangoUrl.reverse('api:container-list'));
+	    // Determine if a label should be printed
+	    if (options && options.printLabel) {
+		container.$print_label = true;
+	    } else {
+	    	container.$print_label = false;
+	    }
 	    var newContainer = Container.save(container);
-	    newContainer.$promise.then(function(container) {
+	    var promise = newContainer.$promise;
+	    promise.then(function(container) {
 		// Get URL of chemical and redirect
 		var successUrl = djangoUrl.reverse('chemical_detail',
 						   {pk: container.chemical});
-		window.location = successUrl
+		redirect(successUrl);
 	    }, showError);
+	    return promise
 	}
-	$scope.save = function() {
+	$scope.save = function(options) {
 	    // Check if a new chemical is being saved
 	    if ($scope.chemical.id > 0) {
 		// Existing chemical -> save container directly
 		$scope.container.chemical = $scope.chemical.id;
-		save_container($scope.container);
+		save_container($scope.container, options);
 	    } else {
 		// New chemical -> send the new chemical to the server first
 		Chemical.save($scope.chemical)
 		    .then(function(responseChemical) {
 			// On completion, save the container
 			$scope.container.chemical = responseChemical.data.id;
-			save_container($scope.container);
+			save_container($scope.container, options);
 		    }, showError);
 	    }
 	};
@@ -104,7 +108,6 @@ angular.module('chemicalInventory')
     .controller('printButton',['$scope','djangoUrl', '$http', 'toaster', function($scope, djangoUrl, $http, toaster){
         $scope.sendPrintJob=function(containerpk) {
             printUrl = djangoUrl.reverse('print_label',{container_pk: containerpk});
-            console.log(printUrl)
             $http.get(printUrl).then(function(response) {
                 toaster.pop({
                 type: 'success',

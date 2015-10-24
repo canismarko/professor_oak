@@ -1,11 +1,10 @@
 angular.module('chemicalInventory')
 
-    .service('Chemical', ['$resource', '$http', function ($resource, $http) {
+    .service('Chemical', ['$resource', '$http', 'djangoUrl', function ($resource, $http, djangoUrl) {
 	// A $resource for sending and receiving an abstract chemical from the database
-	this.hello = 'hello';
-	var Chemical = 	$resource('/chemical_inventory/api/chemicals')
+	var chemicalUrl = djangoUrl.reverse('api:chemical-list');
+	var Chemical = 	$resource(chemicalUrl);
 	Chemical.save = function(chemicalData) {
-	    var uploadUrl = '/chemical_inventory/api/chemicals/';
 	    // Make a new form with the given data (including the file if necessary)
 	    var fd = new FormData();
 	    if (chemicalData.safety_data_sheet) {
@@ -17,7 +16,7 @@ angular.module('chemicalInventory')
 		    key[0] != '$' && chemicalData[key] != undefined)
 	    	fd.append(key, chemicalData[key]);
 	    }
-	    return $http.post(uploadUrl, fd, {
+	    return $http.post(chemicalUrl, fd, {
 		transformRequest: angular.identity,
 		withCredentials: false,
 		headers: {'Content-Type': undefined}
@@ -41,4 +40,11 @@ angular.module('chemicalInventory')
 	        .error(function(){
 		});
 	}
+    }])
+
+    .factory('redirect', [function() {
+	// Utility funciton for moving to a new page
+	return function(url) {
+	    window.location.href = url;
+	};
     }]);
