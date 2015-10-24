@@ -20,7 +20,7 @@ from .serializers import ChemicalSerializer, ContainerSerializer, GloveSerialize
 
 
 GLOSSARY_FILTERS = (
-	'0..9', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'
+	'0-9', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'
 )
 
 breadcrumb = namedtuple('breadcrumb', ('name', 'url'))
@@ -89,7 +89,7 @@ class ChemicalListView(ListView):
         if searchstring is not None: #ignores empty searchstring (if this ever happens)
             queryset = queryset.filter(Q(formula__icontains=searchstring) | Q(name__icontains=searchstring) | Q(stripped_formula__icontains=searchstring))
         # For leading digits
-        if filterstring == '0..9':
+        if filterstring == '0-9':
             queryset = queryset.filter(name__regex=r'^\d').exclude(name__isnull=True)
         # For everything else
         elif filterstring is not None:  #Ignores empty returns

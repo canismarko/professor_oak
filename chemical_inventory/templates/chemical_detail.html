@@ -84,9 +84,9 @@
 <table class="table container-list">
   <th>Location</th>
   <th>Quantity</th>
-  <th>Expiration Date</th>
   <th>Batch#</th>
   <th>Contact Person</th>
+  <th>Expiration Date</th>
   <th class="text-center">Empty?</th>
   <th>XRD/TGA/etc</th><!-- For document icon -->
   <th></th><!-- For edit icon -->
@@ -97,16 +97,17 @@
       ng-class="{empty: isEmpty}">
     <td>{{ container.location }}</td>
     <td>{{ container.quantity }} {{ container.unit_of_measure }}</td>
-    <td>{{ container.expiration_date }}
-    {% if container.is_expired and container.is_empty == False %}
-        <span class="glyphicon glyphicon-alert red_alert" title="This container has expired"></span>
-    {% endif %}
-    </td>
     <td>{{ container.batch }}</td>
     <td>
       <a href="mailto:{{ container.owner.email }}"
 	 title="Send {{ container.owner.get_short_name }} an email" >
 	{{ container.owner.get_full_name }}</a>
+    </td>
+    <td>{{ container.expiration_date }}
+      {% if container.is_expired and container.is_empty == False %}
+      <span class="glyphicon glyphicon-alert red_alert"
+	    title="This container has expired"></span>
+      {% endif %}
     </td>
     <td class="text-center">
       <input type="checkbox"

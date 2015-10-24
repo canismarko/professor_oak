@@ -89,6 +89,10 @@ p.login_notify{
     border-top: none !important;
 }
 
+.chemical-list .glyphicon {
+    margin-left: 4px;
+}
+
 .no-chemicals {
     margin-top: 15px;
 }
