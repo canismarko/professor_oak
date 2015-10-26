@@ -52,7 +52,7 @@ class Chemical(models.Model):
         ordering = ['name']
 
     def __str__(self):
-        return "{name} ({formula})".format(name=self.name, formula=self.formula)
+        return "{name} ({formula})".format(name=self.name, formula=self.stripped_formula)
 
     def detail_url(self):
         """Return the url for the detailed view of this chemical and all the
@@ -186,22 +186,22 @@ class Container(models.Model):
         location = str(self.location)[:30]
         barcode_identifier = str(self.pk).zfill(6)
         expiration = self.expiration_date.strftime("%m/%d/%y")
-        with open('chemical_inventory/label_printing/input.csv', 'w', newline='') as f:
+        working_directory = 'chemical_inventory/label_printing'
+        with open(os.path.join(working_directory, 'input.csv'), 'w', newline='') as f:
             input = csv.writer(f, delimiter=',')
             data = (name, location, barcode_identifier, expiration)
             input.writerow(data)
-        os.chdir('/srv/professor_oak/chemical_inventory/label_printing')
         subprocess.call(['scp',
                          '-o UserKnownHostsFile=' + settings.HOSTS,
                          '-i'+ settings.PRINTER_KEY,
-                         'input.csv',
+                         os.path.join(working_directory, 'input.csv'),
                          settings.PRINTING_IP + ':/home/pi/label_printing'])
         subprocess.Popen(['ssh',
                           '-o UserKnownHostsFile=' + settings.HOSTS,
                           '-i'+ settings.PRINTER_KEY,
                           settings.PRINTING_IP,
                           '/home/pi/label_printing/bash_print.sh'])
-        os.remove('input.csv')
+
 
     def mark_as_empty(self, *args, **kwargs):
         self.container.is_empty = True
@@ -283,11 +283,13 @@ def import_chemicals_csv(csvfile, sds_dir):
         )
         # Import SDS
         filename = line[10]
-        if filename:
+        try:
             relpath = os.path.join(sds_dir, filename)
             sds = File(open(relpath, mode='rb'))
             chemical.safety_data_sheet.save(slugify(name)+'.pdf', sds)
             sds.close()
+        except FileNotFoundError:
+            print('Could not find SDS for {}'.format(chemical.name))
         # Commit the new chemical to the database
         chemical.save()
         # Add gloves
@@ -323,7 +325,7 @@ def import_containers_csv(csvfile):
         except Chemical.DoesNotExist as e:
             # Cannot find associated chemical
             print('Cannot find chemical for {}'.format(line))
-            break
+            continue
         # Continue creating container
         container.chemical = chemical
         # Find location
@@ -346,7 +348,7 @@ def import_containers_csv(csvfile):
         # Set added and expiration date
         added_string = line[5].strip('"')[0:10]
         try:
-            added_date = datetime.datetime.strptime(added_string, '%Y-%m-%d')
+            added_date = datetime.datetime.strptime(added_string, '%d-%b-%y')
         except ValueError:
             added_date = datetime.datetime.now()
         container.expiration_date = added_date + datetime.timedelta(days=365)
