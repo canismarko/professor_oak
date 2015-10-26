@@ -114,10 +114,12 @@
 	  };
       });
       angular.module('chemicalInventory').service('currentUser', function() {
-      return {
-          pk: {{ request.user.pk }}
-          };
-          });
+	  var user = {};
+	  {% if request.user.pk %}
+	  user.pk = {{ request.user.pk }};
+	  {% endif %}
+	  return user;
+      });
     </script>
 
   </body>

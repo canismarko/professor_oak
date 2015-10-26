@@ -1,0 +1,45 @@
+{% load staticfiles %}
+<!DOCTYPE html>
+
+<html ng-app="chemicalInventory">
+
+  <meta charset="utf-8">
+  <head>
+
+    <!-- Favicon that shows up in the browser tab -->
+    <link rel="shortcut icon" href="{% static 'jasmine_favicon.png' %}" />
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jasmine/2.3.4/jasmine.css">
+
+    <title>Jasmine Spec Runner v2.3.4 | Professor Oak</title>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jasmine/2.3.4/jasmine.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jasmine/2.3.4/jasmine-html.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jasmine/2.3.4/boot.js"></script>
+
+    <!-- Javascript -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.5/js/bootstrap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.4.5/angular.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.4.5/angular-resource.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.4.5/angular-animate.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/angularjs-toaster/0.4.15/toaster.min.js"></script>
+    <script src="{% static 'djangular/js/django-angular.min.js' %}"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.4.5/angular-mocks.js"></script>
+
+    <!-- chemical_inventory angular files -->
+    <script src="{% static 'chemical_inventory/inventory_init.js' %}"></script>
+    <script src="{% static 'chemical_inventory/inventory_services.js' %}"></script>
+    <script src="{% static 'chemical_inventory/inventory_controllers.js' %}"></script>
+    <script src="{% static 'chemical_inventory/inventory_directives.js' %}"></script>
+
+    <!-- jasmine specs -->
+    <script src="{% static 'chemical_inventory/specs.js' %}"></script>
+
+  </head>
+
+  <body>
+
+  </body>
+
+</html>

@@ -20,7 +20,7 @@ from .serializers import ChemicalSerializer, ContainerSerializer, GloveSerialize
 
 
 GLOSSARY_FILTERS = (
-	'0..9', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'
+	'0-9', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'
 )
 
 breadcrumb = namedtuple('breadcrumb', ('name', 'url'))
@@ -89,7 +89,7 @@ class ChemicalListView(ListView):
         if searchstring is not None: #ignores empty searchstring (if this ever happens)
             queryset = queryset.filter(Q(formula__icontains=searchstring) | Q(name__icontains=searchstring) | Q(stripped_formula__icontains=searchstring))
         # For leading digits
-        if filterstring == '0..9':
+        if filterstring == '0-9':
             queryset = queryset.filter(name__regex=r'^\d').exclude(name__isnull=True)
         # For everything else
         elif filterstring is not None:  #Ignores empty returns
@@ -298,11 +298,16 @@ class ContainerViewSet(viewsets.ModelViewSet):
     def create(self, request, *args, **kwargs):
         # (Copied from rest_framework.mixins with modification)
         data = request.data.copy()
+        print_label = data.pop('$print_label', False);
         # Set the owner to be the request user
         data['owner'] = request.user.id
         serializer = self.get_serializer(data=data)
         serializer.is_valid(raise_exception=True)
         self.perform_create(serializer)
+        # Print a label
+        if print_label:
+            container = Container.objects.get(id=serializer.data['id'])
+            container.print_label()
         headers = self.get_success_headers(serializer.data)
         return response.Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
 

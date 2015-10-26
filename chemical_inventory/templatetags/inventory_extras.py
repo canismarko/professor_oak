@@ -63,5 +63,6 @@ def nfpa_diamond(chemical, size=120):
         'flammability': flammability_box,
         'instability': instability_box,
         'special_hazards': special_hazards_box,
+        'chemical': chemical,
     }
     return context

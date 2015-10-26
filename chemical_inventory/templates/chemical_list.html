@@ -56,26 +56,34 @@
   </tr>
   {% for chemical in object_list %}
 
-    {% if chemical.has_expired and chemical.is_in_stock %}
+  {% if chemical.has_expired and chemical.is_in_stock %}
   <tr class="danger">
-    {% elif chemical.stock_is_null %}
+  {% elif chemical.stock_is_null %}
   <tr class="info empty">
-    {% else %}
-  <tr{% if not chemical.is_in_stock %} class="empty"{% endif %}>
-    {% endif %}
+  {% elif not chemical.is_in_stock %}
+  <tr class="empty">
+  {% else %}
+  <tr>
+  {% endif %}
     <td>
       <a href="{{ chemical.detail_url }}"
 	 title="Detailed information on chemical {{ chemical.name|lower }}">
-	{{ chemical.name }}</a>
+	{{ chemical.name }}
         {% if chemical.has_expired and chemical.is_in_stock %}
-      <span class="glyphicon glyphicon-alert red_alert"
-	    title="{{ chemical.name }} has an expired container"></span>
+	<span class="glyphicon glyphicon-alert red_alert"
+	      title="{{ chemical.name }} has an expired container"></span>
         {% elif chemical.stock_is_null %}
-      <span class="glyphicon glyphicon-info-sign blue_info"
-        title="{{ chemical.name }} has no containers. Please check to see if this chemical is in use in the lab."></span>
+	<span class="glyphicon glyphicon-info-sign blue_info"
+              title="{{ chemical.name }} has no containers. Please check to see if this chemical is in use in the lab."></span>
         {% endif %}
+      </a>
     </td>
-    <td>{{ chemical.formula|formula_markup }}</td>
+    <td>
+      <a href="{{ chemical.detail_url }}"
+	 title="Detailed information on chemical {{ chemical.name|lower }}">
+	{{ chemical.formula|formula_markup }}
+      </a>
+    </td>
     <td>
       {% if chemical.is_in_stock %}
       Yes
