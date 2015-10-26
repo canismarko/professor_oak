@@ -128,7 +128,7 @@
 	<span class="glyphicon glyphicon-pencil"></span>
       </a>
     </td>
-    {% if request.user.pk == None %}
+    {% if request.user.pk == None or container.is_empty == True %}
     <td ng-controller="printButton" class="login_only">
     {% else %}
     <td ng-controller="printButton">
