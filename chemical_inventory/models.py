@@ -104,7 +104,7 @@ class Chemical(models.Model):
         return False
         
     def not_empty_but_expired(self):
-        if Container.objects.filter(chemical__id=self.pk, expiration_date__lte=datetime.date.today(), is_empty=False).count() not in [0, None]:
+        if Container.objects.filter(chemical__id=self.pk, expiration_date__lte=datetime.date.today(), is_empty=False).count() != 0:
             return True
         return False
 

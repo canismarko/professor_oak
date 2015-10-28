@@ -79,6 +79,15 @@ class SearchFormulaTest(TestCase):
         chemical.save()
         cobalt = models.Chemical.objects.get(formula='CoF_2')
         assert cobalt.stripped_formula == 'CoF2'
+        
+class IsEmptyTest(TestCase):
+    '''Test for verifying whether a chemical as an expired but non-empty container'''
+    fixtures = ['production_data']
+    def test_not_empty_expired(TestCase):
+        for chemicals in models.Chemical.objects.all():
+            container_test = models.Container.objects.filter(chemical__id=chemicals.pk, expiration_date__lte=datetime.date.today(), is_empty=False).count()
+            # print (container_test)
+            assert type(container_test) is int
 
 
 class OldDatabaseTest(TestCase):
