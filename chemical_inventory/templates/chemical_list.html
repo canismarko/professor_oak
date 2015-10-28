@@ -56,7 +56,7 @@
   </tr>
   {% for chemical in object_list %}
 
-  {% if chemical.has_expired and chemical.is_in_stock %}
+  {% if chemical.not_empty_but_expired != 0 %}
   <tr class="danger">
   {% elif chemical.stock_is_null %}
   <tr class="info empty">
@@ -69,7 +69,7 @@
       <a href="{{ chemical.detail_url }}"
 	 title="Detailed information on chemical {{ chemical.name|lower }}">
 	{{ chemical.name }}
-        {% if chemical.has_expired and chemical.is_in_stock %}
+        {% if chemical.not_empty_but_expired != 0 %}
 	<span class="glyphicon glyphicon-alert red_alert"
 	      title="{{ chemical.name }} has an expired container"></span>
         {% elif chemical.stock_is_null %}
