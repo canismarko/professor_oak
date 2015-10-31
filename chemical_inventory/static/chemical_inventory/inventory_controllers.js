@@ -1,5 +1,12 @@
 angular.module('chemicalInventory')
 
+// Let the user search using an interactive periodic table
+    .controller('periodicTable', ['$scope', function($scope) {
+	// Create some lists for which elements are checked
+	$scope.includedList = [];
+	$scope.excludedList = [];
+    }])
+
     .controller('addContainer', ['$scope', '$resource', 'djangoUrl', 'toaster', 'Chemical', '$location', 'redirect', function($scope, $resource, djangoUrl, toaster, Chemical, $location, redirect) {
 	// Get the list of currently existing chemicals the user can choose from
 	$scope.existing_chemicals = Chemical.query();

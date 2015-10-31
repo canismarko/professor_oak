@@ -1,5 +1,6 @@
 """Define url routing for the chemical inventory application."""
 
+from django.views.generic.base import TemplateView
 from django.contrib.auth.decorators import login_required
 from django.conf.urls import include, url
 from rest_framework import routers
@@ -31,6 +32,9 @@ urlpatterns = [
     url(r'^containers/(?P<container_pk>[0-9]+)/label/$',
         views.print_label,
         name='print_label'),
+    url(r'^chemicals/by_element/$',
+        views.breadcrumbs([views.main_breadcrumb(), 'chemical_list', 'element_search'])(views.ElementSearchView.as_view()),
+        name='element_search'),
 ]
 
 # URLs for the browsable API

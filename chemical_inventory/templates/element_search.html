@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+{% load custom_filters %}
+
+{% block title %}Search for chemicals by element{% endblock %}
+
+{% block content %}
+<h1>Search for Chemicals by Element</h1>
+
+<div periodic-table
+     included-elements="{{ included_elements }}"
+     excluded-elements="{{ excluded_elements }}">
+</div>
+
+<hr />
+
+<!-- Table to show results -->
+{% if chemicals %}
+<p>
+  Found {{ chemicals|length }} chemical{{ chemicals|length|pluralize }}.
+</p>
+{% include 'chemical_table.html' %}
+{% endif %}
+
+{% if failed_search %}
+<div class="alert alert-warning">
+  Could not find any chemicals with these elements. Please try
+  different elements.
+</div>
+{% endif %}
+
+{% endblock %}

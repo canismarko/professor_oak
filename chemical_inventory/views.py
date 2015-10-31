@@ -1,4 +1,5 @@
 from collections import namedtuple
+import re
 
 from django.contrib.auth.decorators import login_required
 from django.core.urlresolvers import reverse, reverse_lazy
@@ -22,6 +23,37 @@ from .serializers import ChemicalSerializer, ContainerSerializer, GloveSerialize
 GLOSSARY_FILTERS = (
 	'0-9', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'
 )
+
+class ElementSearchView(TemplateView):
+    template_name = 'element_search.html'
+    def get_context_data(self, *args, **kwargs):
+        context = super().get_context_data(*args, **kwargs)
+        query_params = self.request.GET
+        # Filter required elements
+        included_symbols = query_params.getlist('required')
+        excluded_symbols = query_params.getlist('excluded')
+        context['included_elements'] = included_symbols
+        context['excluded_elements'] = excluded_symbols
+        chemical_qs = Chemical.objects.all()
+        if included_symbols == [] and excluded_symbols == []:
+            # No search terms passed
+            chemical_qs = Chemical.objects.none()
+        else:
+            chemical_qs = Chemical.objects.all()
+        for symbol in included_symbols:
+            regex = r'{symbol}[^a-z]|{symbol}$'.format(symbol=symbol)
+            chemical_qs = chemical_qs.filter(formula__regex=regex)
+        for symbol in excluded_symbols:
+            regex = r'{symbol}[^a-z]|{symbol}$'.format(symbol=symbol)
+            chemical_qs = chemical_qs.exclude(formula__regex=regex)
+        # Filter excluded elements
+        context['chemicals'] = sorted(chemical_qs,
+                                      key=lambda x: x.is_in_stock(),
+                                      reverse=True)
+        # Check if an failure message should be displayed
+        is_query = (len(included_symbols) > 0 or len(excluded_symbols) >0)
+        context['failed_search'] = len(chemical_qs) == 0 and is_query
+        return context
 
 breadcrumb = namedtuple('breadcrumb', ('name', 'url'))
 def main_breadcrumb():
@@ -71,6 +103,7 @@ class ChemicalListView(ListView):
     template_name = 'chemical_list.html'
     model = Chemical
     glossary_filters = GLOSSARY_FILTERS
+    context_object_name = 'chemicals'
 
     def get_context_data(self, *args, **kwargs):
         # Get the default context

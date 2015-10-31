@@ -1,5 +1,160 @@
 angular.module('chemicalInventory')
 
+// Interactive periodic table that allows user to select elements
+    .directive('periodicTable', ['$http', '$resource', 'djangoUrl', function($http, $resource, djangoUrl) {
+	// var elementsUrl = djangoUrl.reverse('')
+	var elementsUrl = '/static/chemical_inventory/periodic_table.json';
+	var templateUrl = '/static/chemical_inventory/periodic_table.html';
+	var Chemical = $resource(djangoUrl.reverse('api:chemical-list'));
+	function link(scope, elem, attr) {
+	    scope.includedList = scope.$eval(scope.includedElements)
+	    scope.excludedList = scope.$eval(scope.excludedElements)
+	    // Retrieve list of elements from server
+	    $http.get(elementsUrl).then(function(response) {
+		var currentColumn, currentRow, element, elementIdx, newRow, isIncluded, isExcluded, state;
+		scope.DEFAULT = 0;
+		scope.INCLUDED = 1;
+		scope.EXCLUDED = 2;
+		scope.elementList = [];
+		scope.allElements = [];
+		// Determine how wide the table should be
+		scope.totalWidth = $(elem).width();
+		// Determine how many cells are in the periodic table
+		scope.cellWidth = scope.totalWidth/18;
+		// Prepare the rows by filling in missing boxes
+		for (var rowIdx=0; rowIdx<response.data.table.length; rowIdx+=1) {
+		    newRow = []
+		    currentColumn = 0;
+		    currentRow = response.data.table[rowIdx];
+		    // For each element in the row, see if there's any skipped columns
+		    for (elementIdx in currentRow.elements) {
+			element = currentRow.elements[elementIdx];
+			skippedBoxes = element.position - currentColumn;
+			// Put in the necessary blank spaces
+			while (currentColumn < element.position) {
+			// for (var i=0; i<skippedBoxes; i++) {
+			    newRow.push({
+				display: false
+			    });
+			    currentColumn += 1;
+			}
+			// Determine if element should be selected
+			isExcluded = (scope.excludedList.indexOf(element.small)>-1);
+			isIncluded = (scope.includedList.indexOf(element.small)>-1);
+			if (isExcluded) {
+			    state = scope.EXCLUDED
+			} else if (isIncluded) {
+			    state = scope.INCLUDED
+			} else {
+			    state = scope.DEFAULT
+			}
+			// Push the actual element now
+			var newElement = {
+			    display: true,
+			    state: state,
+			    symbol: element.small,
+			    number: element.number,
+			    name: element.name,
+			};
+			newRow.push(newElement);
+			scope.allElements.push(newElement);
+			// Update the counter
+			currentColumn = element.position + 1;
+		    }
+		    scope.elementList.push(newRow);
+		}
+	    });
+	    // Handler for changing the state of each element
+	    scope.cycleState = function(cell) {
+		cell.state = (cell.state + 1) % 3
+		// Remove the element from all lists
+		function removeFromArray(array, cell) {
+		    var idx = array.indexOf(cell.symbol);
+		    if (idx !== -1) {
+			array.splice(idx, 1);
+		    }
+		    return array;
+		}
+		removeFromArray(scope.includedList, cell);
+		removeFromArray(scope.excludedList, cell);
+		// Now add to the correct list
+		if (cell.state == scope.INCLUDED) {
+		    scope.includedList.push(cell.symbol);
+		}
+		if (cell.state == scope.EXCLUDED) {
+		    scope.excludedList.push(cell.symbol);
+		}
+	    };
+	    // Handler for submitting the query
+	    scope.submitQuery = function() {
+		// Redirect to same page with query parameters
+		var path = window.location.pathname + "?";
+		var includedList = scope.includedList;
+		for (var i=0; i<includedList.length; i++) {
+		    path += "required=" + includedList[i] + "&";
+		}
+		var excludedList = scope.excludedList
+		for (var i=0; i<excludedList.length; i++) {
+		    path += "excluded=" + excludedList[i] + "&";
+		}
+		 window.location.href = window.location.protocol + "//" + window.location.host + path;
+	    };
+	    // Helper for for setting all elements
+	    scope.setAllElements = function(state) {
+		// Reset element states
+		for (var row=0; row<scope.elementList.length; row++) {
+		    for (var idx=0; idx<scope.elementList[row].length; idx++) {
+			element = scope.elementList[row][idx];
+			element.state = state;
+		    }
+		}
+	    };
+	    scope.resetAll = function() {
+		scope.excludedList = [];
+		scope.includedList = [];
+		scope.setAllElements(scope.DEFAULT);
+	    };
+	    scope.includeAll = function() {
+		scope.excludedList = [];
+		scope.includedList = scope.allElements.map(function(element) {
+		    return element.symbol;
+		});
+		scope.setAllElements(scope.INCLUDED);
+	    };
+	    scope.excludeAll = function() {
+		    scope.includedList = [];
+		    scope.excludedList = scope.allElements.map(function(element) {
+			return element.symbol;
+		    });
+		    scope.setAllElements(scope.EXCLUDED);
+	    };
+	}
+	return {
+	    templateUrl: templateUrl,
+	    link: link,
+	    transclude: true,
+	    scope: {
+		includedElements: '@',
+		excludedElements: '@',
+	    },
+	}
+    }])
+
+// Specific element cell in the periodic table directive
+    .directive('periodicTableElement', [function() {
+	function link(scope, elem, attrs) {
+	    var $elem = $(elem[0]);
+	    var column = scope.cell.position;
+	    // elem[0].style.left = column * scope.cellWidth + 'px';
+	    // elem[0].style.height = scope.cellWidth + 'px';
+	    // elem[0].style.left = column * 5.556 + '%';
+	}
+	return {
+	    link: link
+	};
+    }])
+
+// Directive for uploading files as part of a form
     .directive('fileModel', ['$parse', function($parse) {
 	// https://uncorkedstudios.com/blog/multipartformdata-file-upload-with-angularjs
 	return {

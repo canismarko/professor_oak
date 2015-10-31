@@ -3,14 +3,49 @@ import json
 import os
 import time
 
-from django.test import TestCase, RequestFactory
+from django.test import TestCase, RequestFactory, Client
 from django.contrib.staticfiles.testing import StaticLiveServerTestCase
 from django.contrib.auth.models import User
 from django.core.urlresolvers import reverse
 
 from . import models
 
-# Create your tests here.
+class ElementSearchTest(TestCase):
+    """Filtering a list of chemicals by symbols in the formula."""
+
+    fixtures = ['cabana_users.json', 'inventory_test_data.json']
+    def test_included_elements(self):
+        c = Client()
+        response = c.get(
+            reverse('element_search'),
+            {'required':['Li']}
+        )
+        chemicals = response.context['chemicals']
+        lithium = models.Chemical.objects.get(formula='Li')
+        self.assertEqual(len(chemicals), 1)
+        self.assertEqual(chemicals[0], lithium)
+
+    def test_excluded_elements(self):
+        c = Client()
+        response = c.get(
+            reverse('element_search'),
+            {'excluded':['Li']}
+        )
+        chemicals = response.context['chemicals']
+        self.assertFalse("Li" in [c.formula for c in chemicals])
+
+    def test_two_letter_elements(self):
+        """Make sure eg. searching H doesn't return He."""
+        c = Client()
+        response = c.get(
+            reverse('element_search'),
+            {'required':['H']}
+        )
+        chemicals = response.context['chemicals']
+        self.assertTrue(len(chemicals) > 0)
+        self.assertFalse('He' in [chemical.formula for chemical in chemicals])
+
+
 class ChemicalTest(TestCase):
     """Unit tests for the Chemical class."""
 

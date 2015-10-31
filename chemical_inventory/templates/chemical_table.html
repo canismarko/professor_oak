@@ -1,0 +1,48 @@
+{% load custom_filters %}
+
+<table class="table chemical-list">
+  <tr>
+    <th>Name</th>
+    <th>Formula</th>
+    <th>In stock</th>
+  </tr>
+  {% for chemical in chemicals %}
+
+  {% if chemical.has_expired and chemical.is_in_stock %}
+  <tr class="danger">
+  {% elif chemical.stock_is_null %}
+  <tr class="info empty">
+  {% elif not chemical.is_in_stock %}
+  <tr class="empty">
+  {% else %}
+  <tr>
+  {% endif %}
+    <td>
+      <a href="{{ chemical.detail_url }}"
+	 title="Detailed information on chemical {{ chemical.name|lower }}">
+	{{ chemical.name }}
+        {% if chemical.has_expired and chemical.is_in_stock %}
+	<span class="glyphicon glyphicon-alert red_alert"
+	      title="{{ chemical.name }} has an expired container"></span>
+        {% elif chemical.stock_is_null %}
+	<span class="glyphicon glyphicon-info-sign blue_info"
+              title="{{ chemical.name }} has no containers. Please check to see if this chemical is in use in the lab."></span>
+        {% endif %}
+      </a>
+    </td>
+    <td>
+      <a href="{{ chemical.detail_url }}"
+	 title="Detailed information on chemical {{ chemical.name|lower }}">
+	{{ chemical.formula|formula_markup }}
+      </a>
+    </td>
+    <td>
+      {% if chemical.is_in_stock %}
+      Yes
+      {% else %}
+      No
+      {% endif %}
+    </td>
+  </tr>
+  {% endfor %}
+</table>

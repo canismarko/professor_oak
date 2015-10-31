@@ -29,6 +29,34 @@
 },
 {
     "fields": {
+        "flammability": 0,
+        "instability": 0,
+        "cas_number": "",
+        "formula": "He",
+        "name": "Helium",
+        "special_hazards": "",
+        "gloves": [1],
+        "health": 0
+    },
+    "pk": 3,
+    "model": "chemical_inventory.chemical"
+},
+{
+    "fields": {
+        "flammability": 0,
+        "instability": 0,
+        "cas_number": "",
+        "formula": "LaTi",
+        "name": "Probably not real chemical",
+        "special_hazards": "",
+        "gloves": [1],
+        "health": 0
+    },
+    "pk": 4,
+    "model": "chemical_inventory.chemical"
+},
+{
+    "fields": {
         "supplier": [],
         "name": "Nitrile"
     },

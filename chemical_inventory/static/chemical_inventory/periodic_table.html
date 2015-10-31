@@ -1,0 +1,46 @@
+<p>
+  <button class="btn btn-primary"
+	  ng-disabled="includedList.length == 0 && excludedList.length == 0"
+	  ng-click="submitQuery()">
+    <span class="glyphicon glyphicon-search"></span>
+    Search
+  </button>
+</p>
+<div class="periodic-table">
+  <div class="periodic-table-row" ng-repeat="row in elementList">
+    <div class="periodic-table-cell" periodic-table-element
+	 ng-class="{spacer: !cell.display, included: cell.state == INCLUDED, excluded: cell.state == EXCLUDED}"
+	 ng-repeat="cell in row" title="{{ cell.name }}"
+	 ng-click="cycleState(cell)">
+	<div class="number">{{ cell.number }}</div>
+	<div class="symbol">{{ cell.symbol }}</div>
+    </div>
+  </div>
+</div>
+<p>
+  <buton class="btn btn-default"
+	 ng-click="resetAll()">
+    Clear All
+  </buton>
+  <button class="btn btn-success"
+	  ng-click="includeAll()">
+    Require All
+  </button>
+  <button class="btn btn-danger"
+	  ng-click="excludeAll()">
+    Exclude All
+  </button>
+  <!-- <span class="color-label label label-success" -->
+  <!-- 	ng-hide="includedList.length == 0"> -->
+  <!--   Required -->
+  <!-- </span> -->
+  <!-- <span class="color-label label label-danger" -->
+  <!-- 	ng-hide="excludedList.length == 0"> -->
+  <!--   Excluded -->
+  <!-- </span> -->
+</p>
+<div ng-show="excludedList.length == 0 && includedList.length == 0"
+     class="alert alert-info">
+  <span class="glyphicon glyphicon-info-sign"></span>
+  Select some elements on the table above to see a filtered list.
+</div>

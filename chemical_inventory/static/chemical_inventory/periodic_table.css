@@ -1,0 +1,59 @@
+.periodic-table {
+    display: table;
+    position: relative;
+    border-collapse: collapse;
+    width: 100%;
+    margin-bottom: 20px;
+}
+
+.periodic-table-row {
+    position: relative;
+    display: table-row;
+}
+
+.periodic-table-cell {
+    border-color: rgb(221, 221, 221);
+    border-style: solid;
+    border-width: 1px;
+    cursor: pointer;
+    position: relative;
+    width: 5.556%;
+    padding: 0px;
+    margin: -1px;
+    height: 5.556%;
+    text-align: center;
+    display: table-cell;
+}
+
+.periodic-table-cell.spacer {
+    visibility: hidden;
+}
+
+.periodic-table-cell .symbol {
+    font-weight: bold;
+}
+
+.periodic-table-cell .number {
+    font-size: 80%;
+}
+
+.included {
+    /* Green */
+    color: #3c763d;
+    background: #dff0d8;
+    /* border-color: #d6e9c6; */
+}
+
+.excluded {
+    color: #a94442;
+    background: #f2dede;
+    /* border-color: #ebccd1 */
+}
+
+.color-label {
+    margin-right: 5px;
+}
+.color-label.ng-hide:not(.ng-hide-animate) {
+    display: inline !important;
+    opacity: 0.5;
+}

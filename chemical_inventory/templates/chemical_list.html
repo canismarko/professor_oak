@@ -12,28 +12,36 @@
 <div class="row">
   <div class="col-md-6">
     <h2>Chemicals currently in your lab</h2>
+    <p>
+      <a href="{% url 'add_container' %}" class="btn btn-primary">
+	Add chemical</a>
+    </p>
   </div>
   <div class="col-md-6">
-    <form method="get" action="." class="navbar-form pull-right">
-      <div class="input-group">
-	<input type="text" class="input-small form-control search-query"
-	       name="search" placeholder="Name, Formula, CAS..."
-		   {% if active_search == None %}
-			value=""
-			{% else %}
-	       value="{{ active_search }}"
-		   {% endif %}>
-	<span class="input-group-btn">
-	  <input type="submit" class="btn btn-default" value="Search">
-	</span>
-      </div>
-    </form>
+    <div class="pull-right">
+      <form method="get" action="." class="navbar-form pull-right">
+	<div class="input-group">
+	  <input type="text" class="input-small form-control search-query"
+		 name="search" placeholder="Name, Formula, CAS..."
+		 {% if active_search == None %}
+		 value=""
+		 {% else %}
+		 value="{{ active_search }}"
+		 {% endif %}>
+	  <span class="input-group-btn">
+	    <input type="submit" class="btn btn-default" value="Search">
+	  </span>
+	</div>
+      </form>
+      <p class="text-center">
+	<a href="{% url 'element_search' %}"
+	   title="Search for chemicals by element">
+	  <span class="glyphicon glyphicon-th"></span>
+	  Search by chemicals by element</a>
+      </p>
+    </div>
   </div>
 </div>
-
-<p>
-  <a href="{% url 'add_container' %}" class="btn btn-primary">Add chemical</a>
-</p>
 
 <ul class="nav nav-tabs glossarytabs" id="glossary">
     <li{% if not active_filter %} class="active"{% endif %}>
@@ -48,52 +56,7 @@
 
 {% if object_list %}
 <!-- Chemicals were found, so show them -->
-<table class="table chemical-list">
-  <tr>
-    <th>Name</th>
-    <th>Formula</th>
-    <th>In stock</th>
-  </tr>
-  {% for chemical in object_list %}
-
-  {% if chemical.has_expired and chemical.is_in_stock %}
-  <tr class="danger">
-  {% elif chemical.stock_is_null %}
-  <tr class="info empty">
-  {% elif not chemical.is_in_stock %}
-  <tr class="empty">
-  {% else %}
-  <tr>
-  {% endif %}
-    <td>
-      <a href="{{ chemical.detail_url }}"
-	 title="Detailed information on chemical {{ chemical.name|lower }}">
-	{{ chemical.name }}
-        {% if chemical.has_expired and chemical.is_in_stock %}
-	<span class="glyphicon glyphicon-alert red_alert"
-	      title="{{ chemical.name }} has an expired container"></span>
-        {% elif chemical.stock_is_null %}
-	<span class="glyphicon glyphicon-info-sign blue_info"
-              title="{{ chemical.name }} has no containers. Please check to see if this chemical is in use in the lab."></span>
-        {% endif %}
-      </a>
-    </td>
-    <td>
-      <a href="{{ chemical.detail_url }}"
-	 title="Detailed information on chemical {{ chemical.name|lower }}">
-	{{ chemical.formula|formula_markup }}
-      </a>
-    </td>
-    <td>
-      {% if chemical.is_in_stock %}
-      Yes
-      {% else %}
-      No
-      {% endif %}
-    </td>
-  </tr>
-  {% endfor %}
-</table>
+{% include 'chemical_table.html' %}
 
 {% else %}
 <!-- No chemicals were found -->
