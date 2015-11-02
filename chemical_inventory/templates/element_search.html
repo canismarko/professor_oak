@@ -11,6 +11,13 @@
      excluded-elements="{{ excluded_elements }}">
 </div>
 
+<div ng-show="excludedList.length == 0 && includedList.length == 0"
+     class="alert alert-info">
+  <span class="glyphicon glyphicon-info-sign"></span>
+  Select some elements on the table above to see a filtered list.
+</div>
+
+
 <hr />
 
 <!-- Table to show results -->
