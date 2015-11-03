@@ -22,7 +22,7 @@ from django.contrib.auth import views as auth_views
 from django.conf import settings
 
 from . import views
-import chemical_inventory.urls
+import chemical_inventory.urls, oak_utilities.urls
 
 urlpatterns = [
         # Since there's home content yet, temporarily redirect to the chemical inventory
@@ -31,6 +31,7 @@ urlpatterns = [
             name='home'),
         url(r'^admin/', include(admin.site.urls)),
         url(r'^chemical_inventory/', include(chemical_inventory.urls)),
+        url(r'^utilities/', include(oak_utilities.urls)),
 
         # Authorization stuff using Persona
         url(r'', include('django_browserid.urls')),

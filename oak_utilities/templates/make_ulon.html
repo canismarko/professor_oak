@@ -1,0 +1,34 @@
+{% extends 'base.html' %}
+{% block title %}Create an ULON{% endblock %}
+
+{% block content %}
+
+<h1>Create an ULON</h1>
+
+<div class="row">
+  <div class="col-md-6">
+
+    <p>(<b>bold</b> = required)</p>
+
+    <form action="." method="post" name="{{ form.form_name }}"
+	  novalidate oak-form-validation>
+
+      <!-- Prevents cross site request forgery -->
+      {% csrf_token %}
+
+      {{ form }}
+
+      <!-- Form submission buttons -->
+      <div class="oak-form-buttons">
+	<button type="submit" class="btn btn-primary"
+		ng-disabled="{{ form.form_name }}.$invalid">Save</button>
+	<a href="{{ container.detail_url }}" title="Return to chemical details"
+	   class="btn btn-link">Cancel</a>
+      </div>
+
+    </form>
+
+  </div>
+</div>
+
+{% endblock %}

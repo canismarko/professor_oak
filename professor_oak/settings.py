@@ -41,6 +41,7 @@ INSTALLED_APPS = (
     'rest_framework',
     'professor_oak',
     'chemical_inventory',
+    'oak_utilities',
 )
 
 # Add the django_browserid authentication backend.
