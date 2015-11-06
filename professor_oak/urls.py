@@ -14,6 +14,7 @@ Including another URLconf
     2. Add a URL to urlpatterns:  url(r'^blog/', include(blog_urls))
 """
 from django.conf.urls import include, url
+from django.contrib.auth.decorators import login_required
 from django.contrib import admin
 from django.views.generic.base import RedirectView
 from django.views.generic import TemplateView
@@ -32,6 +33,9 @@ urlpatterns = [
         url(r'^admin/', include(admin.site.urls)),
         url(r'^chemical_inventory/', include(chemical_inventory.urls)),
         url(r'^utilities/', include(oak_utilities.urls)),
+        url(r'^users/(?P<pk>\d+)/$',
+            login_required(views.UserView.as_view()),
+            name="user_detail"),
 
         # Authorization stuff using Persona
         url(r'', include('django_browserid.urls')),

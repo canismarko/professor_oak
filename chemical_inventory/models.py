@@ -213,6 +213,13 @@ class Container(models.Model):
         self.save()
 
 
+def expired_containers(date=None):
+    # Default to today
+    if date is None:
+        date = datetime.date.today()
+    return Container.objects.filter(expiration_date__lte=date, is_empty=False)
+
+
 class SupportingDocument(models.Model):
     """A document that characterizes the given container. Ex. XRD, TGA,
     vendor CofA."""

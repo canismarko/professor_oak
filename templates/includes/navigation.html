@@ -4,7 +4,7 @@
 
   <ul class="nav nav-tabs">
     <li{% if 'chemical_inventory' in request.path %} class="active"{% endif%}>
-      <a href="/chemical_inventory/">
+      <a href="{% url 'inventory_main' %}">
 	{% if skynet %}
 	<img class="inventory-icon" src="{% static 'globe.svg' %}" />
 	{% else %}
@@ -13,12 +13,15 @@
 	Chemical Inventory</a>
     </li>
     <li>
+      <a href="{#% url %#}">
+	<span class="glyphicon glyphicon-wrench"></span>
+	Utilities
+      </a>
+    </li>
+    <li>
       <a href="http://cabana.chem.uic.edu">
     <img src="{% static 'UICbattery.png' %}" class="inventory-icon" />
     Cabana Group Website</a>
-    </li>
-    <li>
-      <a href="/oak_utilities/">Utilities</a>
     </li>
   </ul>
   {% endblock %}
