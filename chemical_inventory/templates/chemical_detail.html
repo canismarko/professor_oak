@@ -16,9 +16,6 @@
 	<span class="glyphicon glyphicon-pencil"></span>
 	Edit Information
       </a>
-      <a href="{% url 'chemical_list' %}" title="Return to list of chemicals"
-	 class="btn btn-link">
-	Back</a>
     </p>
 
     <dl>
@@ -77,13 +74,13 @@
 <h2>Containers
   <a href="{% url 'add_container' %}?chemical_id={{ chemical.id }}"
      class="btn btn-default">
-    <span class="glyphicon glyphicon-plus"></span> Add chemical
+    <span class="glyphicon glyphicon-plus"></span> Add inventory
   </a>
 </h2>
 
+{% if container_list %}
 {% include 'container_list.html' with perspective="chemical" %}
-
-{% if not container_list %}
+{% else %}
 <!-- Notification to the user that no chemicals are added -->
 <div class="alert alert-info">
   <span class="glyphicon glyphicon-info-sign"></span>

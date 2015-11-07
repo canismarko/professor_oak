@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ report_name }}{% endblock %}
+
+{% block content %}
+
+<h1>{{ report_name }}</h1>
+
+<p>
+  {% if csv_available %}
+  <a href="?format=csv" class="btn btn-default">
+    <span class="glyphicon glyphicon-list-alt"></span>
+    CSV
+  </a>
+  {% endif %}
+  <!-- <a href="?format=pdf" class="btn btn-default"> -->
+  <!--   <span class="glyphicon glyphicon-file"></span> -->
+  <!--   PDF -->
+  <!-- </a> -->
+</p>
+
+{% block report_body %}
+{% endblock %}
+
+{% endblock %}

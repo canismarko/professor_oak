@@ -1,0 +1,40 @@
+<table class="table">
+  <tr>
+    <th>Barcode</th>
+    <th>Chemical Name</th>
+    <th>Batch</th>
+    {% if perspective != "location" %}
+    <th>Location</th>
+    {% endif %}
+    <th>Quantity</th>
+    <th>Expires</th>
+    <th>State</th>
+    <th>Container</th>
+    {% if perspective != "owner" %}
+    <th>Owner</th>
+    {% endif %}
+  </tr>
+  {% for container in container_list %}
+  {% if not container.is_empty %}
+  <tr>
+    <td>{{ container.id }}</td>
+    <td>{{ container.chemical.name }}</td>
+    <td>{{ container.batch }}</td>
+    {% if perspective != "location" %}
+    <td>{{ container.location }}</td>
+    {% endif %}
+    <td>{{ container.quantity_string }}</td>
+    <td>{{ container.expiration_date }}</td>
+    <td>{{ container.state }}</td>
+    <td>{{ container.container_type }}</td>
+    {% if perspective != "owner" %}
+    <td>
+      <a href="{% url 'user_detail' pk=container.owner.pk %}"
+	 title="Details for {{ container.owner.get_short_name }}">
+	{{ container.owner.get_full_name }}</a>
+    </td>
+    {% endif %}
+    {% endif %}
+  </tr>
+  {% endfor %}
+</table>

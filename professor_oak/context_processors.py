@@ -21,7 +21,10 @@ def breadcrumbs(request):
     """Return a list of names and links that the user can follow for
     navigation. Can be either a 2-tuple of (name, url) or a string to be
     reversed"""
-    trail = getattr(request, 'breadcrumbs', [])
+    try:
+        trail = request.breadcrumbs()
+    except AttributeError as e:
+        trail = []
     new_trail = []
     for step in trail:
         try:
@@ -31,6 +34,6 @@ def breadcrumbs(request):
             url = reverse(step)
             name = step.replace('_', ' ').title()
             new_trail.append(breadcrumb(name, url))
-    return {
-        'breadcrumbs': new_trail
-    }
+    return {}
+    #     'breadcrumbs': new_trail
+    # }
