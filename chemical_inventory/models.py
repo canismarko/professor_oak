@@ -264,6 +264,9 @@ class Supplier(models.Model):
     def __str__(self):
         return self.name
 
+    class Meta():
+        ordering = ['name']
+
 
 def import_chemicals_csv(csvfile, sds_dir):
     """Parses a csv file exported from our old Access database and
