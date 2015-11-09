@@ -1,0 +1,34 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h1>Reports</h1>
+
+<ul>
+  <li>
+    <a href="{% url 'all_chemicals' %}">
+      All chemicals</a>
+  </li>
+  <li>
+    <a href="{% url 'active_containers' %}">
+      Active containers</a>
+  </li>
+  <li>
+    <a href="{% url 'expired_containers' %}">
+      Expired containers
+    </a>
+  </li>
+</ul>
+
+<hr />
+
+<ul>
+  <li>
+    <a href="{% url 'containers_by_location' %}">
+      Containers by Location</a>
+  </li>
+  <li>
+    <a href="{% url 'containers_by_owner' %}">
+      Containers by Owner</a>
+  </li>
+</ul>
+{% endblock %}

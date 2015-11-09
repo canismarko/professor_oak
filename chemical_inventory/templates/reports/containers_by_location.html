@@ -1,0 +1,16 @@
+{% extends 'reports/generic_report.html' %}
+
+{% block report_body %}
+
+{% for location in objects %}
+<h3>{{ location }}</h3>
+{% if location.active_container_set %}
+{% include 'reports/container_table.html' with container_list=location.active_container_set perspective="location" %}
+{% else %}
+<div class="alert alert-info">
+  There are no containers in {{ location }}.
+</div>
+{% endif %}
+{% endfor %}
+
+{% endblock %}

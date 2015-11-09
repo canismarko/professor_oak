@@ -1,0 +1,73 @@
+{% extends 'base.html'%}
+
+{% block title %}
+{{ target_user.get_full_name }}
+{% endblock %}
+
+{% block content %}
+<h1>{{ target_user.first_name }} {{ target_user.last_name }}</h1>
+
+<div class="row">
+  <div class="col-md-6">
+    <dl>
+      <dt>Status</dt>
+      <dd>
+	{% if target_user.is_active %}
+	<span class="text-success">User is active</span>
+	{% else %}
+	<span class="text-warning">User is not currently active</span>
+	{% endif %}
+      </dd>
+      <dt>E-mail</dt>
+      <dd>
+	{% if target_user.email %}
+	<a href="mailto:{{ target_user.email }}?subject=Chemical inventory">
+	  {{ target_user.email }}
+	</a>
+	{% else %}
+	Not available
+	{% endif %}
+      </dd>
+      <!-- Date and time of last login -->
+      <dt>Last login</dt>
+      <dd>
+	{% if target_user.last_login %}
+	{{ target_user.last_login.date }} ({{ target_user.last_login.time }})
+	{% else %}
+	Never
+	{% endif %}
+      </dd>
+      <dt>Date joined</dt>
+      <dd>{{ target_user.date_joined.date }}</dd>
+    </dl>
+  </div>
+
+  <div class="col-md-6">
+    <p>
+      {% if stats.expired_containers > 0 %}
+      <span class="text-danger">
+	<span class="glyphicon glyphicon-alert"></span>
+      {% else %}
+      <span>
+	{% endif %}
+	Expired chemicals: {{ stats.expired_containers }}
+      </span>
+      <br />
+      Total chemicals: {{ stats.total_containers }}
+    </p>
+  </div>
+</div>
+
+{% if container_list %}
+{% include 'container_list.html' with perspective="owner" %}
+{% else %}
+<div class="alert alert-info">
+  {% if target_user.pk == request.user.pk %}
+  You have no chemicals in the inventory.
+  {% else %}
+  {{ target_user.get_short_name }} has no chemicals in the inventory.
+  {% endif %}
+</div>
+{% endif %}
+
+{% endblock %}

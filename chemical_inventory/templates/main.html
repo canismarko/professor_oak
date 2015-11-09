@@ -15,36 +15,44 @@
       {{ inventory_size }} chemicals.
     </p>
     <div class="row inventory-buttons">
-      <div class="col-md-4 col-md-offset-1">
+      <div class="col-md-4 col-md-offset-1 text-center">
 	<a href="{% url 'add_container' %}" class="btn btn-primary">
+	  <span class="glyphicon glyphicon-plus"></span>
 	  Add chemical</a>
       </div>
 
-      <div class="col-md-4">
+      <div class="col-md-4 text-center">
 	<a href="{% url 'chemical_list' %}" class="btn btn-default">
+	  <span class="glyphicon glyphicon-list"></span>
 	  View list of chemicals</a>
       </div>
     </div><!-- /.row -->
-    <div class="row">
+
+    <hr />
+
+    <p class="text-center">
+      <a href="{% url 'reports' %}" class="text-center">
+	Reports</a>
+    </p>
+
     {% if request.user.pk != None %}
-    <div class="col-md-4 col-md-offset-1" id="stretch">
+    <div class="text-center" id="stretch">
     {% else %}
-    <div class="col-md-4 col-md-offset-1 login_only" id="stretch">
+    <div class="text-center login_only" id="stretch">
     {% endif %}
       <form class="navbar-form" ng-submit="submit()" ng-controller="quickEmpty">
-      <div class="input-group">
-        <input type="number" ng-model="containerpk" class="form-control"
-	       name="quick_empty" placeholder="Barcode number..." value=""/>
-        <span class="input-group-btn">
-        <input type="submit" class="btn btn-default" value="Mark as empty" />
-	</span>
-      </div>
-    {% if request.user.pk == None %}
-      <p class="login_notify">You must be logged in to use this feature</p>
-    {% endif %}
-    </form>
-</div><!--/.row-->
-        </div>
+	<div class="input-group">
+          <input type="number" ng-model="containerpk" class="form-control"
+		 name="quick_empty" placeholder="Barcode number..." value=""/>
+          <span class="input-group-btn">
+            <input type="submit" class="btn btn-default" value="Mark as empty" />
+	  </span>
+	</div>
+	{% if request.user.pk == None %}
+	<p class="login_notify">You must be logged in to use this feature</p>
+	{% endif %}
+      </form>
+    </div>
   </div><!-- /.col-md-6 -->
   <div class="col-md-6">
     <a href="http://xkcd.com" title="XKCD Website">

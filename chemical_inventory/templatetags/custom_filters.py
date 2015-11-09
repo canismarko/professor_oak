@@ -3,6 +3,10 @@ from django.utils.html import escape, mark_safe
 
 register = template.Library()
 
+@register.filter
+def subtract(value, arg):
+    return value - arg
+
 @register.filter(name='formula_markup')
 def formula_markup(formula):
     def insert_subscript(string, index):

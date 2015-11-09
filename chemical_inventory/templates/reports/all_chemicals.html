@@ -1,0 +1,36 @@
+{% extends 'reports/generic_report.html' %}
+
+{% load custom_filters %}
+
+{% block report_body %}
+
+<table class="table">
+  <tr>
+    <th>Chemical Name</th>
+    <th>Formula</th>
+    <th>Active</th>
+    <th>Empty</th>
+    <th>Total</th>
+  </tr>
+  {% for chemical in objects %}
+  <tr>
+    <td>
+      {{ chemical.name }}
+    </td>
+    <td>
+      {{ chemical.formula | formula_markup }}
+    </td>
+    <td>
+      {{ chemical.container_set.count | subtract:chemical.empty_container_set.count }}
+    </td>
+    <td>
+      {{ chemical.empty_container_set.count }}
+    </td>
+    <td>
+      {{ chemical.container_set.count }}
+    </td>
+  </tr>
+  {% endfor %}
+</table>
+
+{% endblock %}

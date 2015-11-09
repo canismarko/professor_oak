@@ -18,14 +18,39 @@ from .forms import ChemicalForm, ContainerForm, GloveForm, SupplierForm, Support
 from .models import Chemical, Container, Glove, Supplier, SupportingDocument
 import xkcd
 from .serializers import ChemicalSerializer, ContainerSerializer, GloveSerializer, SupplierSerializer
+from professor_oak.views import breadcrumb, BreadcrumbsMixin
 
 
 GLOSSARY_FILTERS = (
 	'0-9', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'
 )
 
-class ElementSearchView(TemplateView):
+# Breadcrumbs definitions
+def inventory_breadcrumb():
+    return breadcrumb('Chemical Inventory', reverse_lazy('inventory_main'))
+
+def chemical_breadcrumbs(chemical):
+    return [
+        inventory_breadcrumb(),
+        'chemical_list',
+        breadcrumb(
+            chemical.name,
+            reverse('chemical_detail', kwargs={'pk': chemical.pk})
+        )
+    ]
+
+
+class ElementSearchView(BreadcrumbsMixin, TemplateView):
     template_name = 'element_search.html'
+
+    def breadcrumbs(self):
+        breadcrumbs = [
+            inventory_breadcrumb(),
+            'chemical_list',
+            'element_search',
+        ]
+        return breadcrumbs
+
     def get_context_data(self, *args, **kwargs):
         context = super().get_context_data(*args, **kwargs)
         query_params = self.request.GET
@@ -55,55 +80,46 @@ class ElementSearchView(TemplateView):
         context['failed_search'] = len(chemical_qs) == 0 and is_query
         return context
 
-breadcrumb = namedtuple('breadcrumb', ('name', 'url'))
-def main_breadcrumb():
-    return breadcrumb('Chemical Inventory', reverse_lazy('inventory_main'))
 
-class breadcrumbs():
-    """Modifies the request to include a list of ancestor pages, should be
-    closely aligned with the URL. If each list item is a string, it will
-    be resolved to a url, otherwise it will be treated as a tuple of
-    (name, url)."""
-    trail = []
+class Main(BreadcrumbsMixin, TemplateView):
+    template_name = 'main.html'
 
-    def __init__(self, trail):
-        self.trail = trail
+    def get_context_data(self, *args, **kwargs):
+        context = super().get_context_data(*args, **kwargs)
+        # A 'context' is the data that the template can use
+        comic = xkcd.Comic(xkcd.getLatestComicNum())
+        context.update({
+            'inventory_size': Container.objects.filter(is_empty=False).count(),
+            'xkcd_url': comic.getImageLink(),
+            'xkcd_alt': comic.getAsciiAltText(),
+            'xkcd_title': comic.getAsciiTitle()
+        })
+        # Now put the context together with a template
+        # Look in chemical_inventory/templates/main.html for the actual html
+        # 'request' is the HTTP request submitted by the browser
+        return context
 
-    def __call__(self, view_function):
-        # This is the actual decorator
-        self.view_function = view_function
-        return self.set_breadcrumbs
-
-    def set_breadcrumbs(self, request, *args, **kwargs):
-        """Add data to the request indicating what the breadcrumb trail is."""
-        request.breadcrumbs = self.trail
-        return self.view_function(request, *args, **kwargs)
-
-
-@breadcrumbs([main_breadcrumb()])
-def main(request):
-    """This view function returns a generic landing page response."""
-    # A 'context' is the data that the template can use
-    comic = xkcd.Comic(xkcd.getLatestComicNum())
-    context = {
-    'inventory_size': Container.objects.filter(is_empty=False).count(),
-    'xkcd_url': comic.getImageLink(),
-    'xkcd_alt': comic.getAsciiAltText(),
-    'xkcd_title': comic.getAsciiTitle()
-    }
-    # Now put the context together with a template
-    # Look in chemical_inventory/templates/main.html for the actual html
-    # 'request' is the HTTP request submitted by the browser
-    return render(request, 'main.html', context)
+    def breadcrumbs(self):
+        breadcrumbs = [inventory_breadcrumb()]
+        return breadcrumbs
 
 
-class ChemicalListView(ListView):
+class ChemicalListView(BreadcrumbsMixin, ListView):
     """View shows a list of currently available chemicals."""
 
     template_name = 'chemical_list.html'
     model = Chemical
     glossary_filters = GLOSSARY_FILTERS
     context_object_name = 'chemicals'
+
+    # @breacrumbs(['chemical_inventory'])
+    # def as_view(self):
+    #     return super().as_view()
+
+    def breadcrumbs(self):
+        breadcrumbs = [inventory_breadcrumb()]
+        breadcrumbs.append('chemical_list')
+        return breadcrumbs
 
     def get_context_data(self, *args, **kwargs):
         # Get the default context
@@ -130,7 +146,7 @@ class ChemicalListView(ListView):
         queryset = sorted(queryset, key=lambda x: x.is_in_stock(), reverse=True)
         return queryset
 
-class ChemicalDetailView(DetailView):
+class ChemicalDetailView(BreadcrumbsMixin, DetailView):
     """This view shows detailed information about one chemical. Also gets
     the list of containers that this chemical is in."""
 
@@ -145,18 +161,11 @@ class ChemicalDetailView(DetailView):
         chemical = Chemical.objects.get(pk=pk)
         return chemical
 
-    @staticmethod
-    def breadcrumbs(chemical):
-        return [
-            main_breadcrumb(),
-            'chemical_list',
-            breadcrumb(chemical.name, reverse('chemical_detail', kwargs={'pk': chemical.pk}))
-        ]
+    def breadcrumbs(self):
+        return chemical_breadcrumbs(self.object)
 
     def get_context_data(self, *args, **kwargs):
         chemical = self.get_object()
-        # Add breadcrumbs
-        self.request.breadcrumbs = self.breadcrumbs(chemical)
         # Get the default context
         context = super().get_context_data(*args, **kwargs)
         # Add list of containers to context
@@ -165,7 +174,7 @@ class ChemicalDetailView(DetailView):
         return context
 
 
-class SupportingDocumentView(FormView):
+class SupportingDocumentView(BreadcrumbsMixin, FormView):
     template_name = 'supporting_documents.html'
     form_class = SupportingDocumentForm
 
@@ -179,11 +188,14 @@ class SupportingDocumentView(FormView):
         return reverse('supporting_documents',
                        kwargs={'container_pk': container_pk})
 
-    def get_context_data(self, *args, **kwargs):
+    def breadcrumbs(self):
         # Set breadcrumbs
-        self.request.breadcrumbs = ChemicalDetailView.breadcrumbs(self.container.chemical)
-        self.request.breadcrumbs.append(('Supporting Documents',
-                                         self.get_success_url()))
+        breadcrumbs = chemical_breadcrumbs(self.container.chemical)
+        breadcrumbs.append(('Supporting Documents',
+                            self.get_success_url()))
+        return breadcrumbs
+
+    def get_context_data(self, *args, **kwargs):
         # Inherit parent context
         context = super().get_context_data(*args, **kwargs)
         # Set our own context entries
@@ -202,18 +214,10 @@ class SupportingDocumentView(FormView):
         return HttpResponseRedirect(self.get_success_url())
 
 
-class AddContainerView(TemplateView):
+class AddContainerView(BreadcrumbsMixin, TemplateView):
     template_name = 'container_add.html'
 
     def get_context_data(self, *args, **kwargs):
-        # Add breadcrumbs
-        chemical_id = self.request.GET.get('chemical_id')
-        if chemical_id is not None:
-            chemical = Chemical.objects.get(pk=chemical_id)
-            self.request.breadcrumbs = ChemicalDetailView.breadcrumbs(chemical)
-        else:
-            self.request.breadcrumbs = [main_breadcrumb()]
-        self.request.breadcrumbs.append(('Add to Inventory', reverse('add_container')))
         context = super().get_context_data(*args, **kwargs)
         # Load the angular forms for container and chemical
         context.update(chemical_form=ChemicalForm())
@@ -221,6 +225,17 @@ class AddContainerView(TemplateView):
         context.update(glove_form=GloveForm())
         context.update(supplier_form=SupplierForm())
         return context
+
+    def breadcrumbs(self):
+        # Add breadcrumbs
+        chemical_id = self.request.GET.get('chemical_id')
+        if chemical_id is not None:
+            chemical = Chemical.objects.get(pk=chemical_id)
+            breadcrumbs = chemical_breadcrumbs(chemical)
+        else:
+            breadcrumbs = [inventory_breadcrumb()]
+        breadcrumbs.append(('Add to Inventory', reverse('add_container')))
+        return breadcrumbs
 
     @property
     def success_url(self):
@@ -234,11 +249,12 @@ class AddContainerView(TemplateView):
         pass
 
 
-class EditChemicalView(UpdateView):
+class EditChemicalView(BreadcrumbsMixin, UpdateView):
     template_name = 'chemical_edit.html'
-    template_object_name = Chemical
+    template_object_name = 'chemical'
     model = Chemical
     form_class = ChemicalForm
+
     def get_object(self):
         """Return the specific chemical by its primary key ('pk')."""
         # Find the primary key from the url
@@ -253,15 +269,16 @@ class EditChemicalView(UpdateView):
         obj.save()
         return HttpResponseRedirect(self.get_success_url())
 
-    def get_context_data(self, *args, **kwargs):
-        # Set the breadcrumb navigation
-        self.request.breadcrumbs = ChemicalDetailView.breadcrumbs(self.object)
-        new_breadcrumb = ('Edit', reverse('chemical_edit', kwargs={'pk': self.object.pk}))
-        self.request.breadcrumbs.append(new_breadcrumb)
-        return super().get_context_data(*args, **kwargs)
+    def breadcrumbs(self):
+        return [
+            inventory_breadcrumb(),
+            'chemical_list',
+            breadcrumb(self.object.name, reverse('chemical_detail', kwargs={'pk': self.object.pk})),
+            breadcrumb('Edit', reverse('chemical_edit', kwargs={'pk': self.object.pk})),
+            ]
 
 
-class EditContainerView(UpdateView):
+class EditContainerView(BreadcrumbsMixin, UpdateView):
     template_name = 'container_edit.html'
     model = Container
     form_class = ContainerForm
@@ -274,13 +291,15 @@ class EditContainerView(UpdateView):
         container = Container.objects.get(pk=pk)
         return container
 
-    def get_context_data(self, *args, **kwargs):
+    def breadcrumbs(self):
         # Set the breadcrumb navigation
-        self.request.breadcrumbs = ChemicalDetailView.breadcrumbs(self.object.chemical)
-        new_breadcrumb = ('Edit Container',
-                          reverse('container_edit', kwargs={'pk': self.object.pk}))
-        self.request.breadcrumbs.append(new_breadcrumb)
-        return super().get_context_data(*args, **kwargs)
+        breadcrumbs = [
+            inventory_breadcrumb(),
+            'chemical_list',
+            breadcrumb(self.object.chemical.name, reverse('chemical_detail', kwargs={'pk': self.object.chemical.pk})),
+            breadcrumb('Edit container', reverse('container_edit', kwargs={'pk': self.object.pk})),
+            ]
+        return breadcrumbs
 
 
 # Browseable API viewsets

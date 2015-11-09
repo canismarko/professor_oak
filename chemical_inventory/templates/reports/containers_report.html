@@ -1,0 +1,7 @@
+{% extends 'reports/generic_report.html' %}
+
+{% block report_body %}
+
+{% include 'reports/container_table.html' with container_list=objects %}
+
+{% endblock %}

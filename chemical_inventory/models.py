@@ -98,11 +98,15 @@ class Chemical(models.Model):
     def get_absolute_url(self):
         return reverse('chemical_detail', kwargs={'pk': self.pk})
 
+    @property
+    def empty_container_set(self):
+        return self.container_set.filter(is_empty=True)
+
     def has_expired(self):
         if Container.objects.filter(chemical__id=self.pk, expiration_date__lte=datetime.date.today()).count() != 0:
             return True
         return False
-        
+
     def not_empty_but_expired(self):
         if Container.objects.filter(chemical__id=self.pk, expiration_date__lte=datetime.date.today(), is_empty=False).count() != 0:
             return True
@@ -212,6 +216,17 @@ class Container(models.Model):
         self.container.is_empty = True
         self.save()
 
+    def quantity_string(self):
+        s = "{quantity} {unit_of_measure}"
+        return s.format(quantity=self.quantity, unit_of_measure=self.unit_of_measure)
+
+
+def expired_containers(date=None):
+    # Default to today
+    if date is None:
+        date = datetime.date.today()
+    return Container.objects.filter(expiration_date__lte=date, is_empty=False)
+
 
 class SupportingDocument(models.Model):
     """A document that characterizes the given container. Ex. XRD, TGA,
@@ -238,6 +253,9 @@ class Location(models.Model):
                                              room=self.room_number,
                                              bldg=self.building)
 
+    @property
+    def active_container_set(self):
+        return self.container_set.filter(is_empty=False)
 
 
 class Supplier(models.Model):
@@ -245,6 +263,9 @@ class Supplier(models.Model):
 
     def __str__(self):
         return self.name
+
+    class Meta():
+        ordering = ['name']
 
 
 def import_chemicals_csv(csvfile, sds_dir):

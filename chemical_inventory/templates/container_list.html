@@ -1,0 +1,77 @@
+<!-- Snippet for displaying a list of containers passed as container_list -->
+<table class="table container-list">
+  {% if perspective != "chemical" %}
+  <th>Chemical</th>
+  {% endif %}
+  <th>Location</th>
+  <th>Quantity</th>
+  <th>Batch#</th>
+  {% if not perspective == "owner" %}
+  <th>Contact Person</th>
+  {% endif %}
+  <th>Expiration Date</th>
+  <th class="text-center">Empty?</th>
+  <th>XRD/TGA/etc</th><!-- For document icon -->
+  <th></th><!-- For edit icon -->
+  <th></th><!-- For Barcode icon -->
+  {% for container in container_list %}
+
+  <tr ng-controller="chemicalList"
+      ng-init="chemicalId={{ container.pk }}; isEmpty={{ container.is_empty | lower }}"
+      ng-class="{empty: isEmpty}">
+    {% if not perspective == "chemical" %}
+    <td>
+      <a href="{% url 'chemical_detail' pk=container.chemical.pk %}"
+	 title="View details of {{ container.chemical.name }}">
+	{{ container.chemical.name }}</a>
+    </td>
+    {% endif %}
+    <td>{{ container.location }}</td>
+    <td>{{ container.quantity }} {{ container.unit_of_measure }}</td>
+    <td>{{ container.batch }}</td>
+    {% if not perspective == "owner" %}
+    <td>
+      <a href="{% url 'user_detail' pk=container.owner.pk %}"
+	 title="View {{ container.owner.get_short_name }}'s details" >
+	{{ container.owner.get_full_name }}</a>
+    </td>
+    {% endif %}
+    <td>{{ container.expiration_date }}
+      {% if container.is_expired and container.is_empty == False %}
+      <span class="glyphicon glyphicon-alert red_alert"
+	    title="This container has expired"></span>
+      {% endif %}
+    </td>
+    <td class="text-center">
+      <input type="checkbox"
+	     ng-model="isEmpty" ng-change="updateStatus()">
+    </td>
+    <td>
+      <!-- Supporting documents -->
+      <a href="{% url 'supporting_documents' container.id %}"
+	 title="View supporting documents for this container">
+	<span class="glyphicon glyphicon-file"></span>
+	{{ container.supportingdocument_set.count }}
+      </a>
+    </td>
+    <td>
+      <!-- Edit -->
+      <a href="{{ container.edit_url }}"
+	 title="Edit this container of {{ chemical.name|lower }}" >
+	<span class="glyphicon glyphicon-pencil"></span>
+      </a>
+    </td>
+    {% if request.user.pk == None or container.is_empty == True %}
+    <td ng-controller="printButton" class="login_only">
+    {% else %}
+    <td ng-controller="printButton">
+    {% endif %}
+      <!--Barcode -->
+      <a ng-click="sendPrintJob({{ container.pk }})"
+	 title="Print a label for this container of {{ chemical.name|lower }}" >
+	<span class="glyphicon glyphicon-barcode"></span>
+      </a>
+    </td>
+  </tr>
+  {% endfor %}
+</table>

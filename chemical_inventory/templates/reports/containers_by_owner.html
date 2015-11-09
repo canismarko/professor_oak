@@ -1,0 +1,19 @@
+{% extends 'reports/generic_report.html' %}
+
+{% block report_body %}
+
+{% for user in objects %}
+<h3>
+  <a href="{% url 'user_detail' pk=user.pk %}">
+    {{ user.get_full_name }}</a>
+</h3>
+{% if user.container_set.all %}
+{% include 'reports/container_table.html' with container_list=user.container_set.all perspective="owner" %}
+{% else %}
+<div class="alert alert-info">
+  There are no active containers owned by {{ user.get_short_name }}.
+</div>
+{% endif %}
+{% endfor %}
+
+{% endblock %}
