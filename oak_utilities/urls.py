@@ -8,7 +8,11 @@ from rest_framework import routers
 from . import views
 
 urlpatterns = [
+    url(r'^$',
+        views.main,
+        name='utilities_main'),
     url(r'^make_ulon/$',
-        (views.ULONtemplateForm.as_view()),
+        views.breadcrumbs([views.main_breadcrumb(), 'make_ulon']),
+        login_required(views.GenerateULONView.as_view()),
         name='make_ulon'),
 ]

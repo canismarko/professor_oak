@@ -179,3 +179,5 @@ angular.module('chemicalInventory')
                 $scope.containerpk = "";
             })};
     }])
+
+    // Controller to add subscript, superscript and hydrate 

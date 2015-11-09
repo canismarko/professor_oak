@@ -1,0 +1,194 @@
+% \documentclass[letterpaper,twoside,11pt]{article}
+\usepackage[left=1.5cm, right=1.5cm, top=1.5cm, bottom=1cm]{geometry}
+\usepackage{balance}
+\usepackage{sectsty}
+\usepackage{graphicx} 
+\usepackage{float}
+\usepackage{fancyhdr}
+\usepackage{charter} %font
+\usepackage[T1]{fontenc}
+\usepackage[compact]{titlesec}
+\usepackage{epstopdf}
+\usepackage{amsmath}
+\usepackage{gensymb}
+\usepackage{tabularx}
+\usepackage{tikz}
+\usepackage{soul}
+\usepackage{xcolor}
+	\definecolor{fadegray}{gray}{0.75}
+
+% Date Time packages
+\usepackage[mmddyyyy]{datetime}
+\usepackage{scrtime}
+\usepackage{advdate}
+
+% Define
+\makeatletter
+\newcommand{\setcurrtime}[1]{%
+  \set@time\curr@hour\curr@mins#1\@nil
+}
+\def\set@time#1#2#3:#4\@nil{%
+  \def#1{#3}\def#2{#4}%
+}
+
+\newcommand{\currtime}[1][00:00]{%
+  \begingroup
+  \set@time\new@hour\new@mins#1\@nil
+  \count\z@=\curr@mins\relax
+  \count\tw@=\curr@hour\relax
+  \advance\count\z@\new@mins\relax
+  \advance\count\tw@\new@hour\relax
+  \ifnum\count\z@>59
+    \advance\count\z@-60
+    \advance\count\tw@\@ne
+  \fi
+  % we have to use \count\z@ and \count\tw@ before
+  % ending the group and printing the result
+  \edef\x{\endgroup\two@digits{\count\tw@}:\two@digits{\count\z@}}\x
+}
+\makeatother
+\usetikzlibrary{backgrounds}
+\tikzset{
+  every overlay node/.style={
+    anchor=north west,
+  },
+}
+% Usage:
+% \tikzoverlay at (-1cm,-5cm) {content};
+% or
+% \tikzoverlay[text width=5cm] at (-1cm,-5cm) {content};
+\def\tikzoverlay{%
+   \tikz[baseline,overlay]\node[every overlay node]
+}%
+
+
+
+\fancyhf{}
+\renewcommand{\headrulewidth}{0pt}
+\newcommand{\ra}[1]{\renewcommand{\arraystretch}{#1}}
+
+% \author{Michael R. Plews}
+\title{\vspace{-6ex}\textbf{Unattended Laboratory Operation Notice}\vspace{0ex}}
+\numberwithin{equation}{section}
+\titlespacing{\section}
+{0pt}{2ex}{2ex}
+\titlespacing{\subsection}
+{0pt}{2ex}{2ex}
+\date{}
+
+% Renew new commands
+\settimeformat{xxivtime}
+\providecommand{\ExperimentStart}{\hfill}
+\providecommand{\ExperimentEnd}{\hfill}
+\providecommand{\User}{\hfill}
+\providecommand{\ContactNumber}{\hfill}
+
+% Experimental Arguments
+\providecommand{\ExperimentDescription}{\hfill}
+\providecommand{\ExperimentLocation}{\hfill}
+\providecommand{\ExperimentSublocation}{\hfill}
+\providecommand{\Chemicals}{\hfill}
+\providecommand{\EmergencyShutdown}{\hfill}
+
+
+% Hazards
+\providecommand{\Biohazard}{\textcolor{fadegray}{\st{Biohazard}}}
+\providecommand{\FlammableGas}{\textcolor{fadegray}{\st{Flammable Gas}}}
+\providecommand{\Mutagen}{\textcolor{fadegray}{\st{Mutagen}}}
+\providecommand{\ShockSensitive}{\textcolor{fadegray}{\st{Shock Sensitive}}}
+\providecommand{\Carcinogen}{\textcolor{fadegray}{\st{Carcinogen}}}
+\providecommand{\FlammableLiquid}{\textcolor{fadegray}{\st{Flammable Liquid}}}
+\providecommand{\Noise}{\textcolor{fadegray}{\st{Noise}}}
+\providecommand{\Teratogen}{\textcolor{fadegray}{\st{Teratogen}}}
+\providecommand{\CompressedGas}{\textcolor{fadegray}{\st{Compressed Gas}}}
+\providecommand{\FlammableSolid}{\textcolor{fadegray}{\st{Flammable Solid}}}
+\providecommand{\OrganicPeroxide}{\textcolor{fadegray}{\st{Organic Peroxide}}}
+\providecommand{\Toxic}{\textcolor{fadegray}{\st{Toxic}}}
+\providecommand{\Corrosive}{\textcolor{fadegray}{\st{Corrosive}}}
+\providecommand{\HighlyToxic}{\textcolor{fadegray}{\st{Highly Toxic}}}
+\providecommand{\Oxidizer}{\textcolor{fadegray}{\st{Oxidizer}}}
+\providecommand{\Unstable}{\textcolor{fadegray}{\st{Unstable}}}
+\providecommand{\Cryogen}{\textcolor{fadegray}{\st{Cryogen}}}
+\providecommand{\HotOilBath}{\textcolor{fadegray}{\st{Hot Oil Bath}}}
+\providecommand{\Pyrophoric}{\textcolor{fadegray}{\st{Pyrophoric}}}
+\providecommand{\UVLight}{\textcolor{fadegray}{\st{UV Light}}}
+\providecommand{\Electrical}{\textcolor{fadegray}{\st{Electrical}}}
+\providecommand{\HotPlate}{\textcolor{fadegray}{\st{Hot Plate/Stirrer}}}
+\providecommand{\ReactionUnderPressure}{\textcolor{fadegray}{\st{Reaction Under Pressure}}}
+\providecommand{\WaterReactive}{\textcolor{fadegray}{\st{Water Reactive}}}
+\providecommand{\Explosive}{\textcolor{fadegray}{\st{Explosive}}}
+\providecommand{\Irritant}{\textcolor{fadegray}{\st{Irritant}}}
+\providecommand{\Heating}{\textcolor{fadegray}{\st{Heating}}}
+\providecommand{\Flammable}{\textcolor{fadegray}{\st{Flammable}}}
+\providecommand{\Laser}{\textcolor{fadegray}{\st{Laser}}}
+\providecommand{\RunningWater}{\textcolor{fadegray}{\st{Running Water}}}
+\providecommand{\Aerosol}{\textcolor{fadegray}{\st{Aerosol}}}
+\providecommand{\MagneticField}{\textcolor{fadegray}{\st{Magnetic Field}}}
+\providecommand{\XRay}{\textcolor{fadegray}{\st{X-Ray}}}
+\providecommand{\MovingParts}{\textcolor{fadegray}{\st{Moving Parts}}}
+\providecommand{\AdditionalHazards}{\hfill}
+
+\begin{document}
+\pagestyle{fancy}
+\pagenumbering{gobble}
+\maketitle
+% \tikzoverlay at (-10.5cm,4cm) {\includegraphics[scale=0.3]{"D:/DATA/Dropbox (Cabana Group)/Scripts/images/logo.pdf"}};
+\centering
+
+\vspace{-6ex}
+\begin{tabularx}{\linewidth}{| l | X | X |}
+\hline
+  \textbf{Date: }\today & \textbf{Room: }\ExperimentLocation & \textbf{Location: } \ExperimentSublocation\\\hline
+  \textbf{Name: }\User & \multicolumn{2}{X|}{\textbf{Contact \#:} \ContactNumber}\\\hline
+  \textbf{Principal Investigtor (PI):} Jordi Cabana & \multicolumn{2}{X|}{\textbf{Contact \#:} 631-834-3126}\\\hline
+  \textbf{Start Date/Time:} \ExperimentStart & \multicolumn{2}{X|}{\textbf{End Date/Time:} \ExperimentEnd }\\\hline
+\end{tabularx}
+\hfill \break
+\hfill \break
+\begin{tabularx}{\linewidth}{| X |}
+\hline
+  \textbf{Description of Experiment/Task:}\\\hline
+  \ExperimentDescription \\[1.7cm]\hline
+\end{tabularx}
+\hfill \break
+\hfill \break
+\begin{tabularx}{\linewidth}{|X|X|X|X|}
+\hline
+\multicolumn{4}{|l|}{\textbf{Chemicals in Use (use full name):}}\\\hline
+\multicolumn{4}{|l|}{\Chemicals}\\[3cm]\hline
+  \Biohazard		&	\FlammableGas		&	\Mutagen				&	\ShockSensitive 	\\
+  \Carcinogen		&	\FlammableLiquid	&	\Noise					&	\Teratogen			\\
+  \CompressedGas	&	\FlammableSolid		&	\OrganicPeroxide		&	\Toxic				\\
+  \Corrosive		&	\HighlyToxic		&	\Oxidizer				&	\Unstable			\\
+  \Cryogen			&	\HotOilBath			&	\Pyrophoric				&	\UVLight			\\
+  \Electrical		&	\HotPlate			&	\ReactionUnderPressure	&	\WaterReactive		\\
+  \Explosive		&	\Irritant			&	\Heating				&	\MovingParts		\\
+  \Flammable		&	\Laser				&	\RunningWater			&	\\
+  \Aerosol			&	\MagneticField		&	\XRay					&	\\
+  \hline
+\multicolumn{4}{|l|}{\textbf{Additional Hazards:}}\\\hline
+\multicolumn{4}{|l|}{\AdditionalHazards}\\[0.5cm]\hline
+\end{tabularx}
+\hfill \break
+\hfill \break
+\begin{tabularx}{\linewidth}{| X |}
+\hline
+  \textbf{Procedure to Shut Down Operation in Case of Emergency:}\\\hline
+  \EmergencyShutdown\\[2.5cm]
+In case of an \textbf{emergency}, notify campus police (\textbf{5-5555}), Physical plant (\textbf{6-7511}), and EHSO (\textbf{6-7233}).\\\hline
+\end{tabularx}
+\hfill \break
+\hfill \break
+\begin{tabularx}{\linewidth}{| X | X | X |}
+\hline
+  \multicolumn{3}{|c|}{\textbf{Approval of PI or Group CHO}}\\\hline
+  Gene Nolis&&\today\\\hline
+  \multicolumn{3}{|c|}{\textbf{Review of Experimental Setup}}\\\hline
+  \User&&\today\\\hline
+  (Print)	&	(Signature) & (Date)\\\hline
+\end{tabularx}
+\hfill \break
+\hfill \break
+This ULON expires on \AdvanceDate[14]\today
+\end{document}
+% \endinput

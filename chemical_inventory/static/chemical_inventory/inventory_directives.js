@@ -175,7 +175,7 @@ angular.module('chemicalInventory')
     .directive('oakFormValidation', [function() {
     	function link(scope, elem, attrs) {
     	    // Add classes to labels of required fields
-    	    $inputs = elem.find('input[ng-required],select[ng-required]');
+    	    $inputs = elem.find('input[ng-required],select[ng-required],textarea[ng-required]');
     	    for ( var i=0; i<$inputs.length; i++) {
     		$input = $($inputs[i]);
     		$label = $($input.prevAll('label')[0]);

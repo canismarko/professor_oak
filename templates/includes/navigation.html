@@ -3,7 +3,7 @@
   {% block nav %}
 
   <ul class="nav nav-tabs">
-    <li{% if 'chemical_inventory' in request.path %} class="active"{% endif%}>
+    <li{% if 'chemical_inventory' in request.path %} class="active"{% endif %}>
       <a href="/chemical_inventory/">
 	{% if skynet %}
 	<img class="inventory-icon" src="{% static 'globe.svg' %}" />
@@ -17,8 +17,10 @@
     <img src="{% static 'UICbattery.png' %}" class="inventory-icon" />
     Cabana Group Website</a>
     </li>
-    <li>
-      <a href="/oak_utilities/">Utilities</a>
+    <li {% if 'utilities' in request.path %} class='active'{% endif %}>
+      <a href="/utilities/">
+      Utilities
+      </a>
     </li>
   </ul>
   {% endblock %}

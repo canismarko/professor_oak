@@ -5,3 +5,4 @@ __pycache__
 static_files
 media_files
 localsettings.py
+*.pdf
