@@ -30,14 +30,14 @@ class Main(BreadcrumbsMixin, TemplateView):
         return breadcrumbs
 
     
-class GenerateULONView(FormView):
+class GenerateULONView(BreadcrumbsMixin, FormView):
     template_name = 'make_ulon.html'
     form_class = ULONtemplateForm
     
     def breadcrumbs(self):
         breadcrumbs = [
         utilities_breadcrumb(),
-        breadcrumb('make_ulon', reverse('make_ulon'))
+        'make_ulon'
         ]
         return breadcrumbs
   
@@ -76,13 +76,11 @@ class GenerateULONView(FormView):
             doc.preamble.append(r'\newcommand{\AdditionalHazards}{' + AdditionalHazards + '}')
         for (command, hazard) in list_of_hazards:
             if command in Hazards:
-                doc.preamble.append('\\newcommand{\\' + command + ' }{ ' + hazard + '}')	
-        doc.preamble.append(r'\subimport{./oak_utilities/static/}{ULONtemplate.tex}')
+                doc.preamble.append('\\newcommand{\\' + command + ' }{ ' + hazard + '}')
+        doc.preamble.append(r'\subimport{../static/}{ULONtemplate.tex}')
         
         #Generate the pdf
-        # print (os.getcwd())
-        # os.chdir('C:/Users/Michael Plews/Documents/GitHub/professor_oak/oak_utilities/static')
-        doc.generate_tex()
+        # doc.generate_tex()
         doc.generate_pdf()
         with open(filename + '.pdf', 'rb') as pdf:
             response = HttpResponse(pdf.read(),content_type='application/pdf')

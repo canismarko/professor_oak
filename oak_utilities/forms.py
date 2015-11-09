@@ -99,9 +99,9 @@ class ULONtemplateForm(NgFormValidationMixin, Bootstrap3FormMixin, NgForm):
         widget=forms.Textarea(attrs={'rows': '3'})
          )
     hazards = forms.MultipleChoiceField(
-        label = "Hazards (Ctrl+click to select multiple)",
+        label = "Hazards",
         choices=sorted(list_of_hazards, key=getKey),
-        # widget=forms.CheckboxSelectMultiple(), 
+        widget=forms.CheckboxSelectMultiple(), 
         required=False
         )
     additional_hazards = forms.CharField(
