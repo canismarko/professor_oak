@@ -1,4 +1,6 @@
 {% extends 'base.html' %}
+{% load staticfiles %}
+
 {% block title %}Create an ULON{% endblock %}
 
 {% block content %}
@@ -22,7 +24,7 @@
       <div class="oak-form-buttons">
 	<button type="submit" class="btn btn-primary"
 		ng-disabled="{{ form.form_name }}.$invalid">Save</button>
-	<a href="{{ container.detail_url }}" title="Return to chemical details"
+	<a href=".." title="Return to Utilities"
 	   class="btn btn-link">Cancel</a>
       </div>
 

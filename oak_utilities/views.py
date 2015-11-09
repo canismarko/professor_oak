@@ -12,41 +12,34 @@ from pylatex import Document, Section, Subsection, Tabular, Math, TikZ, Axis, \
 from pylatex.utils import italic, escape_latex
 import os, subprocess
 from datetime import datetime, timedelta, date, time
+from professor_oak.views import breadcrumb, BreadcrumbsMixin
 
-breadcrumb = namedtuple('breadcrumb', ('name', 'url'))
-def main_breadcrumb():
+# Breadcrumbs definitions
+def utilities_breadcrumb():
     return breadcrumb('Utilities', reverse_lazy('utilities_main'))
 
-class breadcrumbs():
-    """Modifies the request to include a list of ancestor pages, should be
-    closely aligned with the URL. If each list item is a string, it will
-    be resolved to a url, otherwise it will be treated as a tuple of
-    (name, url)."""
-    trail = []
+class Main(BreadcrumbsMixin, TemplateView):
+    template_name = 'utilities_main.html'
 
-    def __init__(self, trail):
-        self.trail = trail
+    # def get_context_data(self, *args, **kwargs):
+        # context = super().get_context_data(*args, **kwargs)
+        # return context
 
-    def __call__(self, view_function):
-        # This is the actual decorator
-        self.view_function = view_function
-        return self.set_breadcrumbs
-
-    def set_breadcrumbs(self, request, *args, **kwargs):
-        """Add data to the request indicating what the breadcrumb trail is."""
-        request.breadcrumbs = self.trail
-        return self.view_function(request, *args, **kwargs)
-
-@breadcrumbs([main_breadcrumb()])
-def main(request):
-    """This view function returns a generic landing page response."""
-    return render(request, 'utilities_main.html')
+    def breadcrumbs(self):
+        breadcrumbs = [utilities_breadcrumb()]
+        return breadcrumbs
 
     
 class GenerateULONView(FormView):
     template_name = 'make_ulon.html'
     form_class = ULONtemplateForm
     
+    def breadcrumbs(self):
+        breadcrumbs = [
+        utilities_breadcrumb(),
+        breadcrumb('make_ulon', reverse('make_ulon'))
+        ]
+        return breadcrumbs
   
     def form_valid(self, form):
         '''Use the items in ULON form to generate the ULON using LaTeX'''
@@ -68,6 +61,7 @@ class GenerateULONView(FormView):
         AdditionalHazards = form.cleaned_data['additional_hazards']
         
         #Reassign commands with \newcommand
+        doc.preamble.append(r'\usepackage{import}')
         doc.preamble.append(r'\newcommand{\ExperimentStart}{' + str(ExperimentStart) + '}')	
         doc.preamble.append(r'\newcommand{\ExperimentEnd}{' + str(ExperimentEnd) + '}')
         doc.preamble.append(r'\newcommand{\User}{' + User + '}')
@@ -83,7 +77,7 @@ class GenerateULONView(FormView):
         for (command, hazard) in list_of_hazards:
             if command in Hazards:
                 doc.preamble.append('\\newcommand{\\' + command + ' }{ ' + hazard + '}')	
-        doc.preamble.append(r'\input{"C:/Users/Michael Plews/Documents/GitHub/professor_oak/oak_utilities/static/ULONtemplate.tex"}')
+        doc.preamble.append(r'\subimport{./oak_utilities/static/}{ULONtemplate.tex}')
         
         #Generate the pdf
         # print (os.getcwd())

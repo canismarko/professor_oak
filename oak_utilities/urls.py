@@ -9,10 +9,9 @@ from . import views
 
 urlpatterns = [
     url(r'^$',
-        views.main,
+        views.Main.as_view(),
         name='utilities_main'),
     url(r'^make_ulon/$',
-        views.breadcrumbs([views.main_breadcrumb(), 'make_ulon']),
         login_required(views.GenerateULONView.as_view()),
         name='make_ulon'),
 ]
