@@ -48,7 +48,9 @@ class GenerateULONView(BreadcrumbsMixin, FormView):
         
         #Set Experimental Parameters
         ExperimentStart = form.cleaned_data['experiment_start']
+        ExperimentStartTime = form.cleaned_data['experiment_start_time']
         ExperimentEnd = form.cleaned_data['experiment_end']
+        ExperimentEndTime = form.cleaned_data['experiment_end_time']
         User = self.request.user.get_full_name()
         ContactNumber = form.cleaned_data['contact_number']
         Chemicals = form.cleaned_data['chemicals']
@@ -62,8 +64,12 @@ class GenerateULONView(BreadcrumbsMixin, FormView):
         
         #Reassign commands with \newcommand
         doc.preamble.append(r'\usepackage{import}')
-        doc.preamble.append(r'\newcommand{\ExperimentStart}{' + str(ExperimentStart) + '}')	
+        doc.preamble.append(r'\newcommand{\ExperimentStart}{' + str(ExperimentStart) + '}')
+        if ExperimentStartTime is not None:
+            doc.preamble.append(r'\newcommand{\ExperimentStartTime}{' + str(ExperimentStartTime)[:-3] + '}')
         doc.preamble.append(r'\newcommand{\ExperimentEnd}{' + str(ExperimentEnd) + '}')
+        if ExperimentEndTime is not None:
+            doc.preamble.append(r'\newcommand{\ExperimentEndTime}{' + str(ExperimentEndTime)[:-3] + '}')
         doc.preamble.append(r'\newcommand{\User}{' + User + '}')
         doc.preamble.append(r'\newcommand{\ContactNumber}{' + ContactNumber + '}')
         doc.preamble.append(r'\newcommand{\Chemicals}{' + Chemicals + '}')

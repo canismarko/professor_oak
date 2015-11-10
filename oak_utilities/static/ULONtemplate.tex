@@ -79,7 +79,9 @@
 % Renew new commands
 \settimeformat{xxivtime}
 \providecommand{\ExperimentStart}{\hfill}
+\providecommand{\ExperimentStartTime}{\hfill}
 \providecommand{\ExperimentEnd}{\hfill}
+\providecommand{\ExperimentEndTime}{\hfill}
 \providecommand{\User}{\hfill}
 \providecommand{\ContactNumber}{\hfill}
 
@@ -141,7 +143,7 @@
   \textbf{Date: }\today & \textbf{Room: }\ExperimentLocation & \textbf{Location: } \ExperimentSublocation\\\hline
   \textbf{Name: }\User & \multicolumn{2}{X|}{\textbf{Contact \#:} \ContactNumber}\\\hline
   \textbf{Principal Investigtor (PI):} Jordi Cabana & \multicolumn{2}{X|}{\textbf{Contact \#:} 631-834-3126}\\\hline
-  \textbf{Start Date/Time:} \ExperimentStart & \multicolumn{2}{X|}{\textbf{End Date/Time:} \ExperimentEnd }\\\hline
+  \textbf{Start Date/Time:} \ExperimentStart \space \ExperimentStartTime& \multicolumn{2}{X|}{\textbf{End Date/Time:} \ExperimentEnd \space \ExperimentEndTime }\\\hline
 \end{tabularx}
 \hfill \break
 \hfill \break

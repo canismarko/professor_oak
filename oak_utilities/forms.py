@@ -2,8 +2,9 @@ from django import forms
 from djangular.forms import NgFormValidationMixin, NgModelFormMixin, NgModelForm, NgForm
 from djangular.styling.bootstrap3.forms import Bootstrap3FormMixin
 from django.core.validators import RegexValidator
-from django.forms.widgets import DateTimeInput
+from django.forms.widgets import DateTimeInput, TimeInput, SplitDateTimeWidget
 from . import models
+import datetime
 
 class DateInput(forms.widgets.DateInput):
     """Widget that Renders as htlm5 <input type="date">"""
@@ -11,6 +12,15 @@ class DateInput(forms.widgets.DateInput):
     input_type = 'date'
     format_key = 'DATE_INPUT_FORMATS'
 
+class TimeInput(forms.widgets.TimeInput):
+    """Widget that aids time picking"""
+    input_type = 'time'
+    format_key = 'TIME_INPUT_FORMATS'
+    
+class DateTimeInput(forms.widgets.DateTimeInput):
+    input_type = 'datetime'
+    format_key = 'DATETIME_INPUT_FORMATS'
+    
 class ULONtemplateForm(NgFormValidationMixin, Bootstrap3FormMixin, NgForm):
     form_name = 'ulon_template'
     
@@ -58,14 +68,22 @@ class ULONtemplateForm(NgFormValidationMixin, Bootstrap3FormMixin, NgForm):
     contact_regex = RegexValidator(regex=r'^[0-9]{3}-[0-9]{3}-[0-9]{4}$', message="Phone number must be entered in the format: '999-999-9999'.")
     
     #Fields
-    experiment_start = forms.DateField(
+    experiment_start = forms.DateTimeField(
         label="Start Date",
         widget=DateInput(),
         required=True)
+    experiment_start_time = forms.TimeField(
+        label="Start Time",
+        widget=TimeInput(format="%H:%M"),
+        required=False)
     experiment_end = forms.DateField(
         label="End Date",
         widget=DateInput(),
         required=True)
+    experiment_end_time = forms.TimeField(
+        label="End Time",
+        widget=TimeInput(format="%H:%M",),
+        required=False)
     contact_number = forms.CharField(
         validators=[contact_regex],
         required=True,
