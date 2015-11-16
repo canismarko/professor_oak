@@ -1,9 +1,19 @@
 {% extends 'reports/generic_report.html' %}
-
+{% load custom_filters %}
 {% block report_body %}
 
 {% for location in objects %}
-<h3>{{ location }}</h3>
+<h3>{{ location }}
+{% if location.active_container_set %}
+        <div class="col-md-6 pull-right">
+            <div class="progress" title="Scores can be improved by emptying expired containers">
+                <div class="progress-bar progress-bar-{{ location|location_score|score_class }}" role="progressbar" aria-valuenow="{{ location|location_score }}" aria-valuemin="0" aria-valuemax="100" style="min-width: 3em; width:{{ location|location_score }}%">
+                {{ location|location_score }}%
+                </div>
+            </div>
+        </div>
+    {% endif %}
+</h3>
 {% if location.active_container_set %}
 {% include 'reports/container_table.html' with container_list=location.active_container_set perspective="location" %}
 {% else %}

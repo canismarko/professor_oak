@@ -1,11 +1,21 @@
 {% extends 'reports/generic_report.html' %}
-
+{% load custom_filters %}
 {% block report_body %}
 
 {% for user in objects %}
 <h3>
   <a href="{% url 'user_detail' pk=user.pk %}">
-    {{ user.get_full_name }}</a>
+    {{ user.get_full_name }}
+    </a>
+    {% if user.container_set.all %}
+        <div class="col-md-6 pull-right">
+            <div class="progress" title="Scores can be improved by emptying expired containers">
+                <div class="progress-bar progress-bar-{{ user|user_score|score_class }}" role="progressbar" aria-valuenow="{{ user|user_score }}" aria-valuemin="0" aria-valuemax="100" style="min-width: 3em; width:{{ user|user_score }}%">
+                {{ user|user_score }}%
+                </div>
+            </div>
+        </div>
+    {% endif %}
 </h3>
 {% if user.container_set.all %}
 {% include 'reports/container_table.html' with container_list=user.container_set.all perspective="owner" %}
@@ -15,5 +25,4 @@
 </div>
 {% endif %}
 {% endfor %}
-
 {% endblock %}

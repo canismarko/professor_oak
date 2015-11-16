@@ -1,5 +1,10 @@
+import datetime
+
 from django import template
 from django.utils.html import escape, mark_safe
+
+from ..models import Container
+
 
 register = template.Library()
 
@@ -26,3 +31,24 @@ def formula_markup(formula):
         x += 1
     formula = formula.replace("_","").replace("^", "")
     return mark_safe(formula)
+
+@register.filter(name='user_score')
+def user_score(user):
+    numerator = Container.objects.filter(owner=user, expiration_date__lte=datetime.date.today(), is_empty = False).count()
+    denominator = Container.objects.filter(owner=user).count()
+    return 100 - (numerator/denominator*100)
+ 
+@register.filter(name='location_score')
+def location_score(location):
+    numerator = Container.objects.filter(location=location, expiration_date__lte=datetime.date.today(), is_empty = False).count()
+    denominator = Container.objects.filter(location=location).count()
+    return 100 - (numerator/denominator*100)
+ 
+@register.filter(name='score_class')
+def score_class(score):
+    if score == 100:
+        return "success"
+    if 50 < score < 100:
+        return "warning"
+    if score < 50:
+        return "danger"
