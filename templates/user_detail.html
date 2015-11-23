@@ -61,11 +61,11 @@
 {% if container_list %}
 <div class="col-md-6 pull-right">
             <div class="progress" title="Scores can be improved by emptying expired containers">
-                <div class="progress-bar progress-bar-danger" role="progressbar" aria-valuenow="{{ user|user_red_score }}" aria-valuemin="0" aria-valuemax="100" style="width:{{ user|user_red_score }}%">
-                {{ user|user_red_number }}
+                <div class="progress-bar progress-bar-danger" role="progressbar" aria-valuenow="{{ target_user|user_red_score }}" aria-valuemin="0" aria-valuemax="100" style="width:{{ target_user|user_red_score }}%">
+                {{ target_user|user_red_number }}
                 </div>
-                <div class="progress-bar progress-bar-success" role="progressbar" aria-valuenow="{{ user|user_green_score }}" aria-valuemin="0" aria-valuemax="100" style="width:{{ user|user_green_score }}%">
-                {{ user|user_green_number }}
+                <div class="progress-bar progress-bar-success" role="progressbar" aria-valuenow="{{ target_user|user_green_score }}" aria-valuemin="0" aria-valuemax="100" style="width:{{ target_user|user_green_score }}%">
+                {{ target_user|user_green_number }}
                 </div>
             </div>
         </div>
