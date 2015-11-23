@@ -42,6 +42,7 @@ INSTALLED_APPS = (
     'professor_oak',
     'chemical_inventory',
     'oak_utilities',
+    'bootstrap3_datetime'
 )
 
 # Add the django_browserid authentication backend.

@@ -18,8 +18,20 @@
       <!-- Prevents cross site request forgery -->
       {% csrf_token %}
 
-      {{ form }}
-
+      {% for field in form %}
+        {% ifnotequal field.label hazards %}
+    <table class="fieldWrapper">
+        {{ field.errors }}
+        {{ field.label_tag }} {{ field }}
+    </table>
+        {% else %}
+    <div class="fieldWrapper">
+        {{ field.errors }}
+        {{ field.label_tag }} {{ field }}
+    </div>
+        {% endifnotequal %}
+{% endfor %}
+      
       <!-- Form submission buttons -->
       <div class="oak-form-buttons">
 	<button type="submit" class="btn btn-primary"

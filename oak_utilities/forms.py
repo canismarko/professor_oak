@@ -3,7 +3,9 @@ from djangular.forms import NgFormValidationMixin, NgModelFormMixin, NgModelForm
 from djangular.styling.bootstrap3.forms import Bootstrap3FormMixin
 from django.core.validators import RegexValidator
 from django.forms.widgets import DateTimeInput, TimeInput, SplitDateTimeWidget
+from bootstrap3_datetime.widgets import DateTimePicker
 from . import models
+from django.conf import settings
 import datetime
 
 class DateInput(forms.widgets.DateInput):
@@ -20,6 +22,9 @@ class TimeInput(forms.widgets.TimeInput):
 class DateTimeInput(forms.widgets.DateTimeInput):
     input_type = 'datetime'
     format_key = 'DATETIME_INPUT_FORMATS'
+    
+class CheckboxChoiceInput(forms.widgets.CheckboxChoiceInput):
+    input_type = 'radio'
     
 class ULONtemplateForm(NgFormValidationMixin, Bootstrap3FormMixin, NgForm):
     form_name = 'ulon_template'
@@ -68,8 +73,9 @@ class ULONtemplateForm(NgFormValidationMixin, Bootstrap3FormMixin, NgForm):
     contact_regex = RegexValidator(regex=r'^[0-9]{3}-[0-9]{3}-[0-9]{4}$', message="Phone number must be entered in the format: '999-999-9999'.")
     
     #Fields
-    experiment_start = forms.DateField(
+    experiment_start = forms.DateTimeField(
         label="Start Date",
+        # widget=DateTimePicker(options={"format": "YY-MM-DD HH:mm", "pickSeconds": False}),
         widget=DateInput(),
         required=True)
     experiment_start_time = forms.TimeField(
@@ -119,7 +125,8 @@ class ULONtemplateForm(NgFormValidationMixin, Bootstrap3FormMixin, NgForm):
     hazards = forms.MultipleChoiceField(
         label = "Hazards",
         choices=sorted(list_of_hazards, key=getKey),
-        widget=forms.CheckboxSelectMultiple(), 
+        widget=forms.CheckboxSelectMultiple(
+        attrs={'class':'checkbox'}), 
         required=False
         )
     additional_hazards = forms.CharField(
@@ -128,4 +135,4 @@ class ULONtemplateForm(NgFormValidationMixin, Bootstrap3FormMixin, NgForm):
         widget=forms.Textarea(attrs={'rows': '3'})
          ) 
     class Meta:
-        fields = ['experiment_start', 'experiment_end', 'contact_number', 'chemicals', 'experiment_description', 'experiment_location', 'experiment_sublocation', 'emergency_shutdown', 'hazards', 'additional_hazards']
+        fields = ['experiment_start', 'experiment_end', 'contact_number', 'chemicals', 'experiment_description', 'experiment_location', 'experiment_sublocation', 'emergency_shutdown',  'additional_hazards']

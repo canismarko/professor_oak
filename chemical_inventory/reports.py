@@ -159,6 +159,17 @@ class ContainersByLocation(ReportView):
     url_name = 'containers_by_location'
     report_name = 'Containers by Location'
 
+    def get_context_data(self, *args, **kwargs):
+        context = super().get_context_data(*args, **kwargs)
+        # A 'context' is the data that the template can use
+        max_containers, list_of_locations = [],[]
+        for location in Location.objects.all():
+            max_containers.append(Container.objects.filter(location=location).count())
+        context.update({
+            'max_location': max(max_containers)
+        })
+        return context
+    
     def get_queryset(self):
         locations = Location.objects.all()
         return locations
