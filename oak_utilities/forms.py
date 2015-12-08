@@ -3,7 +3,7 @@ from djangular.forms import NgFormValidationMixin, NgModelFormMixin, NgModelForm
 from djangular.styling.bootstrap3.forms import Bootstrap3FormMixin
 from django.core.validators import RegexValidator
 from django.forms.widgets import DateTimeInput, TimeInput, SplitDateTimeWidget
-from bootstrap3_datetime.widgets import DateTimePicker
+# from bootstrap3_datetime.widgets import DateTimePicker
 from . import models
 from django.conf import settings
 import datetime
