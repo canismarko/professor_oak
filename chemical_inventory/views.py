@@ -379,8 +379,6 @@ def print_label(request, container_pk):
         
 @login_required
 def get_quick_empty(request, container_pk):
-        """Pass the information from the container to subprocess, convert it to a csv file and merge with the gLabel template."""
-        # stubbed for  development 
         container = Container.objects.get(pk=container_pk)
         container.mark_as_empty
         return JsonResponse({'status': 'success'})

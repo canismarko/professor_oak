@@ -73,7 +73,7 @@ class ULONtemplateForm(NgFormValidationMixin, Bootstrap3FormMixin, NgForm):
     contact_regex = RegexValidator(regex=r'^[0-9]{3}-[0-9]{3}-[0-9]{4}$', message="Phone number must be entered in the format: '999-999-9999'.")
     
     #Fields
-    experiment_start = forms.DateTimeField(
+    experiment_start = forms.DateField(
         label="Start Date",
         # widget=DateTimePicker(options={"format": "YY-MM-DD HH:mm", "pickSeconds": False}),
         widget=DateInput(),

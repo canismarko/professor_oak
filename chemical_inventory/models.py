@@ -192,7 +192,7 @@ class Container(models.Model):
             msg = 'Cannot print label with settings.DEBUG set to True'
             raise ImproperlyConfigured(msg)
         name = str(self.chemical.name)[:35]
-        location = str(self.location)[:30]
+        location = str(self.location)[:25]
         barcode_identifier = str(self.pk).zfill(6)
         expiration = self.expiration_date.strftime("%m/%d/%y")
         working_directory = 'chemical_inventory/label_printing'
