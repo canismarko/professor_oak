@@ -19,8 +19,9 @@ def utilities_breadcrumb():
     return breadcrumb('Utilities', reverse_lazy('utilities_main'))
 
 class Main(BreadcrumbsMixin, TemplateView):
-    template_name = 'utilities_main.html'
-
+    # template_name = 'utilities_main.html'
+    template_name = 'coming_soon.html'          #Temporary redirect page
+    
     # def get_context_data(self, *args, **kwargs):
         # context = super().get_context_data(*args, **kwargs)
         # return context
@@ -28,7 +29,6 @@ class Main(BreadcrumbsMixin, TemplateView):
     def breadcrumbs(self):
         breadcrumbs = [utilities_breadcrumb()]
         return breadcrumbs
-
     
 class GenerateULONView(BreadcrumbsMixin, FormView):
     template_name = 'make_ulon.html'
