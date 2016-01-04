@@ -31,7 +31,14 @@
 	{{ container.chemical.name }}</a>
     </td>
     {% endif %}
-    <td>{{ container.location }}</td>
+    <td>{{ container.location }}
+    {% if container.pk == active_find %}
+         <span class="glyphicon glyphicon-star green_success"
+	    title="This is container number {{ container.pk }}"></span></td>
+    {% else %}
+        </td>
+    {% endif %}
+    </td>
     <td>{{ container.quantity }} {{ container.unit_of_measure }}</td>
     <td>{{ container.batch }}</td>
     {% if not perspective == "owner" %}

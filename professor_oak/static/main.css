@@ -75,6 +75,10 @@ p.login_notify{
     color: #D63333
 }
 
+.green_success {
+    color: #1F9E0E
+}
+
 .blue_info {
     color: #0099FF
 }
