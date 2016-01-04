@@ -180,4 +180,34 @@ angular.module('chemicalInventory')
             })};
     }])
 
+    // Controller to find a container from its pk number -- redirects to the chemical page with the container highlighted
+    .controller('quickFind',['$scope','djangoUrl', '$http', '$window', 'toaster', '$resource', 'Chemical', 'currentUser', function($scope, djangoUrl, $http, $window, toaster, $resource, Chemical, currentUser){
+        $scope.submit=function() {
+            quickFindUrl = djangoUrl.reverse('api:container-detail',{pk: $scope.containerpk});
+                $http.get(quickFindUrl).then(function(response) {
+                    containerNumber = response.data.chemical;
+                    $window.location.assign("/chemical_inventory/chemicals/" + containerNumber + '?find=' + $scope.containerpk);
+                console.log(quickEmptyUrl);
+                $scope.containerpk = "";
+                }, function(response)
+                 {
+                    if (response.status == '500') {
+                        var message = "Please enter the containers barcode number in order to search for it"
+                    } else if (response.status == '404') {
+                        var message = "Container " + $scope.containerpk + " cannot be found. Are you sure you entered it correctly?"
+                    } else {
+                        var message = "Unknown error, contact the site administrator"
+                    }
+                    toaster.pop({
+                    type: 'error',
+                    title: 'Error!',
+                    body: message,
+                    timeout: 0,
+                    showCloseButton: true
+                    });
+                console.log(quickFindUrl);
+                $scope.containerpk = "";
+            })};
+    }])
+    
     // Controller to add subscript, superscript and hydrate 

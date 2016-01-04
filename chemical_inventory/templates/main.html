@@ -40,12 +40,12 @@
     {% else %}
     <div class="text-center login_only" id="stretch">
     {% endif %}
-      <form class="navbar-form" ng-submit="submit()" ng-controller="quickEmpty">
+      <form class="navbar-form" ng-submit="submit()" ng-controller="quickFind">
 	<div class="input-group">
           <input type="number" ng-model="containerpk" class="form-control"
 		 name="quick_empty" placeholder="Barcode number..." value=""/>
           <span class="input-group-btn">
-            <input type="submit" class="btn btn-default" value="Mark as empty" />
+            <input type="submit" class="btn btn-default" value="Find" />
 	  </span>
 	</div>
 	{% if request.user.pk == None %}

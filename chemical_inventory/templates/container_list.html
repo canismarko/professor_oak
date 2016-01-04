@@ -15,10 +15,15 @@
   <th></th><!-- For edit icon -->
   <th></th><!-- For Barcode icon -->
   {% for container in container_list %}
-
-  <tr ng-controller="chemicalList"
+  {% if container.pk == active_find %} 
+  <tr class="success" ng-controller="chemicalList"
       ng-init="chemicalId={{ container.pk }}; isEmpty={{ container.is_empty | lower }}"
       ng-class="{empty: isEmpty}">
+  {% else %}
+  <tr ng-controller="chemicalList"
+      ng-init="chemicalId={{ container.pk }}; isEmpty={{ container.is_empty | lower }}"
+      ng-class="{empty: isEmpty}"> 
+  {% endif %}
     {% if not perspective == "chemical" %}
     <td>
       <a href="{% url 'chemical_detail' pk=container.chemical.pk %}"

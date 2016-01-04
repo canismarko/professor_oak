@@ -168,6 +168,9 @@ class ChemicalDetailView(BreadcrumbsMixin, DetailView):
         chemical = self.get_object()
         # Get the default context
         context = super().get_context_data(*args, **kwargs)
+        #sets the active find to an integer from ?find= found in the URL
+        if self.request.GET.get('find') is not None: #avoids error with empty ?find=
+            context['active_find'] = int(self.request.GET.get('find'))
         # Add list of containers to context
         container_list = chemical.container_set.order_by('is_empty', 'expiration_date')
         context['container_list'] = container_list

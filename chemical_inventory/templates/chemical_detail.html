@@ -1,6 +1,9 @@
 {% extends 'base.html' %}
 {% load custom_filters %}
 {% load inventory_extras %}
+  {% if active_find %}
+  ({{ active_find }})
+  {% endif %}
 {% block title %}{{ chemical.name }}{% endblock %}
 
 {% block content %}
