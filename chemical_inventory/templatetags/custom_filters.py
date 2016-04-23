@@ -78,3 +78,22 @@ def location_green_number(location):
 def location_green_score(location):
     return (location_green_number(location) / top_location()) * 100
    
+@register.filter(name='user_expired')
+def user_expired(user):
+    count = expired_containers().filter(owner=user).count()
+    return count
+
+@register.filter(name='location_score')
+def location_score(location):
+    numerator = Container.objects.filter(location=location, expiration_date__lte=datetime.date.today(), is_empty = False).count()
+    denominator = Container.objects.filter(location=location).count()
+    return 100 - (numerator/denominator*100)
+
+@register.filter(name='score_class')
+def score_class(score):
+    if score == 100:
+        return "success"
+    if 50 < score < 100:
+        return "warning"
+    if score < 50:
+        return "danger"

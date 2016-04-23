@@ -6,19 +6,29 @@
 <h3>
   <a href="{% url 'user_detail' pk=user.pk %}">
     {{ user.get_full_name }}
-    </a>
-    {% if user.container_set.all %}
-        <div class="col-md-6 pull-right">
-            <div class="progress" title="Scores can be improved by emptying expired containers">
-                <div class="progress-bar progress-bar-danger" role="progressbar" aria-valuenow="{{ user|user_red_score }}" aria-valuemin="0" aria-valuemax="100" style="width:{{ user|user_red_score }}%">
-                {{ user|user_red_number }}
-                </div>
-                <div class="progress-bar progress-bar-success" role="progressbar" aria-valuenow="{{ user|user_green_score }}" aria-valuemin="0" aria-valuemax="100" style="width:{{ user|user_green_score }}%">
-                {{ user|user_green_number }}
-                </div>
-            </div>
-        </div>
-    {% endif %}
+  </a>
+  {% if user.container_set.all %}
+  <div class="col-md-6 pull-right">
+    <div class="progress" title="Scores can be improved by emptying expired containers">
+      <div class="progress-bar progress-bar-danger"
+	   role="progressbar"
+	   aria-valuenow="{{ user|user_red_score }}"
+	   aria-valuemin="0"
+	   aria-valuemax="100"
+	   style="width:{{ user|user_red_score }}%">
+        {{ user|user_red_number }}
+      </div>
+      <div class="progress-bar progress-bar-success"
+	   role="progressbar"
+	   aria-valuenow="{{ user|user_green_score }}"
+	   aria-valuemin="0"
+	   aria-valuemax="100"
+	   style="width:{{ user|user_green_score }}%">
+        {{ user|user_green_number }}
+      </div>
+    </div>
+  </div>
+  {% endif %}
 </h3>
 {% if user.container_set.all %}
 {% include 'reports/container_table.html' with container_list=user.container_set.all perspective="owner" %}
