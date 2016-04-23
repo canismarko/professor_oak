@@ -31,9 +31,13 @@
     <td>{{ container.batch }}</td>
     {% if not perspective == "owner" %}
     <td>
+      {% if container.owner %}
       <a href="{% url 'user_detail' pk=container.owner.pk %}"
 	 title="View {{ container.owner.get_short_name }}'s details" >
 	{{ container.owner.get_full_name }}</a>
+      {% else %}
+      Unknown
+      {% endif %}
     </td>
     {% endif %}
     <td>{{ container.expiration_date }}
