@@ -7979,5 +7979,95 @@
         "change_message": "Changed permissions.",
         "user": 1
     }
+},
+{
+    "model": "chemical_inventory.hazard",
+    "fields": {
+        "name": "Explosive",
+        "hazard_type": "p",
+        "pictogram": "",
+        "description": "Unstable explosives\r\nExplosives, divisions 1.1, 1.2, 1.3, 1.4\r\nSelf-reactive substances and mixtures, types A, B\r\nOrganic peroxides, types A, B"
+    },
+    "pk": 1
+},
+{
+    "model": "chemical_inventory.hazard",
+    "fields": {
+        "name": "Flammable",
+        "hazard_type": "p",
+        "pictogram": "",
+        "description": "Flammable gases, category 1\r\nFlammable aerosols, categories 1, 2\r\nFlammable liquids, categories 1, 2, 3\r\nFlammable solids, categories 1, 2\r\nSelf-reactive substances and mixtures, types B, C, D, E, F\r\nPyrophoric liquids, category 1\r\nPyrophoric solids, category 1\r\nSelf-heating substances and mixtures, categories 1, 2\r\nSubstances and mixtures, which in contact with water, emit flammable gases, categories 1, 2, 3\r\nOrganic peroxides, types B, C, D, E, F"
+    },
+    "pk": 2
+},
+{
+    "model": "chemical_inventory.hazard",
+    "fields": {
+        "name": "Oxidizing",
+        "hazard_type": "p",
+        "pictogram": "",
+        "description": "Oxidizing gases, category 1\r\nOxidizing liquids, categories 1, 2, 3\r\nOxidizing solids, categories 1, 2, 3"
+    },
+    "pk": 3
+},
+{
+    "model": "chemical_inventory.hazard",
+    "fields": {
+        "name": "Compressed Gas",
+        "hazard_type": "p",
+        "pictogram": "",
+        "description": "Compressed gases\r\nLiquefied gases\r\nRefrigerated liquefied gases\r\nDissolved gases"
+    },
+    "pk": 4
+},
+{
+    "model": "chemical_inventory.hazard",
+    "fields": {
+        "name": "Corrosive",
+        "hazard_type": "ph",
+        "pictogram": "",
+        "description": "Corrosive to metals, category 1"
+    },
+    "pk": 5
+},
+{
+    "model": "chemical_inventory.hazard",
+    "fields": {
+        "name": "Toxic",
+        "hazard_type": "h",
+        "pictogram": "",
+        "description": "Acute toxicity (oral, dermal, inhalation), categories 1, 2, 3"
+    },
+    "pk": 6
+},
+{
+    "model": "chemical_inventory.hazard",
+    "fields": {
+        "name": "Harmful",
+        "hazard_type": "h",
+        "pictogram": "",
+        "description": "Acute toxicity (oral, dermal, inhalation), category 4\r\nSkin irritation, categories 2, 3\r\nEye irritation, category 2A\r\nSkin sensitization, category 1\r\nSpecific target organ toxicity following single exposure, category 3\r\nRespiratory tract irritation\r\nNarcotic effects\r\nNot used:\r\nwith the \"skull and crossbones\" pictogram\r\nfor skin or eye irritation if:\r\nthe \"corrosion\" pictogram also appears\r\nthe \"health hazard\" pictogram is used to indicate respiratory sensitization"
+    },
+    "pk": 7
+},
+{
+    "model": "chemical_inventory.hazard",
+    "fields": {
+        "name": "Health Hazard",
+        "hazard_type": "h",
+        "pictogram": "",
+        "description": "Respiratory sensitization, category 1\r\nGerm cell mutagenicity, categories 1A, 1B, 2\r\nCarcinogenicity, categories 1A, 1B, 2\r\nReproductive toxicity, categories 1A, 1B, 2\r\nSpecific target organ toxicity following single exposure, categories 1, 2\r\nSpecific target organ toxicity following repeated exposure, categories 1, 2\r\nAspiration hazard, categories 1, 2\r\nAcute toxicity (oral, dermal, inhalation), category 5\r\nEye irritation, category 2B\r\nReproductive toxicity \u2013 effects on or via lactation"
+    },
+    "pk": 8
+},
+{
+    "model": "chemical_inventory.hazard",
+    "fields": {
+        "name": "Environmental Hazard",
+        "hazard_type": "e",
+        "pictogram": "",
+        "description": "Acute hazards to the aquatic environment, category 1\r\nChronic hazards to the aquatic environment, categories 1, 2"
+    },
+    "pk": 9
 }
 ]

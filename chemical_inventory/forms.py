@@ -12,7 +12,8 @@ class DateInput(forms.widgets.DateInput):
     format_key = 'DATE_INPUT_FORMATS'
 
 
-class ContainerForm(Bootstrap3FormMixin, NgModelFormMixin, NgFormValidationMixin, NgModelForm):
+class ContainerForm(Bootstrap3FormMixin, NgModelFormMixin,
+                    NgFormValidationMixin, NgModelForm):
     scope_prefix = 'container'
     form_name = 'container_form'
     location = forms.ModelChoiceField(label="Location (SDS § 7)",
@@ -20,9 +21,12 @@ class ContainerForm(Bootstrap3FormMixin, NgModelFormMixin, NgFormValidationMixin
     date_opened = forms.DateField(widget=DateInput(),
                                   required=False)
     expiration_date = forms.DateField(widget=DateInput())
-    state = forms.CharField(widget=forms.TextInput(attrs={'placeholder': 'Solid, liquid, foil, etc.'}))
-    unit_of_measure = forms.CharField(widget=forms.TextInput(attrs={'placeholder': 'g, mL, etc'}),
-                                      required=False)
+    state = forms.CharField(
+        widget=forms.TextInput(attrs={'placeholder': 'Solid, liquid, foil, etc.'}))
+    unit_of_measure = forms.CharField(
+        widget=forms.TextInput(attrs={'placeholder': 'g, mL, etc'}),
+        required=False
+    )
     batch = forms.CharField(label='Batch/Lot Number', required=False)
     container_type = forms.CharField(widget=forms.TextInput(
         attrs={'placeholder': 'Glass bottle, metal pouch, etc.'}
@@ -34,7 +38,8 @@ class ContainerForm(Bootstrap3FormMixin, NgModelFormMixin, NgFormValidationMixin
                   'supplier', 'comment']
 
 
-class SupportingDocumentForm(NgModelFormMixin, NgFormValidationMixin, Bootstrap3FormMixin, NgModelForm):
+class SupportingDocumentForm(NgModelFormMixin, NgFormValidationMixin,
+                             Bootstrap3FormMixin, NgModelForm):
 # class SupportingDocumentForm(forms.ModelForm):
     form_name = 'supporting_document_form'
     comment = forms.CharField(
@@ -51,7 +56,8 @@ class SupportingDocumentForm(NgModelFormMixin, NgFormValidationMixin, Bootstrap3
 NFPA_RATINGS = [('', '----------')] + models.Chemical.NFPA_RATINGS
 NFPA_HAZARDS = [('', '----------')] + models.Chemical.NFPA_HAZARDS
 
-class ChemicalForm(NgModelFormMixin, NgFormValidationMixin, Bootstrap3FormMixin, NgModelForm):
+class ChemicalForm(NgModelFormMixin, NgFormValidationMixin,
+                   Bootstrap3FormMixin, NgModelForm):
     scope_prefix = 'chemical'
     form_name = 'chemical_form'
     cas_number = forms.CharField(
@@ -83,19 +89,21 @@ class ChemicalForm(NgModelFormMixin, NgFormValidationMixin, Bootstrap3FormMixin,
         required=False)
     class Meta:
         model = models.Chemical
-        fields = ['name', 'cas_number', 'formula',
+        fields = ['name', 'cas_number', 'formula', 'primary_hazard',
                   'health', 'flammability', 'instability', 'special_hazards',
                   'gloves', 'safety_data_sheet']
 
 
-class GloveForm(Bootstrap3FormMixin, NgModelFormMixin, NgFormValidationMixin, NgModelForm):
+class GloveForm(Bootstrap3FormMixin, NgModelFormMixin,
+                NgFormValidationMixin, NgModelForm):
     scope_prefix = 'glove'
     form_name = 'glove_form'
     class Meta:
         model = models.Glove
         fields = ['name']
 
-class SupplierForm(Bootstrap3FormMixin, NgModelFormMixin, NgFormValidationMixin, NgModelForm):
+class SupplierForm(Bootstrap3FormMixin, NgModelFormMixin,
+                   NgFormValidationMixin, NgModelForm):
     scope_prefix = 'supplier'
     form_name = 'supplier_form'
     class Meta:

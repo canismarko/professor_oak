@@ -15,7 +15,34 @@ from django.db.models import signals
 from django.utils.text import slugify
 
 
-# Create your models here.
+class Hazard(models.Model):
+    """A hazard type as defined by the global harmonized system.
+
+    Attributes
+    ----------
+    - pictogram : Image file that represents this image. If not
+      provided, we will look in `static_files/ghs_pictograms/` for one
+      that matches the `name` attribute
+    """
+    PHYSICAL = 'p'
+    HEALTH = 'h'
+    PHYSICAL_AND_HEALTH = 'ph'
+    ENVIRONMENTAL = 'e'
+    TYPE_OPTIONS = [
+        (PHYSICAL, 'Physical'),
+        (HEALTH, 'Health'),
+        (PHYSICAL_AND_HEALTH, 'Physical and Health'),
+        (ENVIRONMENTAL, 'Environmental'),
+    ]
+    hazard_type = models.CharField(max_length=4, choices=TYPE_OPTIONS)
+    name = models.CharField(max_length=30)
+    description = models.TextField(blank=True)
+    pictogram = models.ImageField(upload_to="ghs_pictograms", null=True, blank=True)
+
+    def __str__(self):
+        return self.name
+
+
 class Chemical(models.Model):
     """The general idea of a chemical (eg Lithium hydroxide). It is *not*
     a bottle of lithium hydroxide, just the general concept of lithium
@@ -27,6 +54,9 @@ class Chemical(models.Model):
     cas_number = models.CharField(max_length=100, db_index=True, blank=True)
     formula = models.CharField(max_length=50, db_index=True, blank=True)
     stripped_formula = models.CharField(max_length=50, db_index=True, blank=True)
+    # Global harmonized system
+    primary_hazard = models.ForeignKey('Hazard', null=True)
+    # NFPA system
     NFPA_NOT_AVAILABLE = -1
     NFPA_RATINGS = [
         (0, 'None (0)'),
@@ -103,19 +133,31 @@ class Chemical(models.Model):
         return self.container_set.filter(is_empty=True)
 
     def has_expired(self):
-        if Container.objects.filter(chemical__id=self.pk, expiration_date__lte=datetime.date.today()).count() != 0:
+        expired_qs = Container.objects.filter(
+            chemical__id=self.pk,
+            expiration_date__lte=datetime.date.today()
+        )
+        if expired_qs.count() > 0:
             return True
         return False
 
     def not_empty_but_expired(self):
-        if Container.objects.filter(chemical__id=self.pk, expiration_date__lte=datetime.date.today(), is_empty=False).count() != 0:
+        expired_qs = Container.objects.filter(
+            chemical__id=self.pk,
+            expiration_date__lte=datetime.date.today(),
+            is_empty=False
+        )
+        if expired_qs.count() > 0:
             return True
         return False
 
 
 @receiver(signals.pre_save, sender=Chemical)
 def strip_formula(sender, instance, raw, using, update_fields, *args, **kwargs):
-    """Strips the formula supplied to remove underscores and carrots, saves it as the stripped_formula field. Used for formula searching."""
+    """Strips the formula supplied to remove underscores and carrots,
+    saves it as the stripped_formula field. Used for formula
+    searching.
+    """
     instance.stripped_formula = instance.formula.replace("_","").replace("^","")
 
 
@@ -247,6 +289,7 @@ class Location(models.Model):
     room_number = models.CharField(max_length=20)
     building = models.CharField(max_length=30)
     msds_location = models.CharField(max_length=60, blank=True)
+    compatible_hazards = models.ManyToManyField('Hazard')
 
     def __str__(self):
         return "{name} ({room} {bldg})".format(name=self.name,
