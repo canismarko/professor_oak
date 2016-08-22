@@ -23,7 +23,7 @@ from django.contrib.auth import views as auth_views
 from django.conf import settings
 
 from . import views
-import chemical_inventory.urls, oak_utilities.urls
+import chemical_inventory.urls, oak_utilities.urls, pokedex.urls
 
 urlpatterns = [
         # Since there's home content yet, temporarily redirect to the chemical inventory
@@ -32,6 +32,7 @@ urlpatterns = [
             name='home'),
         url(r'^admin/', include(admin.site.urls)),
         url(r'^chemical_inventory/', include(chemical_inventory.urls)),
+		url(r'^pokedex/', include(pokedex.urls)),
         url(r'^utilities/', include(oak_utilities.urls)),
         url(r'^users/(?P<pk>\d+)/$',
             login_required(views.UserView.as_view()),

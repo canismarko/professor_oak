@@ -1,0 +1,82 @@
+{% load staticfiles %}
+{% load browserid %}
+<!DOCTYPE html>
+<html>
+  <head>
+	<script src="http://code.jquery.com/jquery-1.11.0.min.js"></script>
+    <!-- Enable responsive design (mobile friendly) -->
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
+  	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
+  	<script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+    <!-- Styles -->
+	{% browserid_css %}
+    <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.5/css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/angularjs-toaster/0.4.15/toaster.min.css">
+    <link rel="stylesheet" type="text/css" href="{% static 'main.css' %}">
+
+    <!-- Favicon that shows up in the browser tab -->
+    <link rel="shortcut icon" href="{% static 'favicon.ico' %}" />
+	<!-- Custom artwork (icons etc.) -->
+	<!--<link rel="stylesheet" href="{% static 'icon.css' %}">-->
+	</head>
+    <title>
+      {% block title %}{% endblock %} | Pok&eacutedex
+    </title>
+
+  </head>
+
+ 	<body>
+
+	{% browserid_info %}
+<div class="container">
+	<div class="row header">
+		<div class="col-md-10">
+				<!-- Icons would go here but I'm not sure I want any yet -->
+		</div>
+		<div class="col-md-2 pull-right">
+				<!-- User authentication and user_id -->
+	  		{% if user.is_authenticated %}
+  		<p class="text-center">Welcome, 
+			<a href="{% url 'user_detail' %}">{{ user.first_name }}</a>
+ 		</p>
+	  		<div class="auth-options text-center">
+	    		{% if user.is_staff %}
+	    		<span class="btn btn-link"><a href="/admin/" title="Administration site">Admin</a></span>
+	    		{% endif %}
+	    		<span class="btn btn-link">
+	      		{% browserid_logout text='Logout' %}
+	   			 </span>
+	  		</div>
+	  			{% elif request.GET.next %}
+				<p></p>
+	   				{% browserid_login text='Login' color='light' next=request.GET.next %} 			
+				{% else %}
+				<p></p>	    		
+					{% browserid_login text='Login' color='light' next=request.path %}	
+				{% endif %}
+		</div>
+	</div>
+      	<!-- Breadcrumb navigation -->
+      {% if breadcrumbs %}
+      <ol class="breadcrumb">
+	<li><a href="/"><span class="glyphicon glyphicon-home"></span></a></li>
+	{% for step in breadcrumbs %}
+	<li><a href="{{ step.url }}">{{ step.name }}</a></li>
+	<!-- {% if not forloop.last %} > {% endif %} -->
+	{% endfor %}
+      </ol>
+      {% endif %}
+
+      <div class="main-content">
+	{% block content %}{% endblock %}
+      </div>
+
+    </div>
+		</div>
+	
+</div>	
+<script src="https://code.jquery.com/jquery-1.9.1.min.js"></script>
+    {% browserid_js %}
+	</body>
+</html>

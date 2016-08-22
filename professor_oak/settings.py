@@ -42,6 +42,9 @@ INSTALLED_APPS = (
     'professor_oak',
     'chemical_inventory',
     'oak_utilities',
+	'pokedex',
+	'easy_thumbnails', 
+	'image_cropping'
     # 'bootstrap3_datetime'
 )
 

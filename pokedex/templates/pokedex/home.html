@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+{% load custom_filters %}
+{% block title %}Home{% endblock %}
+{% load browserid %}
+
+<head>
+	{% browserid_css %}
+</head>
+
+{% block content %}
+
+<div class="row">
+	<div class="col-md-12 text-center">
+		<h2>Select Your Project:</h2>
+{% if object_list %}
+	{% for project in object_list %}
+	{% if project.is_archived == False %}
+<a href="{{ project.detail_url }}" class="btn btn-default">{{ project.name }}</a>
+	{% endif %}
+	{% endfor %}
+
+{% endif %}
+<p></p>
+<a href="{% url 'add_sample' %}" class="btn btn-primary">
+	<span class="glyphicon glyphicon-plus"></span>
+</a>
+	</div>
+</div>
+{% endblock %}
