@@ -14,4 +14,7 @@ urlpatterns = [
     url(r'^make_ulon/$',
         login_required(views.GenerateULONView.as_view()),
         name='make_ulon'),
+	url(r'^stock_take/$',
+		login_required(views.UploadInventoryView.as_view()),
+		name='stock_take'),
 ]

@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+{% load staticfiles %}
+
+{% block title %}Upload your most recent stock take{% endblock %}
+
+{% block content %}
+
+<h2>Upload your most recent stock take</h2>
+
+<div class="row">
+  <div class="col-md-4">
+    <form action="." method='post' name="{{ form.form_name }}"
+	  enctype="multipart/form-data" novalidate oak-form-validation>
+      {% csrf_token %}
+
+		{% for field in form %}
+	  		<p>{{ field.label_tag }} {{ field }}</p>
+		{% endfor %}
+
+      <div class="oak-form-buttons">
+	<button type="submit" class="btn btn-primary"
+		ng-disabled="{{ form.form_name }}.$invalid">Upload</button>
+      </div>
+    </form>
+  </div>
+  <div class="col-md-8">
+  </div>
+</div>
+
+{% endblock %}
