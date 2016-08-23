@@ -57,9 +57,9 @@ if __name__ == "__main__":
 
 	#return accounted_for, not_in_db, not_in_actual
 
-#	print ('Analysis complete...')
-#	print (str(len(accounted_for)) + ' chemicals accounted for')
-#	print (str(len(not_in_db)) + ' chemicals found but not active in the database')
-#	print (not_in_db)
-#	print (str(len(not_in_actual)) + ' chemicals in the database but not found')
-#	print (not_in_actual)
+	print ('Analysis complete...')
+	print (str(len(accounted_for)) + ' chemicals accounted for')
+	print (str(len(not_in_db)) + ' chemicals found but not active in the database')
+	print (not_in_db)
+	print (str(len(not_in_actual)) + ' chemicals in the database but not found')
+	print (not_in_actual)

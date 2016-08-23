@@ -6,6 +6,7 @@ from django.views.generic.detail import DetailView
 from django.views.generic.edit import CreateView, UpdateView, FormView
 from django.core.urlresolvers import reverse, reverse_lazy
 from django.http import HttpResponse, HttpResponseRedirect
+from django.shortcuts import redirect
 from .forms import ULONtemplateForm, UploadInventoryForm
 from pylatex import Document, Section, Subsection, Tabular, Math, TikZ, Axis, \
 	Plot, Figure, Package
@@ -16,7 +17,7 @@ from datetime import datetime, timedelta, date, time
 from professor_oak.views import breadcrumb, BreadcrumbsMixin
 from .static import inventory_reader as ir
 from .models import stock_take
-
+from chemical_inventory.models import Container
 #import 
 
 
@@ -119,18 +120,64 @@ class UploadInventoryView(BreadcrumbsMixin, FormView):
 	def form_valid(self, form):
 		'''Take the uploaded inventory.csv and produce a HTML output comparing the uploaded document with the current database.'''
 		file = form.save(commit=True)
-#		print('[DEBUG]', file.file, '<-- This is the file name ')
-#		print('[DEBUG]', os.path.dirname(os.path.abspath(__file__)))
-#		print('[DEBUG]', settings.BASE_DIR)
-#		print('[DEBUG]', settings.BASE_DIR + '/' + settings.MEDIA_ROOT + str(file.file)[2:])
-		file_upload = settings.BASE_DIR + '/' + settings.MEDIA_ROOT + str(file.file)[2:]
+		Containers = Container.objects.filter(is_empty=False)
+
+#		#Iterate over containers that are not empty to form a list of container id's
+#		database = []
+#		for item in Containers:
+#			database.append(item.id)
+
+#		#Create actual list from uploaded file and run comparison
+#		file_upload = settings.BASE_DIR + '/' + settings.MEDIA_ROOT + str(file.file)[2:]
+#		print ('[DEBUG]', str(file.file)[2:])
+#		print ('[DEBUG]', str(file.file).split('/')[-1].split('.txt')[0])
+		stock_to_url = str(file.file).split('/')[-1].split('.txt')[0]
+#		actual = ir.create_barcode_actual(str(file_upload))
+#		accounted_for, not_in_db, not_in_actual = ir.analyse(actual, database)
+#		
+#		#Print results
+#		print ('Analysis complete...')
+#		print (str(len(accounted_for)) + ' chemicals accounted for')
+#		print (str(len(not_in_db)) + ' chemicals found but not active in the database')
+#		print (not_in_db)
+#		print (str(len(not_in_actual)) + ' chemicals in the database but not found')
+#		print (not_in_actual)
+		url = reverse('results')
+		return redirect(reverse('results') + '?stock=' + stock_to_url)
+
+class InventoryResultsView(BreadcrumbsMixin, ListView):
+	template_name = 'stock_results.html'	
+	context_object_name = 'results'
+	model = Container
+	
+	def breadcrumbs(self):
+		breadcrumbs = [
+#			utilities_breadcrumbs(),
+#			'results',
+		]
+		return breadcrumbs
+	
+	def get_context_data(self, **kwargs):
+		'''Retreives the previously uploaded filename from the URL and produces results based on the current inventory.'''
+		context = super().get_context_data(**kwargs)
+#		if self.request.GET.get('stock') is not None:
+		uploaded_file_name = str(self.request.GET.get('stock'))
+		containers = Container.objects.all()
+		
+		#Iterate over containers that are not empty to form a list of container id's
+		database = []
+		for item in containers:
+			database.append(item.id)
+
+		#Create actual list from uploaded file and run comparison
+		file_upload = settings.BASE_DIR + '/' + settings.MEDIA_ROOT + 'oak_utilities/chemical_inventory_data/' + uploaded_file_name + '.txt'
 		actual = ir.create_barcode_actual(str(file_upload))
-		database = ir.create_barcode_database(str(file_upload))
 		accounted_for, not_in_db, not_in_actual = ir.analyse(actual, database)
-		print ('Analysis complete...')
-		print (str(len(accounted_for)) + ' chemicals accounted for')
-		print (str(len(not_in_db)) + ' chemicals found but not active in the database')
-		print (not_in_db)
-		print (str(len(not_in_actual)) + ' chemicals in the database but not found')
-		print (not_in_actual)
-		return HttpResponseRedirect(self.get_success_url())
+		
+		#Provide context data for presentation of results
+		context['accounted_for'] = Container.objects.filter(id__in=accounted_for)
+		context['not_in_db_but_empty'] = Container.objects.filter(id__in=not_in_db)
+		context['not_in_db'] = not_in_db
+		context['not_in_actual'] = Container.objects.filter(id__in=not_in_actual, is_empty=False)
+		context['percentage'] = 100*len(accounted_for)/(len(not_in_db) + len(not_in_actual) + len(accounted_for))
+		return context

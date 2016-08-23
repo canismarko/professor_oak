@@ -171,4 +171,27 @@ li.invalid {
     cursor: pointer;
     cursor: hand;
 }
+
+.panel-red {
+	background-image: none;
+	background-color: #D9534F !important;
+	color: white;
+}
+
+.panel-green {
+	background-image: none;
+	background-color: #5CB85C !important;
+	color: white;
+}
+
+.panel-yellow {
+	background-image: none;
+	background-color: #F0AD4E !important;
+	color: white;
+}
+
+.huge {
+	font-size: 150% !important;
+}
+
 }
