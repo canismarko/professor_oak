@@ -11,7 +11,7 @@ from .forms import ULONtemplateForm, UploadInventoryForm
 from pylatex import Document, Section, Subsection, Tabular, Math, TikZ, Axis, \
 	Plot, Figure, Package
 from pylatex.utils import italic, escape_latex
-import os, subprocess
+import os, subprocess, csv
 from django.conf import settings
 from datetime import datetime, timedelta, date, time
 from professor_oak.views import breadcrumb, BreadcrumbsMixin
@@ -105,7 +105,6 @@ class GenerateULONView(BreadcrumbsMixin, FormView):
 class UploadInventoryView(BreadcrumbsMixin, FormView):
 	template_name = 'stock_take.html'
 	form_class = UploadInventoryForm
-	model = stock_take
 
 	def breadcrumbs(self):
 		breadcrumbs = [
@@ -113,9 +112,6 @@ class UploadInventoryView(BreadcrumbsMixin, FormView):
 		'stock_take'
 		]
 		return breadcrumbs
-	
-	def get_success_url(self):
-		return reverse('stock_take')
 
 	def form_valid(self, form):
 		'''Take the uploaded inventory.csv and produce a HTML output comparing the uploaded document with the current database.'''
@@ -142,14 +138,20 @@ class UploadInventoryView(BreadcrumbsMixin, FormView):
 #		print (not_in_db)
 #		print (str(len(not_in_actual)) + ' chemicals in the database but not found')
 #		print (not_in_actual)
-		url = reverse('results')
-		return redirect(reverse('results') + '?stock=' + stock_to_url)
+		url = reverse('results', kwargs={'stock': str(file.id)})
+		return redirect(url)		
 
-class InventoryResultsView(BreadcrumbsMixin, ListView):
+class InventoryResultsView(BreadcrumbsMixin, DetailView):
 	template_name = 'stock_results.html'	
 	context_object_name = 'results'
-	model = Container
-	
+	model = stock_take
+
+	def get_object(self):
+		"""Return the specific chemical by its id"""
+		pk = self.kwargs['stock']
+		stock = stock_take.objects.get(id=pk)
+		return stock
+
 	def breadcrumbs(self):
 		breadcrumbs = [
 #			utilities_breadcrumbs(),
@@ -157,11 +159,9 @@ class InventoryResultsView(BreadcrumbsMixin, ListView):
 		]
 		return breadcrumbs
 	
-	def get_context_data(self, **kwargs):
-		'''Retreives the previously uploaded filename from the URL and produces results based on the current inventory.'''
-		context = super().get_context_data(**kwargs)
-#		if self.request.GET.get('stock') is not None:
-		uploaded_file_name = str(self.request.GET.get('stock'))
+	def calculate_results(self):
+		stock = self.get_object()
+		uploaded_file_name = str(stock.file)
 		containers = Container.objects.all()
 		
 		#Iterate over containers that are not empty to form a list of container id's
@@ -170,7 +170,28 @@ class InventoryResultsView(BreadcrumbsMixin, ListView):
 			database.append(item.id)
 
 		#Create actual list from uploaded file and run comparison
-		file_upload = settings.BASE_DIR + '/' + settings.MEDIA_ROOT + 'oak_utilities/chemical_inventory_data/' + uploaded_file_name + '.txt'
+		file_upload = settings.BASE_DIR + '/' + settings.MEDIA_ROOT + '/' + uploaded_file_name
+		actual = ir.create_barcode_actual(str(file_upload))
+		accounted_for, not_in_db, not_in_actual = ir.analyse(actual, database)
+		
+		#In order: accounted_for, not_in_db_but_empty, not_in_db, not_in_actual 
+		return Container.objects.filter(id__in=accounted_for), Container.objects.filter(id__in=not_in_db), not_in_db, Container.objects.filter(id__in=not_in_actual, is_empty=False)
+	
+	def get_context_data(self, **kwargs):
+		'''Retreives the previously uploaded filename from the URL and produces results based on the current inventory.'''
+		context = super().get_context_data(**kwargs)
+#		if self.request.GET.get('stock') is not None:
+		stock = self.get_object()
+		uploaded_file_name = str(stock.file)
+		containers = Container.objects.all()
+		
+		#Iterate over containers that are not empty to form a list of container id's
+		database = []
+		for item in containers:
+			database.append(item.id)
+
+		#Create actual list from uploaded file and run comparison
+		file_upload = settings.BASE_DIR + '/' + settings.MEDIA_ROOT + '/' + uploaded_file_name
 		actual = ir.create_barcode_actual(str(file_upload))
 		accounted_for, not_in_db, not_in_actual = ir.analyse(actual, database)
 		
@@ -180,4 +201,62 @@ class InventoryResultsView(BreadcrumbsMixin, ListView):
 		context['not_in_db'] = not_in_db
 		context['not_in_actual'] = Container.objects.filter(id__in=not_in_actual, is_empty=False)
 		context['percentage'] = 100*len(accounted_for)/(len(not_in_db) + len(not_in_actual) + len(accounted_for))
+		context['csv_available'] = hasattr(self, 'write_csv')
 		return context
+
+	def get(self, request, *args, **kwargs):
+		print ('[DEBUG]', 'get function')
+		format = request.GET.get('format')
+		list = request.GET.get('list')
+		if format == 'csv':
+			response = HttpResponse(content_type='text/csv')
+			disposition = 'attachment; filename="{}.csv"'.format(list)
+			response['Content-Disposition'] = disposition
+			self.write_csv(response, list)
+		else:
+			response = super().get(request, *args, **kwargs)
+		return response
+
+	def write_csv(self, response, list):
+		print ('[DEBUG]', self.calculate_results()[2])
+		print ('[DEBUG]', 'write_csv function')
+		writer = csv.writer(response)
+		if list == 'not_in_database':
+			writer.writerow(['Barcode Number'])
+			for barcode_number in self.calculate_results()[2]:
+				writer.writerow([barcode_number])
+			return response
+		if list == 'marked_as_empty':
+			writer.writerow([
+				'Barcode Number',
+				'Chemical Name',
+				'Location',
+				'Owner'
+				])
+			for container in self.calculate_results()[1]:
+				writer.writerow([
+					container.id,
+					container.chemical.name,
+					container.location,
+					container.owner.get_full_name(),
+					])
+			return response
+		if list == 'not_scanned':
+			writer.writerow([
+				'Barcode',
+				'Chemical Name',
+				'Batch',
+				'Location',
+				'Container',
+				'Owner',
+				])
+			for container in self.calculate_results()[3]:
+				writer.writerow([
+					container.id,
+					container.chemical.name,
+					container.batch,
+					container.location,
+					container.container_type,
+					container.owner.get_full_name(),
+					])
+			return response

@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 
-{% block title %}Landing Page{% endblock %}
+{% block title %}Inventory Results{% endblock %}
 
 {% block content %}
 
@@ -59,7 +59,16 @@
 	<div class="col-md-6">
 		<div class="panel panel-warning">
 			<div class="panel-heading">
-				These are the ones that are listed as empty
+				<div class="panel-title pull-left">
+					These are the ones that are listed as empty
+				</div>
+				{% if csv_available %}
+					<a href="?format=csv&list=marked_as_empty" class="btn btn-default pull-right">
+    					<span class="glyphicon glyphicon-list-alt"></span>
+    				CSV
+  					</a>
+				<div class="clearfix"></div>
+  				{% endif %}
 			</div>
 			<table class="table">
 				<tr>
@@ -82,7 +91,16 @@
 	<div class="col-md-6">
 		<div class="panel panel-warning">
 			<div class="panel-heading">
-				These are the ones that remain
+				<div class="panel-title pull-left">
+					These are the ones that remain   
+				</div>
+				{% if csv_available %}
+					<a href="?format=csv&list=not_in_database" class="btn btn-default pull-right">
+    					<span class="glyphicon glyphicon-list-alt"></span>
+    				CSV
+  					</a>
+				<div class="clearfix"></div>
+  				{% endif %}
 			</div>
 			<table class="table">
 				<tr>
@@ -102,7 +120,16 @@
 	<div class="col-md-12">
 		<div class="panel panel-danger">
 			<div class="panel-heading">
-				Not scanned
+				<div class="panel-title pull-left">
+					Not scanned
+				</div>
+				{% if csv_available %}
+					<a href="?format=csv&list=not_scanned" class="btn btn-default pull-right">
+    					<span class="glyphicon glyphicon-list-alt"></span>
+    				CSV
+  					</a>
+				<div class="clearfix"></div>
+  				{% endif %}
 			</div>
 			<table class="table">
 				<tr>

@@ -17,7 +17,7 @@ urlpatterns = [
 	url(r'^stock_take/$',
 		login_required(views.UploadInventoryView.as_view()),
 		name='stock_take'),
-	url(r'^stock_take/results/$',
+	url(r'^stock_take/results/(?P<stock>[0-9]+)/',
 		login_required(views.InventoryResultsView.as_view()),
 		name='results'),
 ]
