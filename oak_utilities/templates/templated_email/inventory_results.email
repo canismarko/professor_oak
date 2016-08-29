@@ -1,0 +1,58 @@
+{% block html %}
+<html>
+<div class="row">
+<div class="col-lg-6 col-md-4">
+	<h2 class="pull-left">Inventory Results <small>{{ active_stock_name }}</small></h2>
+</div>
+</div>
+
+<div class="row">
+<div class="col-lg-4 col-md-6">
+	<div class="panel panel-green" data-toggle="tooltip" title="These are containers that were scanned and subsequently found in the database. Hooray!">
+		<div class="panel-heading">
+			<div class="row">
+				<div class="col-xs-3">
+					<i class="fa fa-thumbs-up fa-5x"></i>
+				</div>
+				<div class="col-xs-9 text-right">
+					<div style="font-size:250%">{{ accounted_for_count }}</div>
+					<div>Containers are accounted for</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<div class="col-lg-4 col-md-6">
+	<div class="panel panel-yellow" data-toggle="tooltip" title="These are containers that were scanned but not found in the database. This could be because they were marked as empty in the database and not removed.">
+		<div class="panel-heading">
+			<div class="row">
+				<div class="col-xs-3">
+					<i class="fa fa-exclamation fa-5x"></i>
+				</div>
+				<div class="col-xs-9 text-right">
+					<div style="font-size:250%">{{ not_in_db_count }}</div>
+					<div>Scanned but not in the database</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+		
+<div class="col-lg-4 col-md-6">
+	<div class="panel panel-red" data-toggle="tooltip" title="These are containers that are in the database but were not scanned/found.">
+		<div class="panel-heading">
+			<div class="row">
+				<div class="col-xs-3">
+					<i class="fa fa-times fa-5x"></i>
+				</div>
+				<div class="col-xs-9 text-right">
+					<div style="font-size:250%">{{ not_in_actual_count }}</div>
+					<div>Not scanned/found</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+</div>
+</html>
+{% endblock %}

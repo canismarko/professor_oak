@@ -5,7 +5,7 @@ from django.views.generic.base import TemplateView
 from django.views.generic.detail import DetailView
 from django.views.generic.edit import CreateView, UpdateView, FormView
 from django.core.urlresolvers import reverse, reverse_lazy
-from django.http import HttpResponse, HttpResponseRedirect
+from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from django.shortcuts import redirect
 from .forms import ULONtemplateForm, UploadInventoryForm
 from pylatex import Document, Section, Subsection, Tabular, Math, TikZ, Axis, \
@@ -18,21 +18,31 @@ from professor_oak.views import breadcrumb, BreadcrumbsMixin
 from .static import inventory_reader as ir
 from .models import stock_take
 from chemical_inventory.models import Container
-#import 
+from rest_framework import viewsets, permissions, response, status
+from .serializers import StockSerializer
 
-
+#email dependencies
+from django.core.mail import EmailMultiAlternatives
+from django.contrib.auth.models import User
+from templated_email import send_templated_mail
 
 # Breadcrumbs definitions
 def utilities_breadcrumb():
 	return breadcrumb('Utilities', reverse_lazy('utilities_main'))
 
+def stock_breadcrumbs(stock_take):
+	return [
+		utilities_breadcrumb(),
+		'stock_take',
+		breadcrumb(
+			stock_take.name,
+			reverse('results', kwargs={'stock': stock_take.id})
+		)
+	]
+
 class Main(BreadcrumbsMixin, TemplateView):
 	template_name = 'utilities_main.html'
 #	template_name = 'coming_soon.html'		  #Temporary redirect page
-	
-	# def get_context_data(self, *args, **kwargs):
-		# context = super().get_context_data(*args, **kwargs)
-		# return context
 
 	def breadcrumbs(self):
 		breadcrumbs = [utilities_breadcrumb()]
@@ -117,27 +127,7 @@ class UploadInventoryView(BreadcrumbsMixin, FormView):
 		'''Take the uploaded inventory.csv and produce a HTML output comparing the uploaded document with the current database.'''
 		file = form.save(commit=True)
 		Containers = Container.objects.filter(is_empty=False)
-
-#		#Iterate over containers that are not empty to form a list of container id's
-#		database = []
-#		for item in Containers:
-#			database.append(item.id)
-
-#		#Create actual list from uploaded file and run comparison
-#		file_upload = settings.BASE_DIR + '/' + settings.MEDIA_ROOT + str(file.file)[2:]
-#		print ('[DEBUG]', str(file.file)[2:])
-#		print ('[DEBUG]', str(file.file).split('/')[-1].split('.txt')[0])
 		stock_to_url = str(file.file).split('/')[-1].split('.txt')[0]
-#		actual = ir.create_barcode_actual(str(file_upload))
-#		accounted_for, not_in_db, not_in_actual = ir.analyse(actual, database)
-#		
-#		#Print results
-#		print ('Analysis complete...')
-#		print (str(len(accounted_for)) + ' chemicals accounted for')
-#		print (str(len(not_in_db)) + ' chemicals found but not active in the database')
-#		print (not_in_db)
-#		print (str(len(not_in_actual)) + ' chemicals in the database but not found')
-#		print (not_in_actual)
 		url = reverse('results', kwargs={'stock': str(file.id)})
 		return redirect(url)		
 
@@ -153,11 +143,7 @@ class InventoryResultsView(BreadcrumbsMixin, DetailView):
 		return stock
 
 	def breadcrumbs(self):
-		breadcrumbs = [
-#			utilities_breadcrumbs(),
-#			'results',
-		]
-		return breadcrumbs
+		return stock_breadcrumbs(self.object)
 	
 	def calculate_results(self):
 		stock = self.get_object()
@@ -191,7 +177,7 @@ class InventoryResultsView(BreadcrumbsMixin, DetailView):
 			database.append(item.id)
 
 		#Create actual list from uploaded file and run comparison
-		file_upload = settings.BASE_DIR + '/' + settings.MEDIA_ROOT + '/' + uploaded_file_name
+		file_upload = '{0}/{1}/{2}'.format(settings.BASE_DIR, settings.MEDIA_ROOT, uploaded_file_name)
 		actual = ir.create_barcode_actual(str(file_upload))
 		accounted_for, not_in_db, not_in_actual = ir.analyse(actual, database)
 		
@@ -200,12 +186,11 @@ class InventoryResultsView(BreadcrumbsMixin, DetailView):
 		context['not_in_db_but_empty'] = Container.objects.filter(id__in=not_in_db)
 		context['not_in_db'] = not_in_db
 		context['not_in_actual'] = Container.objects.filter(id__in=not_in_actual, is_empty=False)
-		context['percentage'] = 100*len(accounted_for)/(len(not_in_db) + len(not_in_actual) + len(accounted_for))
 		context['csv_available'] = hasattr(self, 'write_csv')
+		context['active_stock'] = stock
 		return context
 
 	def get(self, request, *args, **kwargs):
-		print ('[DEBUG]', 'get function')
 		format = request.GET.get('format')
 		list = request.GET.get('list')
 		if format == 'csv':
@@ -218,8 +203,6 @@ class InventoryResultsView(BreadcrumbsMixin, DetailView):
 		return response
 
 	def write_csv(self, response, list):
-		print ('[DEBUG]', self.calculate_results()[2])
-		print ('[DEBUG]', 'write_csv function')
 		writer = csv.writer(response)
 		if list == 'not_in_database':
 			writer.writerow(['Barcode Number'])
@@ -260,3 +243,37 @@ class InventoryResultsView(BreadcrumbsMixin, DetailView):
 					container.owner.get_full_name(),
 					])
 			return response
+
+def send_stock_email(request, stock):
+	"""Pass information from the javascript request to recalculate the stock take results before calling the send_email() function."""
+	stock = stock_take.objects.get(id=stock)
+	stock.email_results()
+	return JsonResponse({'status': 'success'})
+
+def send_email(template_name, payload):
+	'''Emails all active users from the gmail set up for the server. Text is the primary format but alternative html is rendered and sent as well.'''
+	active_users = User.objects.filter(is_active=True)
+	active_users_email = []
+	for user in active_users:
+		active_users_email.append(user.email)	
+	send_templated_mail(
+		template_name=template_name,
+        from_email='Cabana Server',
+        recipient_list=active_users_email,
+		context = payload,
+        template_suffix="html",
+)
+
+	return JsonResponse({'status': 'success'})
+
+# Browseable API viewsets
+# =======================
+class StockViewSet(viewsets.ModelViewSet):
+    """Viewset for the stock_take model. User is required to be logged in to
+    post."""
+    # Determine which object to list
+    queryset = stock_take.objects.all()
+    # Decide how to convert to JSON
+    serializer_class = StockSerializer
+    # Require user be logged in to post to this endpoint
+    permission_classes = (permissions.IsAuthenticatedOrReadOnly,)

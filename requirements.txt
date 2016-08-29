@@ -14,3 +14,4 @@ Pillow==3.2.0
 # selenium
 # Would need pytractor, but not available in pip for python 3
 # https://github.com/mwalkowski/pytractor
+django_templated_email==0.5

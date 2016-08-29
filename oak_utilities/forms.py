@@ -3,6 +3,7 @@ from djangular.forms import NgFormValidationMixin, NgModelFormMixin, NgModelForm
 from djangular.styling.bootstrap3.forms import Bootstrap3FormMixin
 from django.core.validators import RegexValidator
 from django.forms.widgets import DateTimeInput, TimeInput, SplitDateTimeWidget
+from django.forms.utils import ErrorList
 # from bootstrap3_datetime.widgets import DateTimePicker
 from . import models
 from django.conf import settings
@@ -137,14 +138,25 @@ class ULONtemplateForm(NgFormValidationMixin, Bootstrap3FormMixin, NgForm):
 	class Meta:
 		fields = ['experiment_start', 'experiment_end', 'contact_number', 'chemicals', 'experiment_description', 'experiment_location', 'experiment_sublocation', 'emergency_shutdown',  'additional_hazards']
 
-class UploadInventoryForm(NgModelFormMixin, NgFormValidationMixin, Bootstrap3FormMixin, NgModelForm):
+class UploadInventoryForm(forms.ModelForm):
 # class SupportingDocumentForm(forms.ModelForm):
 	form_name = 'stock_take'
 	file = forms.FileField(
-		label = 'Inventory File',
+		label = '',
 		required = True,
 		)
 
 	class Meta:
 		model = models.stock_take
-		fields = ['file']
+		fields = ['file']	
+	
+	def clean(self):
+		cleaned_data = super(UploadInventoryForm, self).clean()
+		for line in cleaned_data.get("file").readlines():
+			try:
+				int(line)
+			except ValueError:
+				self._errors['file'] = ErrorList(["This file could not be read, please make sure the file is a single list of integers, each integer corresponding to a barcode."])
+				raise forms.ValidationError('Non-integers found, file not saved.')
+		return self.cleaned_data
+
