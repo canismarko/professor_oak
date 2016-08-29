@@ -4,10 +4,18 @@ from djangular.styling.bootstrap3.forms import Bootstrap3FormMixin
 from django.core.validators import RegexValidator
 from django.forms.widgets import DateTimeInput, TimeInput, SplitDateTimeWidget
 from django.forms.utils import ErrorList
+from django.contrib.admin.widgets import AdminDateWidget
 # from bootstrap3_datetime.widgets import DateTimePicker
 from . import models
 from django.conf import settings
 import datetime
+from functools import partial
+
+DateInput = partial(forms.DateInput, {'class': 'datepicker'})
+
+class DateRangeForm(forms.Form):
+	start_date = forms.DateField(widget=DateInput())
+	end_date = forms.DateField(widget=DateInput())
 
 class DateInput(forms.widgets.DateInput):
 	"""Widget that Renders as htlm5 <input type="date">"""
@@ -134,9 +142,21 @@ class ULONtemplateForm(NgFormValidationMixin, Bootstrap3FormMixin, NgForm):
 		label="Additional Hazards (if any)",
 		required=False,
 		widget=forms.Textarea(attrs={'rows': '3'})
+
 		 ) 
+
 	class Meta:
-		fields = ['experiment_start', 'experiment_end', 'contact_number', 'chemicals', 'experiment_description', 'experiment_location', 'experiment_sublocation', 'emergency_shutdown',  'additional_hazards']
+		fields = [
+		'experiment_start',
+		'experiment_end',
+		'contact_number', 
+		'chemicals', 
+		'experiment_description', 
+		'experiment_location', 
+		'experiment_sublocation', 
+		'emergency_shutdown',  
+		'additional_hazards'
+		]
 
 class UploadInventoryForm(forms.ModelForm):
 # class SupportingDocumentForm(forms.ModelForm):
@@ -159,4 +179,3 @@ class UploadInventoryForm(forms.ModelForm):
 				self._errors['file'] = ErrorList(["This file could not be read, please make sure the file is a single list of integers, each integer corresponding to a barcode."])
 				raise forms.ValidationError('Non-integers found, file not saved.')
 		return self.cleaned_data
-

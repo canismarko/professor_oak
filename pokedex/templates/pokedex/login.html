@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+{% load browserid %}
+
+{% block title %}Account Login{% endblock %}
+
+{% block content %}
+
+{% if request.user.is_authenticated %}
+<div class="alert alert-success">
+  <p>You are successfully logged in.</p>
+  <p>
+    <a href="/" title="Return home" class="btn btn-success">
+      <span class="glyphicon glyphicon-home"></span>
+      Home
+    </a>
+    <a href="/browserid/logout/'" title="Return home" class="btn btn-default">
+      Logout
+    </a>
+  </p>
+</div>
+{% else %}
+<div class="alert alert-info">
+  <p>
+    Please login to access protected areas of this site.
+  </p>
+  <p>
+    {% browserid_login text="Login" color='list' next=request.GET.next %}
+  </p>
+</div>
+{% endif %}
+
+{% endblock %}

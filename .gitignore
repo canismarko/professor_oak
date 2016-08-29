@@ -5,4 +5,5 @@ __pycache__
 static_files
 media_files
 localsettings.py
-*.pdf
+*.pdfdev-db.sqlite3
+dev-db.sqlite3.bak

@@ -1,0 +1,105 @@
+{% extends 'base.html'%}
+{% load custom_filters %}
+{% block title %}
+{{ target_user.get_full_name }}
+{% endblock %}
+
+{% block content %}
+<h1>{{ target_user.first_name }} {{ target_user.last_name }}</h1>
+
+<div class="row">
+  <div class="col-md-6">
+    <dl>
+      <dt>Status</dt>
+      <dd>
+	{% if target_user.is_active %}
+	<span class="text-success">User is active</span>
+	{% else %}
+	<span class="text-warning">User is not currently active</span>
+	{% endif %}
+      </dd>
+      <dt>E-mail</dt>
+      <dd>
+	{% if target_user.email %}
+	<a href="mailto:{{ target_user.email }}?subject=Sample List">
+	  {{ target_user.email }}
+	</a>
+	{% else %}
+	Not available
+	{% endif %}
+      </dd>
+      <!-- Date and time of last login -->
+      <dt>Last login</dt>
+      <dd>
+	{% if target_user.last_login %}
+	{{ target_user.last_login.date }} ({{ target_user.last_login.time }})
+	{% else %}
+	Never
+	{% endif %}
+      </dd>
+      <dt>Date joined</dt>
+      <dd>{{ target_user.date_joined.date }}</dd>
+    </dl>
+  </div>
+
+</div>
+{% if projects %}
+	{% for project in projects %}
+		<div class="row">
+		  <div class="col-md-12">
+			<h3>{{ project.name }}
+			{% if project.is_archived %}
+				<span class="glyphicon glyphicon-lock archived" title="This project has been archived. To make changes to this project, you must contact your site administrator."></span> 
+			{% endif %}
+			</h3>
+		  </div>
+		</div>
+		{% if samples|in_project:project %}
+		<table class="table chemical-list">
+			<tr>
+				<th>Sample</th>
+				<th>Formula</th>
+				<th>Date Completed</th>
+				<th>Medium</th>
+				<th>Atmosphere</th>
+				<th>Variables</th>
+				<th>Analysis</th>
+  			</tr>
+			{% for sample in samples|in_project:project %}
+				<tr>
+					<td>
+						<a href="{{ sample.detail_url }}" title="Detailed information on sample {{ sample.sample_number }}">
+
+						{{ sample.sample_number }}
+						</a>
+					</td>
+					<td>{{ sample.formula|formula_markup }}</td>
+					<td>{{ sample.end_date }}</td>
+					<td>{{ sample.experiment_medium }}</td>
+					<td>{{ sample.experiment_atmosphere|formula_markup }}</td>
+					<td>{{ sample.experiment_variable }}{{ sample.variable_units|formula_markup }} for {{ sample.experiment_time }}h</td>
+					<td>
+					{% if sample.file_XRD %}<span class="icon-XRD XRD-active" title="X-Ray Diffraction"></span>{% else %}<span class="icon-XRD" title="X-Ray Diffraction"></span>{% endif %}
+					{% if sample.file_EC %}<span class="icon-EC EC-active" title="Electrochemistry"></span>{% else %}<span class="icon-EC" title="Electrochemistry"></span>{% endif %}
+					{% if sample.file_TEM %}<span class="icon-TEM TEM-active" title="Electron Microscopy"></span>{% else %}<span class="icon-TEM" title="Electron Microscopy"></span>{% endif %}
+					{% if sample.file_TGA %}<span class="icon-TGA TGA-active" title="Thermogravimetric Analysis"></span>{% else %}<span class="icon-TGA" title="Thermogravimetric Analysis"></span>{% endif %}
+					{% if sample.file_XAS %}<span class="icon-XAS XAS-active" title="X-Ray Absorption Spectroscopy"></span>{% else %}<span class="icon-XAS" title="X-Ray Absorption Spectroscopy"></span>{% endif %}
+					</td>
+				</tr>
+			{% endfor %}
+		</table>
+		{% else %}
+			<!-- No projects were found -->
+			<div class="alert alert-info">
+  			There are no samples associated with this project.
+			</div>
+		{% endif %}
+
+	{% endfor %}
+{% else %}
+	<!-- No projects were found -->
+	<div class="alert alert-danger">
+  	User is not associated with any projects. Please contact your site administrator.
+	</div>
+{% endif %}
+{% endblock %}

@@ -1,0 +1,305 @@
+/* ngCloak hides unloaded element flicker */
+[ng\:cloak], [ng-cloak], [data-ng-cloak], [x-ng-cloak], .ng-cloak, .x-ng-cloak {
+    display: none !important;
+}
+
+/* Site-wide styles */
+.breadcrumb {
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+
+.main-content {
+    margin-top: 5px;
+    margin-bottom: 50px;
+}
+
+.main-content h2 {
+    margin-top: 0px;
+}
+
+.header h1 {
+    display: inline-block;
+    margin-top: 10px;
+}
+
+.header .auth-options .btn {
+    padding-left: 5px;
+    padding-right: 5px;
+}
+
+.header h1 a:hover {
+    text-decoration: none;
+}
+.header img.oak-sprite {
+    display: inline-block;
+    margin-top: -20px;
+    margin-right: 8px;
+    max-height: 40px;
+}
+
+img.sample-appearance {
+	max-height: 250px;
+	float: right;
+	display: inline-block;
+	right: 0px;
+	top: 0px;
+	
+}
+
+.glyphicon.glyphicon-one-fine-dot {
+    margin-bottom: -0.25em;
+    overflow: hidden;
+}
+.glyphicon.glyphicon-one-fine-dot:before {
+    content:"\25cf";
+    font-size: 0.5em;
+	vertical-align: top;
+}
+
+.archived {
+	opacity: 0.5;
+}
+
+.hover-fade {
+   opacity: 1;
+   transition: opacity .25s ease-in-out;
+   -moz-transition: opacity .25s ease-in-out;
+   -webkit-transition: opacity .25s ease-in-out;
+   }
+
+   .hover-fade:hover {
+      opacity: 0.5;
+      }
+
+div.overlay {
+	position:relative;
+	left:0;
+	top:0;
+}
+
+img.overlay-bottom {
+	position:relative;
+	top:0;
+	left:0;
+}
+
+img.overlay-top {
+	position:absolute;
+	top:30;
+	left:70;
+}
+
+.current-user {
+    margin-top: 5px;
+}
+
+/* General styles for chemical inventory */
+.inventory-icon {
+    height: 24px;
+}
+
+.inventory-buttons {
+    margin-top: 40px;
+    margin-bottom: 50px;
+}
+.inventory-buttons .btn {
+    margin-top: 1px;
+    margin-bottom: 5px;
+}
+
+.login_only{
+    pointer-events: none;
+    opacity: 0.4;
+    font-style: italic;
+}
+
+.disabled{
+    pointer-events: none;
+    opacity: 0.4;
+    font-style: italic;
+}
+
+p.login_notify{
+    pointer-events: none;
+    opacity: 1;
+    font-style: italic;
+}
+#stretch{
+    width: 85%;
+}
+
+.red_alert {
+    color: #D63333
+}
+
+.green_success {
+    color: #1F9E0E
+}
+
+.blue_info {
+    color: #0099FF
+}
+
+/* XKCD Comic displayed on the landing page for chemical_inventory */
+.xkcd {
+    margin-top: 20px;
+}
+
+/* List of chemical in the lab */
+.chemical-list th {
+    border-top: none !important;
+}
+
+.chemical-list .glyphicon {
+    margin-left: 4px;
+}
+
+.no-chemicals {
+    margin-top: 15px;
+}
+
+/* List of containers of a given chemical */
+.empty {
+    opacity: 0.4;
+    font-style: italic;
+}
+
+/* NFPA Hazard Diamond */
+.nfpa-diamond polygon {
+    stroke-width: 1px;
+    stroke: black;
+}
+.nfpa-diamond text {
+    text-anchor: middle;
+    alignment-baseline: middle;
+    fill: black;
+}
+.nfpa-diamond text.water-hazard {
+    text-decoration: line-through;
+}
+
+/* ChemSpider chemical structures */
+img.structure_display {
+    position: relative;
+    vertical-align: text-bottom;
+    right: auto
+}
+
+div.latex {
+	font-size: 175%
+}
+
+/* Djang-angular forms */
+form label {
+    margin-bottom: 0px;
+    margin-top: 10px;
+}
+label {
+    font-weight: normal;
+}
+label.required {
+    font-weight: bold;
+}
+/* Adding a new container */
+
+.oak-form-buttons {
+    margin-top: 15px;
+}
+
+.container-form-col {
+    margin-top: -25px;
+}
+
+/* Form validation */
+ul.djng-form-control-feedback,
+ul.djng-field-errors {
+    margin-bottom: 0px;
+    list-style-type: none;
+}
+li.invalid {
+    color: red;
+    font-weight: bold;
+}
+
+/* glossary navigation custom sizing */
+
+.glossarytabs li a {
+  padding-right: 13px;
+  padding-left: 13px;
+}
+
+.table td a  {
+    cursor: pointer;
+    cursor: hand;
+}
+
+@font-face {
+    font-family: 'icomoon';
+    src:    url('fonts/icomoon.eot?h1p49j');
+    src:    url('fonts/icomoon.eot?h1p49j#iefix') format('embedded-opentype'),
+        url('fonts/icomoon.ttf?h1p49j') format('truetype'),
+        url('fonts/icomoon.woff?h1p49j') format('woff'),
+        url('fonts/icomoon.svg?h1p49j#icomoon') format('svg');
+    font-weight: normal;
+    font-style: normal;
+}
+
+[class^="icon-"], [class*=" icon-"] {
+    /* use !important to prevent issues with browser extensions that change fonts */
+    font-family: 'icomoon' !important;
+    speak: none;
+    font-style: normal;
+    font-weight: normal;
+    font-variant: normal;
+    text-transform: none;
+    line-height: 1;
+
+    /* Better Font Rendering =========== */
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+.icon-XAS:before {
+    content: "\e900";
+}
+.icon-sXAS:before {
+    content: "\e901";
+}
+.icon-hXAS:before {
+    content: "\e902";
+}
+.icon-EC:before {
+    content: "\e903";
+}
+.icon-TEM:before {
+    content: "\e904";
+}
+.icon-TGA:before {
+    content: "\e905";
+}
+.icon-XRD:before {
+    content: "\e906";
+}
+
+.XRD-active	{
+	color: #0C8C06;
+}
+
+.EC-active {
+	color: #C7BA08;
+}
+
+.TEM-active {
+	color: #AB0000;
+}
+
+.TGA-active {
+	color: #1938FF;
+}
+
+.XAS-active {
+	color: #8400DB;
+}
+
+}

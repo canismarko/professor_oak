@@ -15,3 +15,6 @@ Pillow==3.2.0
 # Would need pytractor, but not available in pip for python 3
 # https://github.com/mwalkowski/pytractor
 django_templated_email==0.5
+easy_thumbnails==2.3
+django-image-cropping==1.0.3
+django-braces==1.9.0

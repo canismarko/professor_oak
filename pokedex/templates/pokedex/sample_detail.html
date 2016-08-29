@@ -1,0 +1,129 @@
+{% extends 'base.html' %}
+{% load staticfiles %}
+{% load custom_filters %}
+{% load cropping %}
+{% block title %}Sample List{% endblock %}
+
+{% block content %}
+<div class="row">
+  <div class="col-sm-6">
+    <h2>Sample Details | {{ sample.sample_number }}</h2>
+		{% if sample.is_archived %}
+	<a href="#"
+	 class="btn btn-default hover-fade" title="This sample is associated with an archived project and can only be edited by an administrator.">
+			<span class="glyphicon glyphicon-lock"></span>
+			Edit Information
+      		</a>
+		{% else %}
+	<a href="{{ sample.edit_url }}"
+	 class="btn btn-default"
+			 title="Edit sample {{ sample.sample_number }}"
+			<span class="glyphicon glyphicon-pencil"></span>
+			Edit Information
+      		</a>
+		{% endif %}
+  </div>
+</div>
+<div class="row">
+	<div class="col-sm-4">
+		<dl>
+			<dt>Name</dt>
+			<dd>{{ sample.name }}</dd>
+
+			<dt>Formula</dt>
+			<dd>{{ sample.formula|formula_markup }}</dd>
+		</dl>	
+		<dl>
+			<dt>Medium</dt>
+			<dd>{{ sample.experiment_medium }}</dd>
+	
+			<dt>Atmosphere</dt>
+			<dd>{{ sample.experiment_atmosphere }}</dd>
+		</dl>
+		<dl>
+			<dt>Date</dt>
+			{% if sample.end_date == sample.start_date %}
+			<dd>{{ sample.end_date }}
+			{% else %}
+			<dd>{{ sample.start_date }} - {{ sample.end_date }}</dd>
+			{% endif %}		
+		</dl>
+	</div>
+	<div class="col-sm-3">
+		<dl>
+			<dt>Experiment Variables</dt>
+			<dd>{{ sample.experiment_variable }}{{ sample.variable_units|formula_markup }}</dd>
+		
+			<dt>Experiment Time</dt>
+			<dd>{{ sample.experiment_time }} hours</dd>
+		</dl>
+		<dl>
+			<dt>Comments/Experiment Description</dt>
+			<dd>{{ sample.comment|formula_markup }}</dd>
+		</dl>
+	</div>
+	{% if sample.is_archived %}
+	<div class="col-sm-5" style="position:relative; left:0; top:0;">
+		<a href="#">
+		{% if sample.cropping %}
+			<img src="{% static 'lock.svg' %}" class="sample-appearance" style="position:relative; top:50; left:50;">
+			<img src="{% cropped_thumbnail sample "cropping" scale=1 %}" title="This sample is associated with an archived project and can only be edited by an administrator." class="sample-appearance hover-fade" style="position:absolute; top:50; left:50;"/> 
+		{% elif sample.file_photo %}	
+			<img src="{% static 'lock.svg' %}" class="sample-appearance" style="position:relative; top:50; left:50;">
+			<img src="{{ sample.file_photo.url }}" title="This sample is associated with an archived project and can only be edited by an administrator." class="sample-appearance hover-fade" style="position:absolute; top:50; left:50;"/> 
+		{% else %}	
+			<img src="{% static 'lock.svg' %}" title="This sample is associated with an archived project and can only be edited by an administrator." class="sample-appearance hover-fade"/> 
+		{% endif %}
+		</a>
+	</div>
+	{% else %}
+	<div class="col-sm-5">
+		<a href="{{ sample.edit_photo_url }}">
+		{% if sample.cropping %}
+			<img src="{% cropped_thumbnail sample "cropping" scale=1 %}" title="Appearance of {{ sample.sample_number }}" class="sample-appearance" />
+		{% elif sample.file_photo %}	
+			<img src="{{ sample.file_photo.url }}" title="Appearance of {{ sample.sample_number }}" class="sample-appearance" />	
+		{% else %}	
+			<img src="{% static 'Upload.svg' %}" title="Click here to upload an image of the sample" class="sample-appearance hover-fade" />
+		{% endif %}
+		</a>
+	</div>
+	{% endif %}
+</div>
+<div class="row">
+	<div class="latex">{{ sample.experiment_equation|latex_surr }}</div>
+</div>
+<div class="row">
+	<div class="container">
+		<ul class="nav nav-tabs">
+			{% if sample.file_XRD %}<li><a data-toggle="tab" href="#XRD">XRD</a></li>{% else %}{% endif %}
+			{% if sample.file_EC %}<li><a data-toggle="tab" href="#EC">EC</a></li>{% else %}{% endif %}
+			{% if sample.file_TEM %}<li><a data-toggle="tab" href="#TEM">TEM</a></li>{% else %}{% endif %}
+			{% if sample.file_TGA %}<li><a data-toggle="tab" href="#TGA">TGA</a></li>{% else %}{% endif %}
+			{% if sample.file_XAS %}<li><a data-toggle="tab" href="#XAS">XAS</a></li>{% else %}{% endif %}
+		</ul>
+	</div>
+	<div class="tab-content center">
+		{% if sample.file_XRD %}<div id="XRD" class="tab-pane fade">
+			<img src="{{ sample.file_XRD.url }}" width="100%" height="100%">
+		</div>{% else %}{% endif %}
+		{% if sample.file_EC %}<div id="EC" class="tab-pane fade">
+			<img src="{{ sample.file_EC.url }}" width="100%" height="100%">
+		</div>{% else %}{% endif %}
+		{% if sample.file_TEM %}<div id="TEM" class="tab-pane fade">
+			<img src="{{ sample.file_TEM.url }}" width="100%" height="100%">
+		</div>{% else %}{% endif %}
+		{% if sample.file_TGA %}<div id="TGA" class="tab-pane fade">
+			<img src="{{ sample.file_TGA.url }}" width="100%" height="100%">
+		</div>{% else %}{% endif %}
+		{% if sample.file_XAS %}<div id="XAS" class="tab-pane fade">
+			<img src="{{ sample.file_XAS.url }}" width="100%" height="100%">
+		</div>{% else %}{% endif %}
+	</div>
+</div>
+<script type="text/javascript"
+   src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+<script>
+</script>
+	
+{% endblock %}
