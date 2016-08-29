@@ -7,3 +7,4 @@ media_files
 localsettings.py
 *.pdfdev-db.sqlite3
 dev-db.sqlite3.bak
+dev-db.sqlite3
