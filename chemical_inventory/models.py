@@ -187,7 +187,7 @@ class Container(models.Model):
     expiration_date = models.DateField()
     state = models.CharField(max_length=10)
     container_type = models.CharField(max_length=50)
-    owner = models.ForeignKey(User, blank=True, null=True)
+    owner = models.ForeignKey(User)
     quantity = models.FloatField(null=True, blank=True)
     unit_of_measure = models.CharField(max_length=20, null=True, blank=True)
     is_empty = models.BooleanField(default=False)
