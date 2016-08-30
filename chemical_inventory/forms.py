@@ -17,7 +17,7 @@ class ContainerForm(Bootstrap3FormMixin, NgModelFormMixin,
     scope_prefix = 'container'
     form_name = 'container_form'
     location = forms.ModelChoiceField(label="Location (SDS § 7)",
-                                      queryset=models.Location.objects.all())
+                                      queryset=models.Location.objects.order_by('name'))
     date_opened = forms.DateField(widget=DateInput(),
                                   required=False)
     expiration_date = forms.DateField(widget=DateInput())
