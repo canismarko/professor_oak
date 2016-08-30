@@ -100,7 +100,6 @@ class ULONtemplateForm(NgFormValidationMixin, Bootstrap3FormMixin, NgForm):
 		widget=TimeInput(format="%H:%M"),
 		required=False)
 	contact_number = forms.CharField(
-		validators=[contact_regex],
 		required=True,
 		max_length=12,
 		label="Contact Number",
