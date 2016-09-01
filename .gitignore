@@ -30,3 +30,6 @@ oak_utilities/migrations/__init__.py
 oak_utilities/migrations/__pycache__
 oak_utilities/migrations/
 chemical_inventory/migrations/
+./oak_utilities/ULONs/
+./ULONs/
+oak_utilities/ULONs/
