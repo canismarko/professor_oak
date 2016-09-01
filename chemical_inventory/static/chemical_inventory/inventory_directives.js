@@ -302,7 +302,8 @@ angular.module('chemicalInventory')
 			newChemical.gloves[i] = newChemical.gloves[i].toString();
 		    }
 		    // Disable the chemical entry if an existing chemical has been selected
-		    inputs = elem.find('.chemical-form input,.chemical-form select');
+		    inputs = elem.find('.chemical-form input,.chemical-form select,#btn_hydrate,#btn_superscript,#btn_subscript,#btn_clear');
+
 		    if (newId > 0) {
 			inputs.attr('disabled', 'disabled');
 		    } else {
