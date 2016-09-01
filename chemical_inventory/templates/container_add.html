@@ -15,7 +15,7 @@
   <p class="oak-form-buttons">
     <button type="submit" class="btn btn-primary"
 	    ng-click="save({printLabel: true})"
-	    ng-disabled="{{ chemical_form.form_name }}.$invalid || {{ container_form.form_name }}.$invalid"
+	    ng-disabled="{{ chemical_form.form_name }}.$invalid || {{ container_form.form_name }}.$invalid" data-toggle="modal" data-target="#modalPrint"
 	    >
       <span class="glyphicon glyphicon-barcode"></span>
       Add and Print Label</button>
@@ -157,6 +157,28 @@
   </div><!-- /.modal -->
 
 </div><!-- /[oak-add-container] -->
+
+<!-- Print Request Popup Modal-->
+<div class="modal fade" id="modalPrint" tabindex="-1" role="dialog" aria-labelledby="modalPrintLabel">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+		<div class="col-lg-12 text-center">
+					<i class="fa fa-print fa-5x"></i>
+				</div>
+        <h2 class="modal-title text-center" id="modalPrintLabel">Print Request Sent!</h2>
+      </div>
+      <div class="modal-body text-center">
+        Your container has been added and a print request has been sent to the 4163SES label printer.
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
 <script>
     function clearThis(areaId){
 	var target = document.getElementById(areaId);
