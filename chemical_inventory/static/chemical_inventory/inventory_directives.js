@@ -302,7 +302,7 @@ angular.module('chemicalInventory')
 			newChemical.gloves[i] = newChemical.gloves[i].toString();
 		    }
 		    // Disable the chemical entry if an existing chemical has been selected
-		    inputs = elem.find('.chemical-form input,.chemical-form select,#btn_hydrate,#btn_superscript,#btn_subscript,#btn_clear');
+		    inputs = elem.find('.chemical-form input,.chemical-form select,#hydrate,#superscript,#subscript,#clear');
 
 		    if (newId > 0) {
 			inputs.attr('disabled', 'disabled');
@@ -402,3 +402,30 @@ angular.module('chemicalInventory')
 	    templateUrl: staticUrls.nfpaDiamond,
 	}
     }])
+
+	.directive('mark', ['$rootScope', function($rootScope) {
+		return {
+			link: function(scope, element, attrs) {
+				$rootScope.$on('add', function(e, val) {
+					var domElement = elelment[0];
+
+					if (document.selection) {
+						domElement.focus();
+						var sel = document.selection.createRange();
+						sel.text = val;
+						domElement.focus();
+					} else if (domElement.selectionStart || domElement.selectionStart === 0) {
+						var startPos = domElement.selectionStart;
+						var endPos = domElement.selectionEnd;
+						var scrollTop = domElement.scrollTop;
+						domElement.value = domElement.value.substring(0, startPos) + val + domElement.value.substring(endPos, domElement.value.length);
+						domElement.focus();
+						domElement.selectionStart = startPos + val.length;
+						domElement.selectionEnd = staartPos + val.length;
+						domElement.scrollTop = scrollTop;
+					} else {
+						domElement.value += val;
+						domElement.focus();
+					}
+		})}}
+}])

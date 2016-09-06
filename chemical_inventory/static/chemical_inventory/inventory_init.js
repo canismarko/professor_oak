@@ -19,3 +19,5 @@ angular.module('chemicalInventory', ['ngResource', 'ngAnimate', 'toaster', 'ng.d
     .config(function($resourceProvider) {
 	$resourceProvider.defaults.stripTrailingSlashes = false;
     })
+
+angular.module('livePreview', ['ngSanitize'])

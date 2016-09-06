@@ -22,16 +22,31 @@
         <dt>{{ field.label_tag }}</dt>
 		<dd>{{ field }}</dd>
 			{% if field.auto_id == 'id_formula' %}
-		<div class="btn-toolbar" role="toolbar" aria-label="Toolbar with insert buttons"> 
-			<div class="btn-group" role="group" aria-label="Insert Buttons">
-				<button title="Insert superscript" type="button" id="superscript" class="btn btn-secondary" onclick="insertAtCaret('id_formula','^');return false;"><span class="glyphicon glyphicon-superscript"/></button>
-				<button title="Insert subscript" type="button" id="subscript" class="btn btn-secondary" onclick="insertAtCaret('id_formula','_');return false;"><span class="glyphicon glyphicon-subscript"/></button>
-				<button title="Insert hydrate" type="button" id="hydrate" class="btn btn-secondary" onclick="insertAtCaret('id_formula','|H_2O');return false;"><i class="fa fa-circle" style="font-size:0.4em; vertical-align:middle"></i>H<sub>2</sub>O</button>
+			<div class="btn-toolbar" role="toolbar" aria-label="Toolbar with insert buttons"> 
+				<div class="btn-group" role="group" aria-label="Insert Buttons" ng-controller="AddWords">
+					<button title="Insert superscript" type="button" id="superscript" class="btn btn-secondary" ng-click="insertText('^')"><span class="glyphicon glyphicon-superscript"/></button>
+					<button title="Insert subscript" type="button" id="subscript" class="btn btn-secondary" ng-click="insertText('_')" ><span class="glyphicon glyphicon-subscript"/></button>
+					<button title="Insert hydrate" type="button" id="hydrate" class="btn btn-secondary dropdown-toggle" data-toggle="dropdown">Hydrate</button>
+					<ul class="dropdown-menu" role="menu">
+						<li><a href="#" ng-click="insertText('|H_2O')"><i class="fa fa-circle" style="font-size:0.4em; vertical-align:middle"></i>H<sub>2</sub>O</a></li>
+						<li><a href="#" ng-click="insertText('|2H_2O')"><i class="fa fa-circle" style="font-size:0.4em; vertical-align:middle"></i>2H<sub>2</sub>O</a></li>
+						<li><a href="#" ng-click="insertText('|3H_2O')"><i class="fa fa-circle" style="font-size:0.4em; vertical-align:middle"></i>3H<sub>2</sub>O</a></li>
+						<li><a href="#" ng-click="insertText('|4H_2O')"><i class="fa fa-circle" style="font-size:0.4em; vertical-align:middle"></i>4H<sub>2</sub>O</a></li>
+						<li><a href="#" ng-click="insertText('|5H_2O')"><i class="fa fa-circle" style="font-size:0.4em; vertical-align:middle"></i>5H<sub>2</sub>O</a></li>
+						<li><a href="#" ng-click="insertText('|6H_2O')"><i class="fa fa-circle" style="font-size:0.4em; vertical-align:middle"></i>6H<sub>2</sub>O</a></li>
+						<li><a href="#" ng-click="insertText('|7H_2O')"><i class="fa fa-circle" style="font-size:0.4em; vertical-align:middle"></i>7H<sub>2</sub>O</a></li>
+						<li><a href="#" ng-click="insertText('|8H_2O')"><i class="fa fa-circle" style="font-size:0.4em; vertical-align:middle"></i>8H<sub>2</sub>O</a></li>
+						<li><a href="#" ng-click="insertText('|9H_2O')"><i class="fa fa-circle" style="font-size:0.4em; vertical-align:middle"></i>9H<sub>2</sub>O</a></li>
+						<li><a href="#" ng-click="insertText('|10H_2O')"><i class="fa fa-circle" style="font-size:0.4em; vertical-align:middle"></i>10H<sub>2</sub>O</a></li>
+					</ul>
+				</div>
+				<div class="btn-group" role="group" aria-label="Second group">
+					<button title='Clear' type="button" id="clear" class="btn btn-secondary" ng-click="chemical['formula']=''"><span class="glyphicon glyphicon-remove"/></button>
+				</div>
+				<div class="btn-group pull-right" role="group" aria-label="Inactive Preview" ng-controller="formulaPreview">
+					<text title="Preview of formula" type="button" id="formula_preview" class="btn btn-secondary"><strong>Formula Preview: </strong><text ng-bind-html="sanitizedPreview(chemical['formula'])"></text></text>
+				</div>
 			</div>
-			<div class="btn-group" role="group" aria-label="Second group">
-			<button title='Clear' type="button" id="clear" class="btn btn-secondary" onclick="clearThis('id_formula')"><span class="glyphicon glyphicon-remove"/></button>
-			</div>
-		</div>
 			{% endif %}
 		{% endfor %}
       <!-- Form submission buttons -->
@@ -50,52 +65,5 @@
 <link rel="stylesheet" href="http://code.jquery.com/ui/1.11.0/themes/smoothness/jquery-ui.css"> 
 <script src="http://code.jquery.com/jquery-1.9.1.js"></script>
 <script src="http://code.jquery.com/ui/1.11.0/jquery-ui.js"></script>
-<script>
-$(document).ready(function() {
-    $('.datepicker').datepicker();
-});
-</script>
-<script>
-    function clearThis(areaId){
-	var target = document.getElementById(areaId);
-        target.value= "";
-    }
-    </script>
-<!-- From http://stackoverflow.com/questions/1064089/ -->
-<script>
-function insertAtCaret(areaId,text) {
-    var txtarea = document.getElementById(areaId);
-    var scrollPos = txtarea.scrollTop;
-    var strPos = 0;
-    var br = ((txtarea.selectionStart || txtarea.selectionStart == '0') ? 
-        "ff" : (document.selection ? "ie" : false ) );
-    if (br == "ie") { 
-        txtarea.focus();
-        var range = document.selection.createRange();
-        range.moveStart ('character', -txtarea.value.length);
-        strPos = range.text.length;
-    }
-    else if (br == "ff") strPos = txtarea.selectionStart;
-
-    var front = (txtarea.value).substring(0,strPos);  
-    var back = (txtarea.value).substring(strPos,txtarea.value.length); 
-    txtarea.value=front+text+back;
-    strPos = strPos + text.length;
-    if (br == "ie") { 
-        txtarea.focus();
-        var range = document.selection.createRange();
-        range.moveStart ('character', -txtarea.value.length);
-        range.moveStart ('character', strPos);
-        range.moveEnd ('character', 0);
-        range.select();
-    }
-    else if (br == "ff") {
-        txtarea.selectionStart = strPos;
-        txtarea.selectionEnd = strPos;
-        txtarea.focus();
-    }
-    txtarea.scrollTop = scrollPos;
-}
-</script>
 
 {% endblock %}
