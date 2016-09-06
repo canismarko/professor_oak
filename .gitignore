@@ -5,6 +5,7 @@ __pycache__
 static_files
 media_files
 localsettings.py
+*.pdf
 dev-db.sqlite3.bak
 dev-db.sqlite3
 chemical_inventory/migrations/0001_initial.py

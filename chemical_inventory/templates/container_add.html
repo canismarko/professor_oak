@@ -126,7 +126,6 @@
 
 				<div ng-include="'save-buttons'"></div>
 			</div><!-- /.col-md-6 -->
-
 			</div><!-- /.row -->
 
   <!-- Dialog for adding a new glove -->
@@ -172,6 +171,48 @@
   </div><!-- /.modal -->
 
 </div><!-- /[oak-add-container] -->
+<script>
+    function clearThis(areaId){
+	var target = document.getElementById(areaId);
+        target.value= "";
+    }
+    </script>
+<!-- From http://stackoverflow.com/questions/1064089/ -->
+<script>
+function insertAtCaret(areaId,text) {
+    var txtarea = document.getElementById(areaId);
+    var scrollPos = txtarea.scrollTop;
+    var strPos = 0;
+    var br = ((txtarea.selectionStart || txtarea.selectionStart == '0') ? 
+        "ff" : (document.selection ? "ie" : false ) );
+    if (br == "ie") { 
+        txtarea.focus();
+        var range = document.selection.createRange();
+        range.moveStart ('character', -txtarea.value.length);
+        strPos = range.text.length;
+    }
+    else if (br == "ff") strPos = txtarea.selectionStart;
+
+    var front = (txtarea.value).substring(0,strPos);  
+    var back = (txtarea.value).substring(strPos,txtarea.value.length); 
+    txtarea.value=front+text+back;
+    strPos = strPos + text.length;
+    if (br == "ie") { 
+        txtarea.focus();
+        var range = document.selection.createRange();
+        range.moveStart ('character', -txtarea.value.length);
+        range.moveStart ('character', strPos);
+        range.moveEnd ('character', 0);
+        range.select();
+    }
+    else if (br == "ff") {
+        txtarea.selectionStart = strPos;
+        txtarea.selectionEnd = strPos;
+        txtarea.focus();
+    }
+    txtarea.scrollTop = scrollPos;
+}
+</script>
 
 <!-- Print Request Popup Modal-->
 <div class="modal fade" id="modalPrint" tabindex="-1" role="dialog" aria-labelledby="modalPrintLabel">
