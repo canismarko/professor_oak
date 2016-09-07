@@ -104,6 +104,29 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/angularjs-toaster/0.4.15/toaster.min.js"></script>
     <script src="{% static 'djangular/js/django-angular.min.js' %}"></script>
 
+	<!--jQuery DatePicker-->
+	<link rel="stylesheet" href="//code.jquery.com/ui/1.12.0/themes/base/jquery-ui.css">
+	<script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+	<script src="https://code.jquery.com/ui/1.12.0/jquery-ui.js"></script>
+  	<script>
+  	$( function() {
+  		$( "input[type=date]" ).datepicker();
+  		} );
+  	</script>
+
+	<!--JQuery TimePicker -->
+	<link rel="stylesheet" href="https://cdn.rawgit.com/jonthornton/jquery-timepicker/master/jquery.timepicker.css">
+	<script src="https://raw.githubusercontent.com/jonthornton/jquery-timepicker/master/jquery.timepicker.min.js"></script>
+	<script>
+	$( function() {
+		$("input[type=time]").timepicker({ 
+			'scrollDefault': 'now',
+			'showDuration': true 
+		});
+	});
+	</script>
+	
+
     <!-- chemical_inventory angular files -->
     <script src="{% static 'chemical_inventory/inventory_init.js' %}"></script>
     <script src="{% static 'chemical_inventory/inventory_services.js' %}"></script>
