@@ -265,12 +265,23 @@ class Container(models.Model):
 class StandardOperatingProcedure(models.Model):
 	"""A document that is required to be signed before working with associated chemicals"""
 	name = models.CharField(max_length=50)
-	verified_users = models.ManyToManyField(User, blank=True)
+	certified_users = models.ManyToManyField(User, blank=True)
 	associated_chemicals = models.ManyToManyField('Chemical', related_name='sop', blank=True)
 	file = models.FileField(upload_to='SOPs')
 
 	def __str__(self):
-		return "{name}".format(name=self.name)
+		plural_list = ["","s"]
+		name = self.name
+		user_count = len(self.verified_users.all())
+		if user_count==1:
+			plural = plural_list[0]
+		else:
+			plural = plural_list[1]
+		return "{name} ({user_count} certified user{plural})".format(name=name, user_count=user_count, plural=plural)
+
+	class Meta:
+		verbose_name = "Standard Operating Procedure (SOP)"
+		verbose_name_plural = "Standard Operating Procedures (SOPs)"
 
 def expired_containers(date=None):
 	# Default to today
