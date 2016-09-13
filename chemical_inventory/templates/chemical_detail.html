@@ -77,6 +77,28 @@
   </div>
 </div>
 
+{% if chemical.sop %}
+	{% for sop in chemical.sop.all %}
+		<div class="col-sm-12">
+			{% if user in sop.verified_users.all %}
+			<a href="{{ sop.file.url }}" style="text-decoration: none;">
+			<div class="alert alert-warning" role="alert" href="{{ sop.file.url }}">
+			<strong>{{ sop.name }} Warning: </strong>
+			You have been certified to use this SOP, but be careful! Click here to refresh your memory on the {{ sop.name }} SOP.			
+			</div>
+			</a>
+			{% else %}
+			<a href="{{ sop.file.url }}" style="text-decoration: none;">
+			<div class="alert alert-danger" role="alert">
+			<strong>{{ sop.name }} Warning: </strong>
+			You have not completed the required training to use this chemical. Click here to read the SOP and get certified before conducting any experiments.	
+			</div>
+			</a>
+			{% endif %}
+		</div>
+	{% endfor %}
+{% endif %}
+
 <h2>Containers
   <a href="{% url 'add_container' %}?chemical_id={{ chemical.id }}"
      class="btn btn-default">

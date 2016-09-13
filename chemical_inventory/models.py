@@ -262,6 +262,15 @@ class Container(models.Model):
 		s = "{quantity} {unit_of_measure}"
 		return s.format(quantity=self.quantity, unit_of_measure=self.unit_of_measure)
 
+class StandardOperatingProcedure(models.Model):
+	"""A document that is required to be signed before working with associated chemicals"""
+	name = models.CharField(max_length=50)
+	verified_users = models.ManyToManyField(User, blank=True)
+	associated_chemicals = models.ManyToManyField('Chemical', related_name='sop', blank=True)
+	file = models.FileField(upload_to='SOPs')
+
+	def __str__(self):
+		return "{name}".format(name=self.name)
 
 def expired_containers(date=None):
 	# Default to today
