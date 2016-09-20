@@ -16,14 +16,15 @@ from django.conf import settings
 from datetime import datetime, timedelta, date, time
 from professor_oak.views import breadcrumb, BreadcrumbsMixin
 from .static import inventory_reader as ir
-from .models import stock_take
+from .models import stock_take, ULON
 from chemical_inventory.models import Container
 from rest_framework import viewsets, permissions, response, status
 from .serializers import StockSerializer
+from django.core.files.base import File
 
 #email dependencies
 from django.core.mail import EmailMultiAlternatives
-from django.contrib.auth.models import User
+from django.contrib.auth.models import User, Group
 from templated_email import send_templated_mail
 
 # Breadcrumbs definitions
@@ -51,6 +52,7 @@ class Main(BreadcrumbsMixin, TemplateView):
 class GenerateULONView(BreadcrumbsMixin, FormView):
 	template_name = 'make_ulon.html'
 	form_class = ULONtemplateForm
+	model = ULON
 	
 	def breadcrumbs(self):
 		breadcrumbs = [
@@ -61,7 +63,10 @@ class GenerateULONView(BreadcrumbsMixin, FormView):
   
 	def form_valid(self, form):
 		'''Use the items in ULON form to generate the ULON using LaTeX'''
-		filename = './oak_utilities/ULONs/' + "ULON - " + str(date.today()) + ' - ' + datetime.now().time().strftime("%H-%M-%S")
+		ulon = form.save(commit=False)
+		ulon.user = self.request.user			#Sets the current user to the ulon.user field
+		ulon.save()								#Saves the new ULON to the ulon object so a pk (ulon.ul) is established
+		filename = '{0}/{1}/UL{2}.{3}.{4}'.format(settings.MEDIA_ROOT, 'ULONs', str(ulon.ul).zfill(4), str(date.today()), datetime.now().time().strftime("%H-%M-%S"))
 		doc = Document(default_filepath=filename)
 		
 		#Set Experimental Parameters
@@ -69,7 +74,8 @@ class GenerateULONView(BreadcrumbsMixin, FormView):
 		ExperimentStartTime = form.cleaned_data['experiment_start_time']
 		ExperimentEnd = form.cleaned_data['experiment_end']
 		ExperimentEndTime = form.cleaned_data['experiment_end_time']
-		User = self.request.user.get_full_name()
+		User = file.user.get_full_name()
+		CHO = Group.objects.get(name='Chemical Hygiene Officer (CHO)').user_set.all()[0].get_full_name()
 		ContactNumber = form.cleaned_data['contact_number']
 		Chemicals = form.cleaned_data['chemicals']
 		ExperimentDescription = form.cleaned_data['experiment_description']
@@ -82,6 +88,8 @@ class GenerateULONView(BreadcrumbsMixin, FormView):
 		
 		#Reassign commands with \newcommand
 		doc.preamble.append(r'\usepackage{import}')
+		doc.preamble.append(r'\newcommand{\ULnumber}{' + str(ulon.ul).zfill(4) + '}')
+		doc.preamble.append(r'\newcommand{\CHO}{' + str(CHO) + '}')
 		doc.preamble.append(r'\newcommand{\ExperimentStart}{' + str(ExperimentStart) + '}')
 		if ExperimentStartTime is not None:
 			doc.preamble.append(r'\newcommand{\ExperimentStartTime}{' + str(ExperimentStartTime)[:-3] + '}')
@@ -101,14 +109,18 @@ class GenerateULONView(BreadcrumbsMixin, FormView):
 		for (command, hazard) in list_of_hazards:
 			if command in Hazards:
 				doc.preamble.append('\\newcommand{\\' + command + ' }{ ' + hazard + '}')
-		doc.preamble.append(r'\subimport{../static/}{ULONtemplate.tex}')
+		doc.preamble.append(r'\subimport{../../static_files/}{ULONtemplate.tex}')
 		
 		#Generate the pdf
 		# doc.generate_tex()
 		doc.generate_pdf()
 		with open(filename + '.pdf', 'rb') as pdf:
-			response = HttpResponse(pdf.read(),content_type='application/pdf')
-			response['Content-Disposition'] = 'filename=' + filename + '.pdf'
+			ulon.file = File(pdf)						#Duplicates LaTeX pdf to a new File object and stores it to the ULON object file field
+			os.remove(pdf.name) 						#removes pdf produced by LaTeX (to avoide unecessary duplicates)
+			ulon.title = str(ExperimentDescription) 	#Sets title field to ExperimentDescription for later use with the email client
+			ulon.save()									#Saves the changes to the new ULON object
+			response = HttpResponse(ulon.file.read(),content_type='application/pdf')
+			response['Content-Disposition'] = 'filename=' + str(ulon.file)
 			return response
 		pdf.closed
 
@@ -248,6 +260,13 @@ def send_stock_email(request, stock):
 	"""Pass information from the javascript request to recalculate the stock take results before calling the send_email() function."""
 	stock = stock_take.objects.get(id=stock)
 	stock.email_results()
+	return JsonResponse({'status': 'success'})
+
+
+def send_ulon_email(request, ulon):
+	"""Pass information from the javascript request to recalculate the stock take results before calling the send_email() function."""
+	ulon = ULON.objects.get(ul=ulon)
+	ulon.email_results()
 	return JsonResponse({'status': 'success'})
 
 def send_email(template_name, payload):

@@ -35,7 +35,8 @@ class DateTimeInput(forms.widgets.DateTimeInput):
 class CheckboxChoiceInput(forms.widgets.CheckboxChoiceInput):
 	input_type = 'radio'
 	
-class ULONtemplateForm(NgFormValidationMixin, Bootstrap3FormMixin, NgForm):
+class ULONtemplateForm(Bootstrap3FormMixin, NgModelFormMixin,
+                    NgFormValidationMixin, NgModelForm):
 	form_name = 'ulon_template'
 	
 	def getKey(item):
@@ -89,16 +90,20 @@ class ULONtemplateForm(NgFormValidationMixin, Bootstrap3FormMixin, NgForm):
 		required=True)
 	experiment_start_time = forms.TimeField(
 		label="Start Time",
-		widget=TimeInput(format="%H:%M"),
-		required=False)
+		widget=TimeInput(format="%H:%M",
+		attrs={'placeholder': 'e.g. 09:00, 12:00, 14:00'}),
+		required=False,
+		)
 	experiment_end = forms.DateField(
 		label="End Date",
 		widget=DateInput(),
 		required=True)
 	experiment_end_time = forms.TimeField(
 		label="End Time",
-		widget=TimeInput(format="%H:%M"),
-		required=False)
+		widget=TimeInput(format="%H:%M",
+		attrs={'placeholder': 'e.g. 09:00, 12:00, 14:00'}),
+		required=False,
+		)
 	contact_number = forms.CharField(
 		required=True,
 		max_length=12,
@@ -131,7 +136,7 @@ class ULONtemplateForm(NgFormValidationMixin, Bootstrap3FormMixin, NgForm):
 		widget=forms.Textarea(attrs={'rows': '3'})
 		 )
 	hazards = forms.MultipleChoiceField(
-		label = "Hazards",
+		label = "Hazards (select all that apply)",
 		choices=sorted(list_of_hazards, key=getKey),
 		widget=forms.CheckboxSelectMultiple(
 		attrs={'class':'checkbox'}), 
@@ -145,15 +150,19 @@ class ULONtemplateForm(NgFormValidationMixin, Bootstrap3FormMixin, NgForm):
 		 ) 
 
 	class Meta:
+		model = models.ULON
 		fields = [
 		'experiment_start',
+		'experiment_start_time',
 		'experiment_end',
+		'experiment_end_time',
 		'contact_number', 
 		'chemicals', 
 		'experiment_description', 
 		'experiment_location', 
 		'experiment_sublocation', 
-		'emergency_shutdown',  
+		'emergency_shutdown_procedure',  
+		'hazards',
 		'additional_hazards'
 		]
 

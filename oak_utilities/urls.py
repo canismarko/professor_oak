@@ -14,6 +14,9 @@ urlpatterns = [
     url(r'^make_ulon/$',
         login_required(views.GenerateULONView.as_view()),
         name='make_ulon'),
+	url(r'^make_ulon/send_ulon_email/(?P<ulon>[0-9]+)/$',
+		login_required(views.send_ulon_email),
+		name='send_ulon_email'),
 	url(r'^stock_take/$',
 		login_required(views.UploadInventoryView.as_view()),
 		name='stock_take'),
@@ -23,6 +26,7 @@ urlpatterns = [
 	url(r'^stock_take/results/(?P<stock>[0-9]+)/email_results/$',
 		views.send_stock_email,
 		name='send_stock_email')
+	
 ]
 
 # URLs for the browsable API

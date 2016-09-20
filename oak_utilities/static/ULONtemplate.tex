@@ -17,6 +17,9 @@
 \usepackage{xcolor}
 	\definecolor{fadegray}{gray}{0.75}
 
+%Barcode package
+\usepackage[code=Code39,X=.5mm,ratio=2.25,H=1.5ex]{makebarcode}
+
 % Date Time packages
 \usepackage[mmddyyyy]{datetime}
 \usepackage{scrtime}
@@ -76,8 +79,12 @@
 {0pt}{2ex}{2ex}
 \date{}
 
+%ULON Identification
+\providecommand{\ULnumber}{0000}
+
 % Renew new commands
 \settimeformat{xxivtime}
+\providecommand{\CHO}{\hfill}
 \providecommand{\ExperimentStart}{\hfill}
 \providecommand{\ExperimentStartTime}{\hfill}
 \providecommand{\ExperimentEnd}{\hfill}
@@ -184,13 +191,14 @@ In case of an \textbf{emergency}, notify campus police (\textbf{5-5555}), Physic
 \begin{tabularx}{\linewidth}{| X | X | X |}
 \hline
   \multicolumn{3}{|c|}{\textbf{Approval of PI or Group CHO}}\\\hline
-  Gene Nolis&&\today\\\hline
+  \CHO\textbf{ }(CHO)&&\today\\\hline
   \multicolumn{3}{|c|}{\textbf{Review of Experimental Setup}}\\\hline
-  \User&&\today\\\hline
+  &&\today\\\hline
   (Print)	&	(Signature) & (Date)\\\hline
 \end{tabularx}
 \hfill \break
-\hfill \break
-This ULON expires on \AdvanceDate[14]\today
+\hfill\break
+UL\ULnumber \hfill This ULON expires on:\\
+\barcode{UL\ULnumber} \hfill \AdvanceDate[14]\today\\
 \end{document}
 % \endinput

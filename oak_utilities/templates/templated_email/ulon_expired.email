@@ -1,0 +1,23 @@
+{% block subject %}Your ULON has expired{% endblock %}
+{% block html %}
+<html>
+
+<head>
+  </head>
+
+<body bgcolor="#FFFFFF" text="#000000">
+    <p>Hi {{ ulon_user }}, <br>
+    </p>
+    <p>Your Unattended Laboratory Operation Notice entitled "<em>{{ ulon_title }}</em>" has expired and
+      been removed.</p>
+    <p>Please create a new ULON before doing and further similar
+      experiments by clicking <a href="{{ base_url }}utilities/make_ulon">this link</a>. If you have any questions please <strong>Reply All</strong> to this email to discuss with your CHO ({{ CHO_name }}).</p>
+	<p>If these experiments are complete, please disregard
+      this email.</p>
+    <p>Regards, <br>
+    </p>
+    <p>Cabana Server</p>
+	
+
+</html>
+{% endblock %}
