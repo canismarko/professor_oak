@@ -57,6 +57,7 @@ class stock_take(models.Model):
 	def email_results(self):
 		uploaded_file_name = str(self.file)
 		containers = Container.objects.all()
+		base_url = str(settings.PRODUCTION_URL)
 		
 		#Iterate over containers that are not empty to form a list of container id's
 		database = []
@@ -79,6 +80,7 @@ class stock_take(models.Model):
 			'accounted_for_count':accounted_for_count,
 			'not_in_db_count':not_in_db_count,
 			'not_in_actual_count':not_in_actual_count,
+			'base_url':base_url,
 			}
 
 		send_email('inventory_results', payload)
