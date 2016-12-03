@@ -288,13 +288,19 @@ angular.module('chemicalInventory')
 
 // Provides a preview of the custom markdown in the formula field
 	.controller('formulaPreview', ['$scope', '$sce', function($scope, $sce) {
-		$scope.preview = "This is a <sup>test</sup> |H_2O";
-		$scope.sanitizedPreview = function(input) {
-			return $sce.trustAsHtml(input
-				.replace(/<[^>]+>/gm, '')				//Removes any pre-existing tags
-				.replace(/\|/g, "&bull;")				//replacing for hydrate
-				.replace(/_(.){1}/g, "<sub>$1</sub>")	//replacing for subscript
-				.replace(/\^(.)/g, "<sup>$1</sup>")		//replacing for superscript
-			)
-			};
+	    $scope.preview = "This is a <sup>test</sup> |H_2O";
+	    $scope.sanitizedPreview = function(input) {
+		var ret
+		if (typeof input == "undefined") {
+		    ret = "";
+		} else {
+		    ret =  $sce.trustAsHtml(
+			input.replace(/<[^>]+>/gm, '') //Removes any pre-existing tags
+			    .replace(/\|/g, "&bull;") //replacing for hydrate
+			    .replace(/_(.){1}/g, "<sub>$1</sub>") //replacing for subscript
+			    .replace(/\^(.)/g, "<sup>$1</sup>") //replacing for superscript
+		    );
+		}
+		return ret;
+	    }
 	}])

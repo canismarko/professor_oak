@@ -1,0 +1,12 @@
+<div ng-repeat="hazardRow in hazards" class="row">
+  <div ng-repeat="hazard in hazardRow"
+       class="col-xs-2 ghs-button"
+       ng-class="{active: isActive(hazard.id)}">
+    <img class="img-responsive"
+	 ng-src="{{staticUrls.root}}{{hazard.pictogram}}"
+	 ng-click="selectHazard(hazard.id)"
+	 alt="{{ hazard.name }}"
+	 title="{{ hazard.name }}" />
+    <!-- <p class="text-center">{{ hazard.name }}</p> -->
+  </div>
+</div>

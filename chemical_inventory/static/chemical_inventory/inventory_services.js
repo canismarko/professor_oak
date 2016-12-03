@@ -1,5 +1,8 @@
 angular.module('chemicalInventory')
 
+    .service('Hazard', ['$resource', 'djangoUrl', function($resource, djangoUrl) {
+    }])
+
     .service('Chemical', ['$resource', '$http', 'djangoUrl', function ($resource, $http, djangoUrl) {
 	// A $resource for sending and receiving an abstract chemical from the database
 	var chemicalUrl = djangoUrl.reverse('api:chemical-list');
@@ -7,14 +10,24 @@ angular.module('chemicalInventory')
 	Chemical.save = function(chemicalData) {
 	    // Make a new form with the given data (including the file if necessary)
 	    var fd = new FormData();
+	    var m2m_fields = ['ghs_hazards', 'gloves'];
 	    if (chemicalData.safety_data_sheet) {
 		fd.append('safety_data_sheet', chemicalData.safety_data_sheet);
 	    }
 	    for ( var key in chemicalData ) {
 		// Make sure this is actually a field
 		if (chemicalData.hasOwnProperty(key) &&
-		    key[0] != '$' && chemicalData[key] != undefined)
-	    	fd.append(key, chemicalData[key]);
+		    key[0] != '$' && chemicalData[key] != undefined) {
+		    if (m2m_fields.indexOf(key) > -1) {
+			// Many to many fields require special serialization
+			for (var i=0; i<chemicalData[key].length; i++) {
+			    fd.append(key, chemicalData[key][i]);
+			}
+		    } else {
+			// Regular field, so just save it
+	    		fd.append(key, chemicalData[key]);
+		    }
+		}
 	    }
 	    return $http.post(chemicalUrl, fd, {
 		transformRequest: angular.identity,
@@ -22,7 +35,7 @@ angular.module('chemicalInventory')
 		headers: {'Content-Type': undefined}
 	    });
 	};
-	return Chemical
+	return Chemical;
     }])
 
     .service('fileUpload', ['$http', function ($http) {

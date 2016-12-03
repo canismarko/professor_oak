@@ -1,6 +1,6 @@
 from django import forms
-from djangular.forms import NgFormValidationMixin, NgModelFormMixin, NgModelForm, NgForm
-from djangular.styling.bootstrap3.forms import Bootstrap3FormMixin
+from djng.forms import NgFormValidationMixin, NgModelFormMixin, NgModelForm, NgForm
+from djng.styling.bootstrap3.forms import Bootstrap3FormMixin
 from django.core.validators import RegexValidator
 from django.forms.widgets import DateTimeInput, TimeInput, SplitDateTimeWidget
 from django.forms.utils import ErrorList

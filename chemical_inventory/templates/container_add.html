@@ -21,12 +21,11 @@
       Add and Print Label</button>
     <button type="submit" class="btn btn-default"
 	    ng-click="save()"
-	    ng-disabled="{{ chemical_form.form_name }}.$invalid || {{ container_form.form_name }}.$invalid">
+	    ng-disabled="{{ chemical_form.form_name }}.$invalid || {{ container_form.form_name }}.$invalid"
+	    >
       <span class="glyphicon glyphicon-plus"></span>
       Add (no label)</button>
     <a href="{% url 'chemical_list' %}" class="btn btn-link">Cancel</a>
-    <!-- <button type="submit" class="btn btn-success" -->
-    <!-- 	    ng-click="redirect('http://www.google.com')">Redirect</button> -->
   </p>
 </script>
 
@@ -37,96 +36,97 @@
   <!-- Prevents cross site request forgery -->
   {% csrf_token %}
 
-	<div class="row">
+  <div class="row">
 
-		<div class="col-md-6">
+    <div class="col-md-6">
 
-		<form name="{{ chemical_form.form_name }}" ng-disabled="true" novalidate>
+      <form name="{{ chemical_form.form_name }}" ng-disabled="true" novalidate>
 
-			<div class="panel panel-primary existing-chemical-panel">
+	<div class="panel panel-primary existing-chemical-panel">
+	  <div class="panel-heading">Search for Existing Chemicals</div>
+	  <div class="panel-body">
+	    <div class="row">
+	      <div class="col-md-6">
+		<div class="form-group">
+		  <input type="text" class="form-control" autofocus
+			 placeholder="Chemical name..."
+			 ng-model="chemical_name" ng-model-options="{debounce: 1000}">
+		</div>
+	      </div>
 
-				<div class="panel-heading">Search for Existing Chemicals</div>
+	      <div class="col-md-6">
+		<select multiple="1" class="form-control"
+			ng-options="chemical.id as chemical.$displayName for chemical in matching_chemicals"
+			ng-model="active_chemical_id">
+		</select>
+	      </div>
 
-					<div class="panel-body">
-						<div class="row">
+	    </div><!-- /row -->
 
-							<div class="col-md-6">
-								<div class="form-group">
-								<input type="text" class="form-control" autofocus
-								 placeholder="Chemical name..."
-								 ng-model="chemical_name" ng-model-options="{debounce: 1000}">
-								</div>
-							</div>
+	  </div><!-- panel-body -->
 
-							<div class="col-md-6">
-							<select multiple="1" class="form-control"
-							ng-options="chemical.id as chemical.$displayName for chemical in matching_chemicals"
-							ng-model="active_chemical_id">
-							</select>
-						    </div>
+	</div><!-- /panel -->
 
-					    </div><!-- /row -->
+	<hr />
 
-				</div><!-- panel-body -->
+	<p>(<b>bold</b> = required)</p>
 
-			</div><!-- /panel -->
+	<div class="chemical-form">
 
-			<hr />
+	{{ chemical_form }}
 
-			<p>(<b>bold</b> = required)</p>
 
-			<div class="chemical-form">
+	<!--   {% for field in chemical_form %} -->
+	<!--   <div class="fieldWrapper"> -->
+	<!--     <dt>{{ field.label_tag }}</dt> -->
+	<!--     <dd>{{ field }}</dd> -->
+	<!--     {% if field.auto_id == 'id_formula' %} -->
+	<!--     <div class="btn-toolbar" role="toolbar" -->
+	<!-- 	 aria-label="Toolbar with insert buttons"> -->
+	<!--       <div class="btn-group" role="group" aria-label="Insert Buttons" ng-controller="AddWords"> -->
+	<!-- 	<button title="Insert superscript" type="button" id="superscript" class="btn btn-secondary" ng-click="insertText('^')"><span class="glyphicon glyphicon-superscript"/></button> -->
+	<!-- 	<button title="Insert subscript" type="button" id="subscript" class="btn btn-secondary" ng-click="insertText('_')" ><span class="glyphicon glyphicon-subscript"/></button> -->
+	<!-- 	<button title="Insert hydrate" type="button" id="hydrate" class="btn btn-secondary dropdown-toggle" data-toggle="dropdown">Hydrate</button> -->
+	<!-- 	<ul class="dropdown-menu" role="menu"> -->
+	<!-- 	  <li><a href="#" ng-click="insertText('|H_2O')"><i class="fa fa-circle" style="font-size:0.4em; vertical-align:middle"></i>H<sub>2</sub>O</a></li> -->
+	<!-- 	  <li><a href="#" ng-click="insertText('|2H_2O')"><i class="fa fa-circle" style="font-size:0.4em; vertical-align:middle"></i>2H<sub>2</sub>O</a></li> -->
+	<!-- 	  <li><a href="#" ng-click="insertText('|3H_2O')"><i class="fa fa-circle" style="font-size:0.4em; vertical-align:middle"></i>3H<sub>2</sub>O</a></li> -->
+	<!-- 	  <li><a href="#" ng-click="insertText('|4H_2O')"><i class="fa fa-circle" style="font-size:0.4em; vertical-align:middle"></i>4H<sub>2</sub>O</a></li> -->
+	<!-- 	  <li><a href="#" ng-click="insertText('|5H_2O')"><i class="fa fa-circle" style="font-size:0.4em; vertical-align:middle"></i>5H<sub>2</sub>O</a></li> -->
+	<!-- 	  <li><a href="#" ng-click="insertText('|6H_2O')"><i class="fa fa-circle" style="font-size:0.4em; vertical-align:middle"></i>6H<sub>2</sub>O</a></li> -->
+	<!-- 	  <li><a href="#" ng-click="insertText('|7H_2O')"><i class="fa fa-circle" style="font-size:0.4em; vertical-align:middle"></i>7H<sub>2</sub>O</a></li> -->
+	<!-- 	  <li><a href="#" ng-click="insertText('|8H_2O')"><i class="fa fa-circle" style="font-size:0.4em; vertical-align:middle"></i>8H<sub>2</sub>O</a></li> -->
+	<!-- 	  <li><a href="#" ng-click="insertText('|9H_2O')"><i class="fa fa-circle" style="font-size:0.4em; vertical-align:middle"></i>9H<sub>2</sub>O</a></li> -->
+	<!-- 	  <li><a href="#" ng-click="insertText('|10H_2O')"><i class="fa fa-circle" style="font-size:0.4em; vertical-align:middle"></i>10H<sub>2</sub>O</a></li> -->
+	<!-- 	</ul> -->
+	<!--       </div> -->
+	<!--       <div class="btn-group" role="group" aria-label="Second group"> -->
+	<!-- 	<button title='Clear' type="button" id="clear" class="btn btn-secondary" ng-click="chemical['formula']=''"><span class="glyphicon glyphicon-remove"/></button> -->
+	<!--       </div> -->
+	<!--       <div class="btn-group pull-right" role="group" aria-label="Inactive Preview" ng-controller="formulaPreview"> -->
+	<!-- 	<text title="Preview of formula" type="button" id="formula_preview" class="btn btn-secondary"><strong>Formula Preview: </strong><text ng-bind-html="sanitizedPreview(chemical['formula'])"></text></text> -->
+	<!--       </div> -->
+	<!--     </div> -->
+	<!--     {% endif %} -->
+	<!--   </div> -->
+	<!--   {% endfor %} -->
 
-				<!--{{ chemical_form }}-->
-				{% for field in chemical_form %}
-				<div class="fieldWrapper">
-					<dt>{{ field.label_tag }}</dt>
-						<dd>{{ field }}</dd>
-							{% if field.auto_id == 'id_formula' %}
-<div class="btn-toolbar" role="toolbar" aria-label="Toolbar with insert buttons"> 
-				<div class="btn-group" role="group" aria-label="Insert Buttons" ng-controller="AddWords">
-					<button title="Insert superscript" type="button" id="superscript" class="btn btn-secondary" ng-click="insertText('^')"><span class="glyphicon glyphicon-superscript"/></button>
-					<button title="Insert subscript" type="button" id="subscript" class="btn btn-secondary" ng-click="insertText('_')" ><span class="glyphicon glyphicon-subscript"/></button>
-					<button title="Insert hydrate" type="button" id="hydrate" class="btn btn-secondary dropdown-toggle" data-toggle="dropdown">Hydrate</button>
-					<ul class="dropdown-menu" role="menu">
-						<li><a href="#" ng-click="insertText('|H_2O')"><i class="fa fa-circle" style="font-size:0.4em; vertical-align:middle"></i>H<sub>2</sub>O</a></li>
-						<li><a href="#" ng-click="insertText('|2H_2O')"><i class="fa fa-circle" style="font-size:0.4em; vertical-align:middle"></i>2H<sub>2</sub>O</a></li>
-						<li><a href="#" ng-click="insertText('|3H_2O')"><i class="fa fa-circle" style="font-size:0.4em; vertical-align:middle"></i>3H<sub>2</sub>O</a></li>
-						<li><a href="#" ng-click="insertText('|4H_2O')"><i class="fa fa-circle" style="font-size:0.4em; vertical-align:middle"></i>4H<sub>2</sub>O</a></li>
-						<li><a href="#" ng-click="insertText('|5H_2O')"><i class="fa fa-circle" style="font-size:0.4em; vertical-align:middle"></i>5H<sub>2</sub>O</a></li>
-						<li><a href="#" ng-click="insertText('|6H_2O')"><i class="fa fa-circle" style="font-size:0.4em; vertical-align:middle"></i>6H<sub>2</sub>O</a></li>
-						<li><a href="#" ng-click="insertText('|7H_2O')"><i class="fa fa-circle" style="font-size:0.4em; vertical-align:middle"></i>7H<sub>2</sub>O</a></li>
-						<li><a href="#" ng-click="insertText('|8H_2O')"><i class="fa fa-circle" style="font-size:0.4em; vertical-align:middle"></i>8H<sub>2</sub>O</a></li>
-						<li><a href="#" ng-click="insertText('|9H_2O')"><i class="fa fa-circle" style="font-size:0.4em; vertical-align:middle"></i>9H<sub>2</sub>O</a></li>
-						<li><a href="#" ng-click="insertText('|10H_2O')"><i class="fa fa-circle" style="font-size:0.4em; vertical-align:middle"></i>10H<sub>2</sub>O</a></li>
-					</ul>
-				</div>
-				<div class="btn-group" role="group" aria-label="Second group">
-					<button title='Clear' type="button" id="clear" class="btn btn-secondary" ng-click="chemical['formula']=''"><span class="glyphicon glyphicon-remove"/></button>
-				</div>
-				<div class="btn-group pull-right" role="group" aria-label="Inactive Preview" ng-controller="formulaPreview">
-					<text title="Preview of formula" type="button" id="formula_preview" class="btn btn-secondary"><strong>Formula Preview: </strong><text ng-bind-html="sanitizedPreview(chemical['formula'])"></text></text>
-				</div>
-			</div>
-							{% endif %}
-				</div>
-				{% endfor %}
-			</div>
-			</form>
-			</div>
+	</div><!-- /.chemical-form -->
+      </form>
+    </div>
 
-			<div class="col-md-6"> <!--This drops a gap between the bottom of chemical_form and top of container_form when in single column mode-->
-				<p></p>
-			</div>
+    <div class="col-md-6"> <!--This drops a gap between the bottom of chemical_form and top of container_form when in single column mode-->
+      <p></p>
+    </div>
 
-			<div class="col-md-6 container-form-col">
-			<form name="{{ container_form.form_name }}" novalidate>
-				{{ container_form }}
-			</form>
+    <div class="col-md-6 container-form-col">
+      <form name="{{ container_form.form_name }}" novalidate>
+	{{ container_form }}
+      </form>
 
-				<div ng-include="'save-buttons'"></div>
-			</div><!-- /.col-md-6 -->
-			</div><!-- /.row -->
+      <div ng-include="'save-buttons'"></div>
+    </div><!-- /.col-md-6 -->
+  </div><!-- /.row -->
 
   <!-- Dialog for adding a new glove -->
   <div class="modal fade" id="glove-modal">

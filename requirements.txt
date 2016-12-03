@@ -1,11 +1,11 @@
 Django==1.8.4
 wheel==0.24.0
-django-angular==0.7.15
+django-angular==0.8.4 # Previously 0.7.15
 distribute==0.7.3
 pyBarcode==0.7
 chemspipy==1.0.4
 django-browserid==1.0.0
-djangorestframework==3.2.3
+djangorestframework==3.5.3 # Previously 3.2.3
 django-filter==0.11.0
 xkcd==2.3.1
 pylatex==0.8.0

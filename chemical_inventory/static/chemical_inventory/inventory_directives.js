@@ -187,6 +187,58 @@ angular.module('chemicalInventory')
 	};
     }])
 
+    .directive('ghsSymbolPicker', ['staticUrls', '$resource', 'djangoUrl', function(staticUrls, $resource, djangoUrl) {
+	function link(scope, elem, attrs) {
+	    // Set the default model if it's not already added
+	    if (typeof scope.form.ghs_hazards == "undefined") {
+		scope.form.ghs_hazards = [];
+	    }
+	    // Add globally harmonized symbols for the given widget
+	    var hazardUrl = djangoUrl.reverse('api:hazard-list');
+	    var Hazard = $resource(hazardUrl, many=true);
+	    scope.hazards = Hazard.query(isArray=true);
+	    scope.hazards.$promise.then(function(hazards) {
+		// Rearrange the hazards into rows of six
+		// First populate a buffer to simplify the re-arrangement
+		buffer = [];
+		total = hazards.length;
+		for (var i=0; i<total; i++) {
+		    buffer.push(hazards.pop());
+		}
+		// Now reshape the list into slices
+		var size = 6;
+		for (var i=0; i<total; i+=size) {
+		    hazards.push(buffer.slice(i, i+size));
+		}
+	    });
+	    // Save static urls for including GHS pictograms
+	    scope.staticUrls = staticUrls;
+	    // Handler for determining whether a given hazard is active
+	    scope.isActive = function(hazardId) {
+		return scope.form.ghs_hazards.indexOf(hazardId) > -1;
+	    };
+	    // Handler for selecting a given hazard
+	    scope.selectHazard = function(hazardId) {
+		var currIdx = scope.form.ghs_hazards.indexOf(hazardId);
+		if (currIdx > -1) {
+		    // Clear the currently selected hazard
+		    scope.form.ghs_hazards.splice(currIdx, 1);
+		} else {
+		    // Set the newly selected hazard
+		    scope.form.ghs_hazards.push(hazardId);
+		}
+		console.log(scope.form.ghs_hazards);
+	    };
+	}
+	return {
+	    link: link,
+	    templateUrl: staticUrls.ghsSymbolPicker,
+	    scope: {
+		form: '=owForm'
+	    },
+	};
+    }])
+
     .directive('oakAddContainer', ['$filter', '$resource', 'djangoUrl', 'toaster', function($filter, $resource, djangoUrl, toaster) {
 	function link(scope, elem, attrs) {
 	    // Add classes to labels of required fields

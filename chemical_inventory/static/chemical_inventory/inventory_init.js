@@ -1,4 +1,4 @@
-angular.module('chemicalInventory', ['ngResource', 'ngAnimate', 'toaster', 'ng.django.forms', 'ng.django.urls'])
+angular.module('chemicalInventory', ['ngResource', 'ngAnimate', 'toaster', 'djng.forms', 'djng.urls'])
 
 // Set HTML5 mode for urls
     .config(function($locationProvider){

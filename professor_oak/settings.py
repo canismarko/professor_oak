@@ -37,13 +37,13 @@ INSTALLED_APPS = (
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'djangular',
+    'djng',
     'rest_framework',
     'professor_oak',
     'chemical_inventory',
     'oak_utilities',
 	'pokedex',
-	'easy_thumbnails', 
+	'easy_thumbnails',
 	'image_cropping'
     # 'bootstrap3_datetime'
 )
@@ -60,7 +60,7 @@ BROWSERID_CREATE_USER = False
 LOGIN_REDIRECT_URL_FAILURE = '/unauthorized/'
 
 MIDDLEWARE_CLASSES = (
-    'djangular.middleware.DjangularUrlMiddleware',
+    'djng.middleware.AngularUrlMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -84,7 +84,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
-                'professor_oak.context_processors.breadcrumbs',
+                # 'professor_oak.context_processors.breadcrumbs',
                 'professor_oak.context_processors.skynet',
             ],
         },

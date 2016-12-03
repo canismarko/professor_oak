@@ -1,0 +1,92 @@
+[
+{
+    "pk": 1,
+    "model": "chemical_inventory.hazard",
+    "fields": {
+        "hazard_type": "p",
+        "description": "",
+        "pictogram": "chemical_inventory/ghs-explosion.svg",
+        "name": "Explosive"
+    }
+},
+{
+    "pk": 2,
+    "model": "chemical_inventory.hazard",
+    "fields": {
+        "hazard_type": "p",
+        "description": "",
+        "pictogram": "chemical_inventory/ghs-flammable.svg",
+        "name": "Flammable"
+    }
+},
+{
+    "pk": 3,
+    "model": "chemical_inventory.hazard",
+    "fields": {
+        "hazard_type": "p",
+        "description": "",
+        "pictogram": "chemical_inventory/ghs-oxidizer.svg",
+        "name": "Oxidizer"
+    }
+},
+{
+    "pk": 4,
+    "model": "chemical_inventory.hazard",
+    "fields": {
+        "hazard_type": "p",
+        "description": "",
+        "pictogram": "chemical_inventory/ghs-compressed-gas.svg",
+        "name": "Compressed Gas"
+    }
+},
+{
+    "pk": 5,
+    "model": "chemical_inventory.hazard",
+    "fields": {
+        "hazard_type": "p",
+        "description": "",
+        "pictogram": "chemical_inventory/ghs-corrosive.svg",
+        "name": "Corrosive"
+    }
+},
+{
+    "pk": 6,
+    "model": "chemical_inventory.hazard",
+    "fields": {
+        "hazard_type": "p",
+        "description": "",
+        "pictogram": "chemical_inventory/ghs-irritant.svg",
+        "name": "Irritant"
+    }
+},
+{
+    "pk": 7,
+    "model": "chemical_inventory.hazard",
+    "fields": {
+        "hazard_type": "h",
+        "description": "",
+        "pictogram": "chemical_inventory/ghs-toxic.svg",
+        "name": "Toxic"
+    }
+},
+{
+    "pk": 8,
+    "model": "chemical_inventory.hazard",
+    "fields": {
+        "hazard_type": "e",
+        "description": "",
+        "pictogram": "chemical_inventory/ghs-environmental.svg",
+        "name": "Environmental"
+    }
+},
+{
+    "pk": 9,
+    "model": "chemical_inventory.hazard",
+    "fields": {
+        "hazard_type": "h",
+        "description": "",
+        "pictogram": "chemical_inventory/ghs-health.svg",
+        "name": "Health Hazard"
+    }
+}
+]

@@ -56,6 +56,18 @@
     margin-bottom: 5px;
 }
 
+.ghs-button img {
+    cursor: pointer;
+}
+.ghs-button.active img {
+    background: rgb(217, 237, 247); /* Bootstrap blue */
+    /* background: rgb(242, 222, 222);  */
+}
+
+img.ghs-icon {
+    height: 10ex;
+}
+
 .login_only{
     pointer-events: none;
     opacity: 0.4;

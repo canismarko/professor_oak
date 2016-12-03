@@ -15,9 +15,9 @@ from django.conf import settings
 from django.db.models import Q, Count
 
 from .forms import ChemicalForm, ContainerForm, GloveForm, SupplierForm, SupportingDocumentForm
-from .models import Chemical, Container, Glove, Supplier, SupportingDocument
+from .models import Chemical, Hazard, Container, Glove, Supplier, SupportingDocument
 import xkcd
-from .serializers import ChemicalSerializer, ContainerSerializer, GloveSerializer, SupplierSerializer
+from .serializers import ChemicalSerializer, HazardSerializer, ContainerSerializer, GloveSerializer, SupplierSerializer
 from professor_oak.views import breadcrumb, BreadcrumbsMixin
 
 
@@ -258,26 +258,22 @@ class EditChemicalView(BreadcrumbsMixin, UpdateView):
     model = Chemical
     form_class = ChemicalForm
 
-    def get_object(self):
-        """Return the specific chemical by its primary key ('pk')."""
-        # Find the primary key from the url
-        pk = self.kwargs['pk']
-        # Get the actual Chemical object
-        chemical = Chemical.objects.get(pk=pk)
-        return chemical
-
-    def form_valid(self,form):
-        obj = form.save(commit=False)
-        obj.author = self.request.user
-        obj.save()
-        return HttpResponseRedirect(self.get_success_url())
+    # def get_object(self):
+    #     """Return the specific chemical by its primary key ('pk')."""
+    #     # Find the primary key from the url
+    #     pk = self.kwargs['pk']
+    #     # Get the actual Chemical object
+    #     chemical = Chemical.objects.get(pk=pk)
+    #     return chemical
 
     def breadcrumbs(self):
         return [
             inventory_breadcrumb(),
             'chemical_list',
-            breadcrumb(self.object.name, reverse('chemical_detail', kwargs={'pk': self.object.pk})),
-            breadcrumb('Edit', reverse('chemical_edit', kwargs={'pk': self.object.pk})),
+            breadcrumb(self.object.name,
+                       reverse('chemical_detail', kwargs={'pk': self.object.pk})),
+            breadcrumb('Edit',
+                       reverse('chemical_edit', kwargs={'pk': self.object.pk})),
             ]
 
 
@@ -336,6 +332,17 @@ class ChemicalViewSet(viewsets.ModelViewSet):
     queryset = Chemical.objects.all()
     # Decide how to convert to JSON
     serializer_class = ChemicalSerializer
+    # Require user be logged in to post to this endpoint
+    permission_classes = (permissions.IsAuthenticatedOrReadOnly,)
+
+
+class HazardViewSet(viewsets.ModelViewSet):
+    """Viewset for the Chemical model. User is required to be logged in to
+    post."""
+    # Determine which object to list
+    queryset = Hazard.objects.all()
+    # Decide how to convert to JSON
+    serializer_class = HazardSerializer
     # Require user be logged in to post to this endpoint
     permission_classes = (permissions.IsAuthenticatedOrReadOnly,)
 

@@ -1,5 +1,6 @@
 {% extends 'base.html' %}
 {% load custom_filters %}
+{% load staticfiles %}
 {% load inventory_extras %}
   {% if active_find %}
   ({{ active_find }})
@@ -28,8 +29,13 @@
       <dt>CAS Number</dt>
       <dd>{{ chemical.cas_number }}</dd>
 
-      <dt>Primary Hazard</dt>
-      <dd>{{ chemical.primary_hazard }}</dd>
+      <dt>GHS Hazards</dt>
+      <dd>
+	{% for hazard in chemical.ghs_hazards.all %}
+	<img class="ghs-icon" src="{% static hazard.pictogram %}"
+	     alt="{{ hazard.name }} Icon" title="{{ hazard.name }}" />
+	{% endfor %}
+      </dd>
 
       <dt>Gloves</dt>
       <dd>

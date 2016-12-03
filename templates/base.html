@@ -6,6 +6,7 @@
 <html ng-app="chemicalInventory">
 
   <head>
+    <base href="http://localhost:8000/">
 
     <!-- Enable responsive design (mobile friendly) -->
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -23,7 +24,7 @@
     <!-- Favicon that shows up in the browser tab -->
     <link rel="shortcut icon" href="{% static 'favicon.ico' %}" />
 
-	<link rel="stylesheet" href="{% static 'font-awesome-4.6.3/css/font-awesome.min.css' %}">
+    <link rel="stylesheet" href="{% static 'font-awesome-4.6.3/css/font-awesome.min.css' %}">
 
     <title>
       {% block title %}{% endblock %} | Professor Oak
@@ -102,23 +103,14 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.4.5/angular-resource.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.4.5/angular-animate.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/angularjs-toaster/0.4.15/toaster.min.js"></script>
-    <script src="{% static 'djangular/js/django-angular.min.js' %}"></script>
-
-	<!--jQuery DatePicker-->
-	<link rel="stylesheet" href="//code.jquery.com/ui/1.12.0/themes/base/jquery-ui.css">
-	<script src="https://code.jquery.com/jquery-1.12.4.js"></script>
-	<script src="https://code.jquery.com/ui/1.12.0/jquery-ui.js"></script>
-  	<script>
-  	$( function() {
-  		$( "input[type=date]" ).datepicker();
-  		} );
-  	</script>	
+    <script src="{% static 'djng/js/django-angular.min.js' %}"></script>
 
     <!-- chemical_inventory angular files -->
     <script src="{% static 'chemical_inventory/inventory_init.js' %}"></script>
     <script src="{% static 'chemical_inventory/inventory_services.js' %}"></script>
     <script src="{% static 'chemical_inventory/inventory_controllers.js' %}"></script>
     <script src="{% static 'chemical_inventory/inventory_directives.js' %}"></script>
+    <script src="{% static 'chemical_inventory/inventory_filters.js' %}"></script>
 
 	<!-- oak_utilities angular files -->
 	<script src="{% static 'oak_utilities/utilities_controllers.js' %}"></script>
@@ -127,7 +119,9 @@
     <script type="text/javascript">
       angular.module('chemicalInventory').factory('staticUrls', function() {
 	  return {
+	      root: '{% static '' %}',
 	      nfpaDiamond: '{% static 'chemical_inventory/nfpa-diamond.html' %}',
+	      ghsSymbolPicker: '{% static 'chemical_inventory/ghs-symbol-picker.html' %}',
 	  };
       });
       angular.module('chemicalInventory').service('currentUser', function() {

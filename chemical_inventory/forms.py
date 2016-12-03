@@ -1,6 +1,6 @@
 from django import forms
-from djangular.forms import NgFormValidationMixin, NgModelFormMixin, NgModelForm, NgForm
-from djangular.styling.bootstrap3.forms import Bootstrap3FormMixin
+from djng.forms import NgFormValidationMixin, NgModelFormMixin, NgModelForm, NgForm
+from djng.styling.bootstrap3.forms import Bootstrap3FormMixin
 
 from . import models
 
@@ -56,8 +56,21 @@ class SupportingDocumentForm(NgModelFormMixin, NgFormValidationMixin,
 NFPA_RATINGS = [('', '----------')] + models.Chemical.NFPA_RATINGS
 NFPA_HAZARDS = [('', '----------')] + models.Chemical.NFPA_HAZARDS
 
+# class GHSSymbolWidget(forms.Widget):
+    # def __init__(self, ngmodel="", *args, **kwargs):
+    #     self.ngmodel = ngmodel
+    #     return super().__init__(*args, **kwargs)
+    # formname="chemical_form", modelname="ghs_hazards"
+
+    # def render(self, *args, **kwargs):
+    #     form_name = self.attrs.pop('ow-form', "")
+    #     s = '<div ghs-symbol-picker id="{id}" ow-form="{form_name}"></div>'
+    #     return s.format(form_name=form_name, **kwargs['attrs'])
+
+
 class ChemicalForm(NgModelFormMixin, NgFormValidationMixin,
                    Bootstrap3FormMixin, NgModelForm):
+    # class ChemicalForm(forms.ModelForm):
     scope_prefix = 'chemical'
     form_name = 'chemical_form'
     cas_number = forms.CharField(
@@ -68,6 +81,11 @@ class ChemicalForm(NgModelFormMixin, NgFormValidationMixin,
         label="Formula (SDS § 3)",
         required=False,
         widget=forms.TextInput(attrs={'placeholder': 'eg. H_2O'}))
+    ghs_hazards = forms.ModelMultipleChoiceField(
+        label="GHS Hazards (SDS § 2)",
+        # widget=forms.SelectMultiple(attrs={'ow-form': 'chemical_form'}),
+        queryset=models.Hazard.objects.all(),
+        required=False)
     health = forms.ChoiceField(
         label="Health NFPA Rating (SDS § 15 or 16)",
         choices=NFPA_RATINGS)
@@ -89,7 +107,7 @@ class ChemicalForm(NgModelFormMixin, NgFormValidationMixin,
         required=False)
     class Meta:
         model = models.Chemical
-        fields = ['name', 'cas_number', 'formula', 'primary_hazard',
+        fields = ['name', 'cas_number', 'formula', 'ghs_hazards',
                   'health', 'flammability', 'instability', 'special_hazards',
                   'gloves', 'safety_data_sheet']
 

@@ -77,7 +77,7 @@
         "location": 4,
         "is_empty": false,
         "date_opened": "2015-09-03",
-        "owner": 2,
+        "owner": 1,
         "container_type": "Pouch",
         "expiration_date": "2016-09-03"
     },
@@ -98,7 +98,7 @@
         "location": 4,
         "is_empty": false,
         "date_opened": "2015-09-12",
-        "owner": null,
+        "owner": 0,
         "container_type": "Pouch",
         "expiration_date": "2016-09-12"
     },

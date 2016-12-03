@@ -1,20 +1,31 @@
+import json
+
 from rest_framework import serializers
 
-from .models import Chemical, Container, Glove, Supplier
+from .models import Chemical, Hazard, Container, Glove, Supplier
 
 class GloveSerializer(serializers.ModelSerializer):
     class Meta:
         model = Glove
+        fields = "__all__"
 
 
 class SupplierSerializer(serializers.ModelSerializer):
     class Meta:
         model = Supplier
+        fields = "__all__"
 
 
 class ChemicalSerializer(serializers.ModelSerializer):
     class Meta:
         model = Chemical
+        fields = "__all__"
+
+
+class HazardSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Hazard
+        fields = "__all__"
 
 
 class ContainerSerializer(serializers.ModelSerializer):
@@ -32,3 +43,4 @@ class ContainerSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Container
+        fields = "__all__"

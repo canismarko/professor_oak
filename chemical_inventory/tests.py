@@ -7,8 +7,9 @@ from django.test import TestCase, RequestFactory, Client
 from django.contrib.staticfiles.testing import StaticLiveServerTestCase
 from django.contrib.auth.models import User
 from django.core.urlresolvers import reverse
+from rest_framework.test import APIRequestFactory, APIClient
 
-from . import models
+from . import models, serializers, views
 
 class ElementSearchTest(TestCase):
     """Filtering a list of chemicals by symbols in the formula."""
@@ -44,6 +45,27 @@ class ElementSearchTest(TestCase):
         chemicals = response.context['chemicals']
         self.assertTrue(len(chemicals) > 0)
         self.assertFalse('He' in [chemical.formula for chemical in chemicals])
+
+
+class ChemicalAPITest(TestCase):
+    fixtures = ['test_users.json', 'inventory_test_data.json']
+
+    def test_many_to_many(self):
+        test_data = {
+            'name': "Francium",
+            'health': '1',
+            'flammability': '1',
+            'instability': '1',
+            'gloves': ['1','2'],
+        }
+        url = reverse('api:chemical-list')
+        client = APIClient()
+        client.login(username="test", password="secret")
+        response = client.post(url, test_data)
+        self.assertEqual(response.status_code, 200)
+        # request = APIRequestFactory().post(url, test_data)
+        # chemical_view = views.ChemicalViewSet().as_view()
+        # chemical_view(request)
 
 
 class ChemicalTest(TestCase):
@@ -110,17 +132,24 @@ class SearchFormulaTest(TestCase):
 
     def test_autosave(TestCase):
         """Tests for saving data before strip"""
-        chemical = models.Chemical(formula='CoF_2', health='0', flammability='0', instability='0', name='Cobalt(II) Fluoride')
+        chemical = models.Chemical(formula='CoF_2', health='0',
+                                   flammability='0', instability='0',
+                                   name='Cobalt(II) Fluoride')
         chemical.save()
         cobalt = models.Chemical.objects.get(formula='CoF_2')
         assert cobalt.stripped_formula == 'CoF2'
-        
+
+
 class IsEmptyTest(TestCase):
-    '''Test for verifying whether a chemical as an expired but non-empty container'''
+    '''Test for verifying whether a chemical as an expired but non-empty
+    container'''
     fixtures = ['production_data']
     def test_not_empty_expired(TestCase):
         for chemicals in models.Chemical.objects.all():
-            container_test = models.Container.objects.filter(chemical__id=chemicals.pk, expiration_date__lte=datetime.date.today(), is_empty=False).count()
+            container_test = models.Container.objects.filter(
+                chemical__id=chemicals.pk,
+                expiration_date__lte=datetime.date.today(),
+                is_empty=False).count()
             # print (container_test)
             assert type(container_test) is int
 

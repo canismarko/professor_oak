@@ -26,6 +26,48 @@ describe('chemical inventory', function() {
 	$httpBackend.verifyNoOutstandingRequest();
     });
 
+    describe('Chemical model service', function() {
+	var Chemical
+	beforeEach(inject(function($injector) {
+	    Chemical = $injector.get('Chemical');
+	}));
+    	it('serializes manytomany fields', function() {
+	    // Check that the resutling formdata has m2m fields separated
+	    $httpBackend.expectPOST(
+		djangoUrl.reverse('api:chemical-list'),
+		function(postData) {
+		    expect(postData.getAll('ghs_hazards')).toEqual(['2', '3'])
+		    expect(postData.get('gloves')).toEqual('0')
+		    return true
+		}
+	    ).respond(200);
+	    // Save some data that have mutiple many to many field selections
+	    var requestData = {
+		name: 'Francium',
+		ghs_hazards: [2, 3],
+		gloves: [0, 1],
+	    };
+	    Chemical.save(requestData);
+	    // Check that it still works fine with zero or 1 options selected
+	    $httpBackend.expectPOST(
+		djangoUrl.reverse('api:chemical-list'),
+		function(postData) {
+		    expect(postData.getAll('ghs_hazards')).toEqual(['0'])
+		    expect(postData.get('gloves')).toEqual(null)
+		    return true
+		}
+	    ).respond(200);
+	    // Save some data that have mutiple many to many field selections
+	    var requestData = {
+		name: 'Francium',
+		ghs_hazards: [0],
+		gloves: [],
+	    };
+	    Chemical.save(requestData);
+	    $httpBackend.flush();
+    	});
+    });
+
     describe('add container form', function() {
 	var createController;
 	beforeEach(inject(function($injector) {
