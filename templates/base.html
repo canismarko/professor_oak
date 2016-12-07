@@ -105,6 +105,19 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/angularjs-toaster/0.4.15/toaster.min.js"></script>
     <script src="{% static 'djng/js/django-angular.min.js' %}"></script>
 
+    <!-- jQuery DatePicker for non-HTML5 browsers -->
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.12.0/themes/base/jquery-ui.css">
+    <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.0/jquery-ui.js"></script>
+      <script type="text/javascript">
+        $( function() {
+        <!-- Check to see if HTML5 has downgraded the fieldtype to 'text' -->
+        if ( $('[type="date"]').prop('type') != 'date' ) {    
+            <!-- And add a datepicker widget there -->
+            $('[type="date"]').datepicker();
+        } });
+        </script>
+
     <!-- chemical_inventory angular files -->
     <script src="{% static 'chemical_inventory/inventory_init.js' %}"></script>
     <script src="{% static 'chemical_inventory/inventory_services.js' %}"></script>

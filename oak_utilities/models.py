@@ -11,6 +11,7 @@ from django.core.mail import EmailMultiAlternatives
 from django.contrib.auth.models import User, Group
 from templated_email import send_templated_mail
 
+
 root_file_storage = 'oak_utilities/chemical_inventory_data/'
 
 def update_filename(instance, filename):

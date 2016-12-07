@@ -80,7 +80,8 @@ class ChemicalForm(NgModelFormMixin, NgFormValidationMixin,
     formula = forms.CharField(
         label="Formula (SDS § 3)",
         required=False,
-        widget=forms.TextInput(attrs={'placeholder': 'eg. H_2O'}))
+        # widget=forms.TextInput(attrs={'placeholder': 'eg. H_2O', 'ow-formula': 'ow-formula'})
+    )
     ghs_hazards = forms.ModelMultipleChoiceField(
         label="GHS Hazards (SDS § 2)",
         # widget=forms.SelectMultiple(attrs={'ow-form': 'chemical_form'}),

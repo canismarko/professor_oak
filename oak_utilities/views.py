@@ -74,7 +74,7 @@ class GenerateULONView(BreadcrumbsMixin, FormView):
 		ExperimentStartTime = form.cleaned_data['experiment_start_time']
 		ExperimentEnd = form.cleaned_data['experiment_end']
 		ExperimentEndTime = form.cleaned_data['experiment_end_time']
-		User = file.user.get_full_name()
+		User = ulon.user.get_full_name()
 		CHO = Group.objects.get(name='Chemical Hygiene Officer (CHO)').user_set.all()[0].get_full_name()
 		ContactNumber = form.cleaned_data['contact_number']
 		Chemicals = form.cleaned_data['chemicals']
