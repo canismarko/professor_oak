@@ -1,5 +1,5 @@
 {% extends 'base.html' %}
-{% load browserid %}
+{% load staticfiles %}
 
 {% block title %}Account Login{% endblock %}
 
@@ -24,7 +24,14 @@
     Please login to access protected areas of this site.
   </p>
   <p>
-    {% browserid_login text="Login" color='list' next=request.GET.next%}
+    <a href="{% url 'social:begin' 'google-oauth2' %}?next={{ request.GET.next }}"
+       title="Sign-in with Google">
+      <img src="{% static 'btn_google_signin_dark_normal_web.png' %}" />
+    </a>
+  </p>
+  <p>
+     If you do not have an account, please contact Jordi Cabana
+     (<a href="mailto:jcabana@uic.edu">jcabana@uic.edu</a>) for authorization.
   </p>
 </div>
 {% endif %}

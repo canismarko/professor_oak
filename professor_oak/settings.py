@@ -28,36 +28,49 @@ DEBUG = True
 ALLOWED_HOSTS = ['localhost', '127.0.0.1']
 
 # Application definition
-
 INSTALLED_APPS = (
     'django.contrib.admin',
     'django.contrib.auth',
-    'django_browserid', # Mozilla persona authentication
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'djng',
+    'social.apps.django_app.default',
     'rest_framework',
     'professor_oak',
     'chemical_inventory',
     'oak_utilities',
-	'pokedex',
-	'easy_thumbnails',
-	'image_cropping'
-    # 'bootstrap3_datetime'
+    'pokedex',
+    'easy_thumbnails',
+    'image_cropping'
 )
 
-# Add the django_browserid authentication backend.
 AUTHENTICATION_BACKENDS = (
+    'social.backends.google.GoogleOAuth2',
     'django.contrib.auth.backends.ModelBackend',
-    'django_browserid.auth.BrowserIDBackend',
 )
 
-# Disable the creation of unrecognized users
-BROWSERID_CREATE_USER = False
+# These settings need to be populated with values from Google API credentials
+SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = ''
+SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = ''
 
-LOGIN_REDIRECT_URL_FAILURE = '/unauthorized/'
+SOCIAL_AUTH_GOOGLE_OAUTH2_SCOPE = [
+    'https://www.googleapis.com/auth/userinfo.email',
+    'https://www.googleapis.com/auth/userinfo.profile'
+]
+
+# Custom pipeline only allows existing users to be authenticated
+SOCIAL_AUTH_PIPELINE = (
+    'social.pipeline.social_auth.social_details',
+    'social.pipeline.social_auth.social_uid',
+    'social.pipeline.social_auth.auth_allowed',
+    'social.pipeline.social_auth.social_user',
+    'social.pipeline.social_auth.associate_by_email',
+    'social.pipeline.social_auth.associate_user',
+    'social.pipeline.social_auth.load_extra_data',
+    'social.pipeline.user.user_details',
+)
 
 MIDDLEWARE_CLASSES = (
     'djng.middleware.AngularUrlMiddleware',
@@ -84,7 +97,8 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
-                # 'professor_oak.context_processors.breadcrumbs',
+                'social.apps.django_app.context_processors.backends',
+                'social.apps.django_app.context_processors.login_redirect',
                 'professor_oak.context_processors.skynet',
             ],
         },

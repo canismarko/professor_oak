@@ -38,12 +38,13 @@ urlpatterns = [
             login_required(views.UserView.as_view()),
             name="user_detail"),
 
-        # Authorization stuff using Persona
-        url(r'', include('django_browserid.urls')),
-        url(r'^unauthorized/$', views.unauthorized, name='unauthorized'),
-        url(r'^accounts/login/$',
-            TemplateView.as_view(template_name='login.html'),
-            name='login'),
+        # Authorization stuff using Django backend
+        url(r'^accounts/login/',
+            TemplateView.as_view(template_name='login.html'), name='login_page'),
+        url(r'^accounts/logout/', 'django.contrib.auth.views.logout',
+            {'next_page': '/'}, name="logout"),
+        # Authorization stuff using python-social-auth
+        url('', include('social.apps.django_app.urls', namespace='social')),
         # Jasmine unit-test runner
         url(r'^jasmine/$', TemplateView.as_view(template_name='jasmine.html')),
 ]
@@ -52,6 +53,6 @@ urlpatterns = [
 if settings.DEBUG:
         # static files (images, css, javascript, etc.)
         urlpatterns.append(
-            url(r'^media/(?P<path>.*)$', 'django.views.static.serve',
-                { 'document_root': settings.MEDIA_ROOT }
-            ))
+                url(r'^media/(?P<path>.*)$', 'django.views.static.serve',
+                    { 'document_root': settings.MEDIA_ROOT }
+                ))

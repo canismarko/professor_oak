@@ -1,5 +1,4 @@
 {% load staticfiles %}
-{% load browserid %}
 {% load custom_filters %}
 <!DOCTYPE html>
 
@@ -17,7 +16,6 @@
     {% if skynet %}
     <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/3.3.5/cosmo/bootstrap.min.css">
     {% endif %}
-    {% browserid_css %}
     <link rel="stylesheet" type="text/css" href="{% static 'main.css' %}">
     <link rel="stylesheet" type="text/css" href="{% static 'chemical_inventory/periodic_table.css' %}">
 
@@ -36,7 +34,6 @@
 
     <toaster-container></toaster-container>
 
-    {% browserid_info %}
     <div class="container">
       <div class="row header">
 	<div class="col-md-10">
@@ -63,14 +60,15 @@
 	    {% if user.is_staff %}
 	    <span class="btn btn-link"><a href="/admin/" title="Administration site">Admin</a></span>
 	    {% endif %}
-	    <span class="btn btn-link">
-	      {% browserid_logout text='Logout' %}
-	    </span>
+	    <a href="{% url 'logout' %}"
+	       class="btn btn-link">
+	      Logout
+	    </a>
 	  </div>
 	  {% elif request.GET.next %}
-	    {% browserid_login text='Login' color='light' next=request.GET.next %}
 	  {% else %}
-	    {% browserid_login text='Login' color='light' next=request.path %}
+	  <a class="btn btn-default" href="{% url 'login_page' %}?next={{ request.path }}">
+	    <i class="glyphicon glyphicon-user"></i> Login</a>
 	  {% endif %}
 	</div>
       </div>
@@ -96,7 +94,6 @@
 
     <!-- Javascript -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
-    {% browserid_js %}
     <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.5/js/bootstrap.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.4.5/angular.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.4.5/angular-sanitize.js"></script>
@@ -112,7 +109,7 @@
       <script type="text/javascript">
         $( function() {
         <!-- Check to see if HTML5 has downgraded the fieldtype to 'text' -->
-        if ( $('[type="date"]').prop('type') != 'date' ) {    
+        if ( $('[type="date"]').prop('type') != 'date' ) {
             <!-- And add a datepicker widget there -->
             $('[type="date"]').datepicker();
         } });

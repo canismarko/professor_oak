@@ -378,17 +378,19 @@ class ContainerViewSet(viewsets.ModelViewSet):
         # if data['is_empty'] == True:
             # return response.Response(serializer.data, status=status.HTTP_400_BADREQUEST, headers=headers)
         # return super().update(*args, **kwargs)
-            
+
 @login_required
 def print_label(request, container_pk):
-        """Pass the information from the container to subprocess, convert it to a csv file and merge with the gLabel template."""
-        # stubbed for  development 
-        container = Container.objects.get(pk=container_pk)
-        container.print_label()
-        return JsonResponse({'status': 'success'})
-        
+    """Pass the information from the container to subprocess, convert it
+    to a csv file and merge with the gLabel template.
+    """
+    # stubbed for  development
+    container = Container.objects.get(pk=container_pk)
+    container.print_label()
+    return JsonResponse({'status': 'success'})
+
 @login_required
 def get_quick_empty(request, container_pk):
-        container = Container.objects.get(pk=container_pk)
-        container.mark_as_empty
-        return JsonResponse({'status': 'success'})
+    container = Container.objects.get(pk=container_pk)
+    container.mark_as_empty
+    return JsonResponse({'status': 'success'})
