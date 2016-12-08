@@ -4,7 +4,6 @@ django-angular==0.8.4 # Previously 0.7.15
 distribute==0.7.3
 pyBarcode==0.7
 chemspipy==1.0.4
-django-browserid==1.0.0
 djangorestframework==3.5.3 # Previously 3.2.3
 django-filter==0.11.0
 xkcd==2.3.1
@@ -18,3 +17,4 @@ django_templated_email==0.5
 easy_thumbnails==2.3
 django-image-cropping==1.0.3
 django-braces==1.9.0
+python-social-auth==0.2.21
