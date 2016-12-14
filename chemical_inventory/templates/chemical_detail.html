@@ -85,21 +85,27 @@
 
 {% if chemical.sop %}
 <div class="row">
-	{% for sop in chemical.sop.all %}
-		<div class="col-sm-12">
-			{% if user in sop.certified_users.all %}
-			<div class="alert alert-warning" role="alert" href="{{ sop.file.url }}">
-			<strong>{{ sop.name }} Warning: </strong>
-			You have been certified to use this SOP, but be careful! <a href="{{ sop.file.url }}" class="alert-link" title="Download and review the {{ sop.name }} SOP"> Click here to refresh your memory on the {{ sop.name }} SOP.</a>
-			</div>
-			{% else %}
-			<div class="alert alert-danger" role="alert">
-			<strong>{{ sop.name }} Warning: </strong>
-			You have not completed the required training to use this chemical. <a href="{{ sop.file.url }}" class="alert-link" title="Download and review the {{ sop.name }} SOP">Read the SOP and get certified</a> before conducting any experiments.
-			</div>
-			{% endif %}
-		</div>
-	{% endfor %}
+  {% for sop in chemical.sop.all %}
+  <div class="col-sm-12">
+    {% if user in sop.certified_users.all %}
+    <div class="alert alert-warning" role="alert" href="{{ sop.file.url }}">
+      <strong>{{ sop.name }} Warning: </strong> You have been
+      certified to use this SOP, but be careful!
+      <a href="{{ sop.file.url }}" class="alert-link"
+	 title="Download and review the {{ sop.name }} SOP">
+	Click here to refresh your memory on
+	the {{ sop.name }} SOP.</a>
+    </div>
+    {% else %}
+    <div class="alert alert-danger" role="alert">
+      <strong>{{ sop.name }} Warning: </strong>
+      You have not completed the required training to use this chemical.
+      <a href="{{ sop.file.url }}" class="alert-link" title="Download and review the {{ sop.name }} SOP">
+	Read the SOP and get certified</a> before conducting any experiments.
+    </div>
+    {% endif %}
+  </div>
+  {% endfor %}
 </div>
 {% endif %}
 

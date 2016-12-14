@@ -15,6 +15,8 @@ from django.dispatch import receiver
 from django.db.models import signals
 from django.utils.text import slugify
 
+from professor_oak.models import ScoreMixin
+
 
 class Hazard(models.Model):
     """A hazard type as defined by the global harmonized system.
@@ -318,7 +320,7 @@ class SupportingDocument(models.Model):
                         container_id=self.container.id)
 
 
-class Location(models.Model):
+class Location(ScoreMixin, models.Model):
     name = models.CharField(max_length=50, blank=True)
     room_number = models.CharField(max_length=20)
     building = models.CharField(max_length=30)

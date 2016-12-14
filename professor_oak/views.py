@@ -5,13 +5,13 @@ from collections import namedtuple
 
 from django.core.urlresolvers import reverse
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth.models import User
 from django.http import HttpResponse
 from django.template import RequestContext, loader
 from django.shortcuts import render
 from django.views.generic.detail import DetailView
 
 from chemical_inventory.models import expired_containers
+from professor_oak.models import OakUser
 
 breadcrumb = namedtuple('breadcrumb', ('name', 'url'))
 
@@ -64,7 +64,7 @@ class BreadcrumbsMixin():
 
 
 class UserView(DetailView):
-    model = User
+    model = OakUser
     template_name = 'user_detail.html'
     context_object_name = 'target_user'
 

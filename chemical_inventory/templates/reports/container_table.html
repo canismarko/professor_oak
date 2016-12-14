@@ -17,14 +17,29 @@
   {% for container in container_list %}
   {% if not container.is_empty %}
   <tr>
-    <td>{{ container.id }}</td>
-    <td>{{ container.chemical.name }}</td>
+    <td>
+      <a href="{% url 'container_detail' pk=container.pk %}"
+	 title="Detailed information for container {{ container.pk }}">
+	{{ container.id }}
+      </a>
+    </td>
+    <td>
+      <a href="{% url 'container_detail' pk=container.pk %}"
+	 title="Detailed information for container {{ container.pk }}">
+	{{ container.chemical.name }}</a>
+    </td>
     <td>{{ container.batch }}</td>
     {% if perspective != "location" %}
     <td>{{ container.location }}</td>
     {% endif %}
     <td>{{ container.quantity_string }}</td>
-    <td>{{ container.expiration_date }}</td>
+    <td>
+      {{ container.expiration_date }}
+      {% if container.is_expired and container.is_empty == False %}
+      <span class="glyphicon glyphicon-alert red_alert"
+	    title="This container has expired"></span>
+      {% endif %}
+    </td>
     <td>{{ container.state }}</td>
     <td>{{ container.container_type }}</td>
     {% if perspective != "owner" %}

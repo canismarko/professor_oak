@@ -1,12 +1,12 @@
 import csv
 import datetime
 
-from django.contrib.auth.models import User
 from django.core.urlresolvers import reverse
 from django.http import HttpResponse
 from django.views.generic.base import TemplateView
 
 from professor_oak.views import breadcrumb, BreadcrumbsMixin
+from professor_oak.models import OakUser
 from .views import inventory_breadcrumb
 from .models import Container, Chemical, Location
 
@@ -193,7 +193,7 @@ class ContainersByOwner(ReportView):
     report_name = 'Containers by Owner'
 
     def get_queryset(self):
-        users = User.objects.all()
+        users = OakUser.objects.all()
         return users
 
     def write_csv(self, response):

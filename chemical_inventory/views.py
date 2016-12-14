@@ -3,7 +3,7 @@ import re
 
 from django.contrib.auth.decorators import login_required
 from django.core.urlresolvers import reverse, reverse_lazy
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.views.generic.list import ListView
 from django.views.generic.base import TemplateView
 from django.views.generic.detail import DetailView
@@ -217,6 +217,14 @@ class SupportingDocumentView(BreadcrumbsMixin, FormView):
         return HttpResponseRedirect(self.get_success_url())
 
 
+def container_detail(request, pk):
+    container = Container.objects.get(pk=pk)
+    # Redirect this view to the chemical detail with the given container highlighted
+    url = reverse('chemical_detail', kwargs={'pk': container.chemical.pk})
+    url += "?find={}".format(pk)
+    return redirect(url, permanent=True)
+
+
 class AddContainerView(BreadcrumbsMixin, TemplateView):
     template_name = 'container_add.html'
 
@@ -257,14 +265,6 @@ class EditChemicalView(BreadcrumbsMixin, UpdateView):
     template_object_name = 'chemical'
     model = Chemical
     form_class = ChemicalForm
-
-    # def get_object(self):
-    #     """Return the specific chemical by its primary key ('pk')."""
-    #     # Find the primary key from the url
-    #     pk = self.kwargs['pk']
-    #     # Get the actual Chemical object
-    #     chemical = Chemical.objects.get(pk=pk)
-    #     return chemical
 
     def breadcrumbs(self):
         return [
@@ -373,11 +373,6 @@ class ContainerViewSet(viewsets.ModelViewSet):
         headers = self.get_success_headers(serializer.data)
         return response.Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
 
-    # def update(self, request, *args, **kwargs):
-        # data = request.data.copy()
-        # if data['is_empty'] == True:
-            # return response.Response(serializer.data, status=status.HTTP_400_BADREQUEST, headers=headers)
-        # return super().update(*args, **kwargs)
 
 @login_required
 def print_label(request, container_pk):
