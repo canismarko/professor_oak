@@ -66,7 +66,7 @@ class GenerateULONView(BreadcrumbsMixin, FormView):
 		ulon = form.save(commit=False)
 		ulon.user = self.request.user			#Sets the current user to the ulon.user field
 		ulon.save()								#Saves the new ULON to the ulon object so a pk (ulon.ul) is established
-		filename = '{0}/{1}/UL{2}.{3}.{4}'.format(settings.MEDIA_ROOT, 'ULONs', str(ulon.ul).zfill(4), str(date.today()), datetime.now().time().strftime("%H-%M-%S"))
+		filename = '{0}{1}/UL{2}.{3}.{4}'.format(settings.MEDIA_ROOT, 'ULONs', str(ulon.ul).zfill(4), str(date.today()), datetime.now().time().strftime("%H-%M-%S"))
 		doc = Document(default_filepath=filename)
 		
 		#Set Experimental Parameters

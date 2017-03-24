@@ -2,6 +2,7 @@ import datetime
 import json
 import os
 import time
+import re
 
 from django.test import TestCase, RequestFactory, Client
 from django.contrib.staticfiles.testing import StaticLiveServerTestCase
@@ -70,14 +71,18 @@ class ChemicalAPITest(TestCase):
 
 class ChemicalTest(TestCase):
     """Unit tests for the Chemical class."""
-
+    # fixtures=['test_users', 'inventory_test_data']
+    
     def setUp(self):
-        self.chemical = models.Chemical()
+        self.chemical = models.Chemical(name='Acetone')
 
     def test_is_in_stock(self):
         self.assertFalse(self.chemical.is_in_stock())
 
-
+    def test_chemspider_url(self):
+        matchURL = re.compile(r'^https://www.chemspider.com/')
+        self.assertTrue(matchURL.match(self.chemical.structure_url()))
+        
 class ContainerAPITest(TestCase):
     fixtures = ['cabana_users.json', 'inventory_test_data.json']
     def setUp(self):

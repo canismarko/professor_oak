@@ -127,9 +127,11 @@ class Chemical(models.Model):
             search_results = cs.simple_search(IUPAC)
             try:
                 url = search_results[0].image_url
+                if url[:5] != 'https':
+                    url = 'https' + url[4:]     # add https to url for added security
             except IndexError:
                 url = ""
-                return url
+        return url
 
     def get_absolute_url(self):
         return reverse('chemical_detail', kwargs={'pk': self.pk})
@@ -273,7 +275,7 @@ class StandardOperatingProcedure(models.Model):
     associated chemicals
     """
     name = models.CharField(max_length=50)
-    certified_users = models.ManyToManyField(User, blank=True)
+    verified_users = models.ManyToManyField(User, blank=True)
     associated_chemicals = models.ManyToManyField('Chemical',
                                                   related_name='sop', blank=True)
     file = models.FileField(upload_to='SOPs')
@@ -286,7 +288,7 @@ class StandardOperatingProcedure(models.Model):
                 plural = plural_list[0]
         else:
                 plural = plural_list[1]
-        s = "{name} ({user_count} certified user{plural})"
+        s = "{name} ({user_count} verified user{plural})"
         return s.format(name=name, user_count=user_count, plural=plural)
 
     class Meta:
