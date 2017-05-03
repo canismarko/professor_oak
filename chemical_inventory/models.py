@@ -130,7 +130,7 @@ class Chemical(models.Model):
                 if url[:5] != 'https':
                     url = 'https' + url[4:]     # add https to url for added security
             except IndexError:
-                url = ""
+                url = None
         return url
 
     def get_absolute_url(self):

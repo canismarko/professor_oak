@@ -73,7 +73,7 @@
   <div class="col-sm-4">
   {% if chemical.cas_number == "" %}
 	<strong>Please enter a CAS number to display structure</strong>
-  {% elif chemical.structure_url == "" %}
+  {% elif chemical.structure_url == None %}
     <strong>Structure not available</strong>
   {% else %}
     <img src="{{ chemical.structure_url }}"
