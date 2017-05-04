@@ -55,9 +55,11 @@
       <br />
       Total chemicals: {{ stats.total_containers }}
     </p>
+    <a class="btn btn-primary" data-toggle="modal" data-target="#training">
+        <span class="glyphicon glyphicon-eye-open"></span> View Training
+      </a>
   </div>
 </div>
-
 
 {% if target_user.active_containers.count > 0 %}
 {% include 'container_scorebar.html' with obj=target_user %}
@@ -71,5 +73,37 @@
   {% endif %}
 </div>
 {% endif %}
+
+<!-- Training Modal -->
+<div id="training" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+    <!-- Modal content -->
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <h4 class="modal-title">{{ target_user.first_name }}'s Training</h4>
+      </div>
+      <div class="modal-body">
+        <table>
+          <tr>
+            <th>Verified User under these SOPs</th>
+          </tr>
+          {% for sop in target_user.sop.all %}
+          <tr>
+            <td>
+              <a href="{{ sop.file.url }}">{{ sop.name }}</a>
+            </td>
+          </tr>
+          {% endfor %}
+        </table>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+
+  </div> <!-- end modal dialog -->
+</div>   <!-- end modal fade -->
+
 
 {% endblock %}

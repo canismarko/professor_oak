@@ -7,13 +7,12 @@ from django.db import models, migrations
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('pokedex', '0008_auto_20160229_2143'),
+        ('pokedex', '0001_initial'),
     ]
 
     operations = [
-        migrations.AlterField(
+        migrations.RemoveField(
             model_name='sample',
-            name='experiment_time',
-            field=models.FloatField(null=True, blank=True),
+            name='sample_number',
         ),
     ]

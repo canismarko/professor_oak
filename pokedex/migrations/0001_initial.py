@@ -2,8 +2,8 @@
 from __future__ import unicode_literals
 
 from django.db import models, migrations
-import datetime
 from django.conf import settings
+import datetime
 
 
 class Migration(migrations.Migration):
@@ -16,21 +16,20 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='Sample',
             fields=[
-                ('id', models.AutoField(serialize=False, auto_created=True, verbose_name='ID', primary_key=True)),
-                ('sample_id', models.CharField(max_length=10, db_index=True)),
-                ('name', models.CharField(max_length=200, db_index=True)),
-                ('formula', models.CharField(max_length=50, blank=True, db_index=True)),
-                ('stripped_formula', models.CharField(max_length=50, blank=True, db_index=True)),
-                ('experiment_medium', models.IntegerField(choices=[(0, 'Ballmill'), (1, 'Tube: Borosilicate'), (2, 'Tube: Quartz'), (3, 'Tube: Alumina')])),
-                ('experiment_atmosphere', models.IntegerField(choices=[(0, 'Argon'), (1, '5%H2:95%N2'), (2, 'Oxygen'), (3, 'Nitrogen'), (4, 'Air')])),
-                ('experiment_temperature', models.FloatField()),
-                ('experiment_equation', models.CharField(max_length=200)),
-                ('start_date', models.DateField(default=datetime.date.today, null=True)),
-                ('end_date', models.DateField(default=datetime.date.today, null=True)),
+                ('id', models.AutoField(serialize=False, verbose_name='ID', auto_created=True, primary_key=True)),
+                ('sample_number', models.CharField(db_index=True, max_length=10)),
+                ('name', models.CharField(db_index=True, max_length=200)),
+                ('formula', models.CharField(blank=True, db_index=True, max_length=50)),
+                ('stripped_formula', models.CharField(blank=True, db_index=True, max_length=50)),
+                ('file_XAS', models.FileField(blank=True, upload_to='./pokedex/data/XAS', null=True)),
+                ('beamline', models.CharField(max_length=50)),
+                ('date_created', models.DateField(default=datetime.date.today, null=True)),
+                ('edge', models.CharField(max_length=2)),
+                ('comment', models.TextField(blank=True)),
                 ('user', models.ForeignKey(null=True, blank=True, to=settings.AUTH_USER_MODEL)),
             ],
             options={
-                'ordering': ['sample_id'],
+                'ordering': ['name'],
             },
         ),
     ]

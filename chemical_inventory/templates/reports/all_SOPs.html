@@ -1,0 +1,95 @@
+{% extends 'reports/generic_report.html' %}
+
+{% load custom_filters %}
+
+{% block report_body %}
+
+<table class="table">
+  {% for sop in objects %}
+  <tr>
+    <td>
+      <a href="{{ sop.file.url }}">
+	    {{ sop.name }}
+      </a>
+    </td>
+    <td>
+      <a data-toggle="modal" data-target="#users_{{ sop.id }}">
+         {{ sop.verified_users.all|length }} verified user{{ sop.verified_users.all|pluralize }}
+      </a>
+    </td>
+    <td>
+      <a data-toggle="modal" data-target="#chemicals_{{ sop.id }}">
+        {{ sop.associated_chemicals.all|length }} associated chemical{{ sop.associated_chemicals.all|pluralize }}
+      </a>
+    </td>
+  </tr>
+  {% endfor %}
+</table>
+
+{% for sop in objects %}
+<!-- User Modal -->
+<div id="users_{{ sop.id }}" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+    <!-- Modal content -->
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <h4 class="modal-title">{{ sop.name }}: Verified Users</h4>
+      </div>
+      <div class="modal-body">
+        <table>
+          <tr>
+            <th>Name</th>
+          </tr>
+          {% for user in sop.verified_users.all %}
+          <tr>
+            <td>
+              <a href="{% url 'user_detail' pk=user.pk %}">{{ user.get_full_name }}</a>
+            </td>
+          </tr>
+          {% endfor %}
+        </table>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+
+  </div> <!-- end modal dialog -->
+</div>   <!-- end modal fade -->
+
+<!-- Chemical Modal -->
+<div id="chemicals_{{ sop.id }}" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+
+    <!-- Modal content -->
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <h4 class="modal-title">{{ sop.name }}: Associated Chemicals</h4>
+      </div>
+      <div class="modal-body">
+        <table>
+          <tr>
+            <th>Name</th>
+          </tr>
+          {% for chemical in sop.associated_chemicals.all %}
+          <tr>
+            <td>
+              <a href="{{ chemical.detail_url }}">{{ chemical.name }}</a>
+            </td>
+          </tr>
+          {% endfor %}
+        </table>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+
+  </div>
+</div>
+{% endfor %} <!-- end of Modals -->
+
+
+{% endblock %}

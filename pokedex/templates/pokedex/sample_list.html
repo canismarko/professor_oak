@@ -6,7 +6,7 @@
 
 <div class="row">
   <div class="col-md-6">
-    <h2>List of Samples | {{ project.name }}</h2>
+    <h2>Standards Library</h2>
   </div>
   <div class="col-md-6">
     <div class="pull-right">
@@ -34,27 +34,19 @@
 {% if samples %}
 <table class="table chemical-list">
   <tr>
-	<th>Sample</th>
 	<th>Formula</th>
 	<th>Date Completed</th>
-	<th>Medium</th>
-	<th>Atmosphere</th>
-	<th>Variables</th>
 	<th>Analysis</th>
   </tr>
 
 	{% for sample in samples %}
   <tr>
 	<td>
-		<a href="{{ sample.detail_url }}" title="Detailed information on sample {{ sample.sample_number }}">
-		{{ sample.sample_number }}
-		</a>
-	</td>
-	<td>{{ sample.formula|formula_markup }}</td>
+      <a href="{{ sample.detail_url }}" title="Detailed information on sample {{ sample.name }}">
+        {{ sample.formula|formula_markup }}
+        </a>
+    </td>
 	<td>{{ sample.end_date }}</td>
-	<td>{{ sample.experiment_medium }}</td>
-	<td>{{ sample.experiment_atmosphere|formula_markup }}</td>
-	<td>{{ sample.experiment_variable }}{{ sample.variable_units|formula_markup }} for {{ sample.experiment_time }}h</td>
 	<td>
 	{% if sample.file_XRD %}<span class="icon-XRD XRD-active" title="X-Ray Diffraction"></span>{% else %}<span class="icon-XRD" title="X-Ray Diffraction"></span>{% endif %}
 	{% if sample.file_EC %}<span class="icon-EC EC-active" title="Electrochemistry"></span>{% else %}<span class="icon-EC" title="Electrochemistry"></span>{% endif %}

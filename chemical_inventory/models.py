@@ -275,9 +275,12 @@ class StandardOperatingProcedure(models.Model):
     associated chemicals
     """
     name = models.CharField(max_length=50)
-    verified_users = models.ManyToManyField(User, blank=True)
+    verified_users = models.ManyToManyField(User,
+                                            related_name='sop',
+                                            blank=True)
     associated_chemicals = models.ManyToManyField('Chemical',
-                                                  related_name='sop', blank=True)
+                                                  related_name='sop',
+                                                  blank=True)
     file = models.FileField(upload_to='SOPs')
 
     def __str__(self):
@@ -294,7 +297,7 @@ class StandardOperatingProcedure(models.Model):
     class Meta:
         verbose_name = "Standard Operating Procedure (SOP)"
         verbose_name_plural = "Standard Operating Procedures (SOPs)"
-
+        ordering = ['name']
 
 def expired_containers(date=None):
     # Default to today

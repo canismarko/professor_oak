@@ -60,6 +60,10 @@ urlpatterns = [
         reports.ContainersByOwner.as_view(),
         name="containers_by_owner"
     ),
+    url(r'^reports/all_sops/$',
+        reports.StandardOperatingProcedure.as_view(),
+        name="sop"
+    ),
 ]
 
 # URLs for the browsable API

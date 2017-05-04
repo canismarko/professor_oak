@@ -8,7 +8,7 @@ from django.views.generic.base import TemplateView
 from professor_oak.views import breadcrumb, BreadcrumbsMixin
 from professor_oak.models import OakUser
 from .views import inventory_breadcrumb
-from .models import Container, Chemical, Location
+from .models import Container, Chemical, Location, StandardOperatingProcedure as SOP
 
 container_csv_header = ['Barcode',
                         'Chemical Name',
@@ -208,3 +208,20 @@ class ContainersByOwner(ReportView):
                 if not container.is_empty:
                     writer.writerow([''] + container_csv_row(container))
         return response
+
+
+class StandardOperatingProcedure(ReportView):
+    """View shows a list of all Standard Operating Procedures (SOPs)"""
+
+    template_name = 'reports/all_SOPs.html'
+    url_name = 'sop'
+    report_name = 'Standard Operating Procedures'
+
+    # def breadcrumbs(self):
+    #     breadcrumbs = [inventory_breadcrumb()]
+    #     breadcrumbs.append('sop_list')
+    #     return breadcrumbs
+
+    def get_queryset(self):
+        objects = SOP.objects.all()
+        return objects

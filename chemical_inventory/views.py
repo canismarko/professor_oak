@@ -111,7 +111,7 @@ class ChemicalListView(BreadcrumbsMixin, ListView):
     model = Chemical
     glossary_filters = GLOSSARY_FILTERS
     context_object_name = 'chemicals'
-
+    
     # @breacrumbs(['chemical_inventory'])
     # def as_view(self):
     #     return super().as_view()
@@ -300,6 +300,23 @@ class EditContainerView(BreadcrumbsMixin, UpdateView):
             ]
         return breadcrumbs
 
+
+# class StandardOperatingProceduresListView(BreadcrumbsMixin, ListView):
+#     """View shows a list of all Standard Operating Procedures (SOPs)"""
+
+#     template_name = 'all_SOPs.html'
+#     model = StandardOperatingProcedures
+#     context_object_name = 'sop'
+
+#     def breadcrumbs(self):
+#         breadcrumbs = [inventory_breadcrumb()]
+#         breadcrumbs.append('sop_list')
+#         return breadcrumbs
+
+#     def get_context_data(self, *args, **kwargs):
+#         # Get the default context
+#         context = super().get_context_data(*args, **kwargs)
+#         return context
 
 # Browseable API viewsets
 # =======================

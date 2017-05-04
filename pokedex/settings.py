@@ -41,9 +41,9 @@ INSTALLED_APPS = (
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-	'easy_thumbnails', # from https://github.com/jonasundderwolf/django-image-cropping
-	'image_cropping', # from https://github.com/jonasundderwolf/django-image-cropping
-	'pokedex'
+        'easy_thumbnails', # from https://github.com/jonasundderwolf/django-image-cropping
+        'image_cropping', # from https://github.com/jonasundderwolf/django-image-cropping
+        'pokedex'
 )
 
 # Add the django_browserid authentication backend.
@@ -110,9 +110,11 @@ USE_TZ = True
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.7/howto/static-files/
+ENV_PATH = os.path.abspath(os.path.dirname(__file__)) # sets the environment path
+FIXTURE_DIRS = os.path.join(ENV_PATH, 'fixtures/')
 
 STATIC_ROOT = 'static_files/'
 STATIC_URL = '/static/'
 
-MEDIA_ROOT = '.'
+MEDIA_ROOT = os.path.join(ENV_PATH, 'data/')
 MEDIA_URL = '/media/'
