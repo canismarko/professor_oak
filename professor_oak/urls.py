@@ -21,8 +21,8 @@ from django.views.generic import TemplateView
 from django.core.urlresolvers import reverse
 from django.contrib.auth import views as auth_views
 from django.conf import settings
-
 from . import views
+
 import chemical_inventory.urls, oak_utilities.urls, pokedex.urls
 
 urlpatterns = [

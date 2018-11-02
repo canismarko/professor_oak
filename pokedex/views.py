@@ -23,7 +23,9 @@ from .models import Sample# , Project, User_Project
 from .forms import SampleForm#, SamplePhotoForm
 import os, sys
 sys.path.append(os.path.join(os.path.dirname(__file__)))
-import external.XAS as xas
+
+#import .external.XAS as xas
+
 #User Project Authentication
 
 #REDIRECT_UNAUTHORIZED_USER = '/unauthorized/'
@@ -274,7 +276,8 @@ class SampleDetailView(BreadcrumbsMixin, DetailView):
         sample = self.get_object()
         context = super().get_context_data(*args, **kwargs)
 
-        if sample.file_XAS:
+        if sample.file_XAS and False:
+            # Code path is disables till XAS is fixed (WJ 11-2018)
             print ('[DEBUG]', sample.file_XAS.name, type(sample.file_XAS.name))
             # df = self.make_XAS_data(filename=sample.file_XAS.name, beamline=sample.beamline)
             df = xas.load_file_to_dataframe(filename=settings.MEDIA_ROOT + sample.file_XAS.name, beamline=sample.beamline)

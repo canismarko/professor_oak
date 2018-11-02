@@ -15,7 +15,7 @@ from . import models, serializers, views
 class ElementSearchTest(TestCase):
     """Filtering a list of chemicals by symbols in the formula."""
 
-    fixtures = ['cabana_users.json', 'inventory_test_data.json']
+    fixtures = ['test_users.json', 'inventory_test_data.json']
     def test_included_elements(self):
         c = Client()
         response = c.get(
@@ -63,7 +63,7 @@ class ChemicalAPITest(TestCase):
         client = APIClient()
         client.login(username="test", password="secret")
         response = client.post(url, test_data)
-        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.status_code, 201)
         # request = APIRequestFactory().post(url, test_data)
         # chemical_view = views.ChemicalViewSet().as_view()
         # chemical_view(request)
@@ -80,11 +80,13 @@ class ChemicalTest(TestCase):
         self.assertFalse(self.chemical.is_in_stock())
 
     def test_chemspider_url(self):
-        matchURL = re.compile(r'^https://www.chemspider.com/')
-        self.assertTrue(matchURL.match(self.chemical.structure_url()))
-        
+        target_url='https://www.chemspider.com/'
+        structure_url=self.chemical.structure_url()
+        self.assertNotIn('discovermagazine.com',structure_url,'Default URL found. Check settings.CHEMSPIDER_KEY')
+        self.assertEqual(structure_url[:len(target_url)],target_url)
+
 class ContainerAPITest(TestCase):
-    fixtures = ['cabana_users.json', 'inventory_test_data.json']
+    fixtures = ['test_users.json', 'inventory_test_data.json']
     def setUp(self):
         # Create a dummy user
         self.user = User.objects.create_user('john',
@@ -148,7 +150,7 @@ class SearchFormulaTest(TestCase):
 class IsEmptyTest(TestCase):
     '''Test for verifying whether a chemical as an expired but non-empty
     container'''
-    fixtures = ['production_data']
+    fixtures = ['inventory_test_data','test_users']
     def test_not_empty_expired(TestCase):
         for chemicals in models.Chemical.objects.all():
             container_test = models.Container.objects.filter(
@@ -157,73 +159,3 @@ class IsEmptyTest(TestCase):
                 is_empty=False).count()
             # print (container_test)
             assert type(container_test) is int
-
-
-class OldDatabaseTest(TestCase):
-    """Tests for importing the old database."""
-    fixtures = ['inventory_test_data', 'cabana_users']
-    chemicalfile = 'chemical_inventory/old-test-chemicals.csv'
-    containerfile = 'chemical_inventory/old-test-containers.csv'
-    def setUp(self):
-        self.convert_chemicals = models.import_chemicals_csv
-        self.convert_containers = models.import_containers_csv
-        self.nitrile_glove = models.Glove.objects.get(name='Nitrile')
-
-    def test_convert_chemicals(self):
-        # Clear out chemicals loaded by fixture
-        models.Chemical.objects.all().delete()
-        assert models.Chemical.objects.count() == 0
-        # Load new chemicals
-        self.convert_chemicals(self.chemicalfile,
-                               sds_dir='chemical_inventory/sds_test/')
-
-        # Check first imported material
-        lithium = models.Chemical.objects.get(name='Lithium')
-        self.assertEqual(lithium.cas_number, '7439-93-2')
-        self.assertEqual(lithium.name, 'Lithium')
-        self.assertEqual(lithium.formula, 'Li')
-        self.assertEqual(lithium.health, 3)
-        # Default glove is set?
-        self.assertIn(self.nitrile_glove, lithium.gloves.all())
-        # Check for imported safety datasheet
-        self.assertTrue(
-            lithium.safety_data_sheet)
-        os.remove(lithium.safety_data_sheet.path)
-        # Other gloves set
-        castor_oil = models.Chemical.objects.get(pk=12)
-        assert castor_oil.name == 'Castor Oil'
-        latex_glove = models.Glove.objects.get(name='Latex')
-        self.assertIn(latex_glove, castor_oil.gloves.all())
-        # Assigns an N/A for default NFPA rating
-        self.assertEqual(
-            castor_oil.health,
-            models.Chemical.NFPA_NOT_AVAILABLE
-        )
-        # Test if formula numbers are subscripted
-        magnesium_hydroxide = models.Chemical.objects.get(name='Magnesium Hydroxide')
-        self.assertEqual(magnesium_hydroxide.formula, 'Mg(OH)_2')
-
-    def test_convert_containers(self):
-        # Delete current container list
-        models.Container.objects.all().delete()
-        self.convert_containers(self.containerfile)
-        # Check first imported container
-        container = models.Container.objects.first()
-        self.assertEqual(container.chemical.name, 'Lithium')
-        self.assertEqual(container.expiration_date, datetime.date(2015, 8, 7))
-        self.assertEqual(container.chemical.cas_number, '7439-93-2')
-        new_location = models.Location.objects.get(name='Glove Box @ 4163')
-        self.assertEqual(container.location, new_location)
-        self.assertEqual(container.batch, 'SZBE0200V')
-        new_supplier = models.Supplier.objects.get(name='Sigma-Aldrich')
-        self.assertEqual(container.supplier, new_supplier)
-        self.assertEqual(container.state, 'Solid')
-        self.assertEqual(container.container_type, 'Glass Bottle')
-        self.assertEqual(container.owner.first_name, 'Mike')
-        self.assertEqual(container.quantity, 25)
-        self.assertEqual(container.unit_of_measure, 'g')
-        # Check automatic comment
-        today = datetime.date.today()
-        expected_string = 'Imported from old inventory on {}'.format(
-            today.strftime('%Y-%m-%d'))
-        self.assertEqual(container.comment, expected_string)

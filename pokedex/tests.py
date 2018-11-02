@@ -1,11 +1,13 @@
 import re, pandas as pd, numpy as np
 
 from . import models, views
-
+from unittest import skip
 from django.test import TestCase, override_settings
 from django.conf import settings
 # class SampleAPITest(TestCase):
 
+
+@skip
 class SampleTest(TestCase):
     """Unit tests for the Sample class"""
 
@@ -21,6 +23,7 @@ class SampleTest(TestCase):
             ('SigScan.56038', 'ALS: 8.0.1', pd.core.frame.DataFrame), # Sample data from ALS801
             ('SigScan.56038', 'APS: 4-ID-C', str),  # Valid datafile with the wrong beamline
         ]
+
         for filename, beamline, exp_out in test_data:
             result = views.SampleDetailView.make_XAS_data(filename = filename, beamline = beamline)
             self.assertEqual(exp_out, type(result)) 

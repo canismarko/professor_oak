@@ -65,6 +65,14 @@
 },
 {
     "fields": {
+        "supplier": [],
+        "name": "Other than Nitrile"
+    },
+    "pk": 2,
+    "model": "chemical_inventory.glove"
+},
+{
+    "fields": {
         "state": "Solid",
         "batch": "",
         "chemical": 1,
