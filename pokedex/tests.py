@@ -10,10 +10,10 @@ from django.conf import settings
 @skip
 class SampleTest(TestCase):
     """Unit tests for the Sample class"""
-
+    
     def setUp(self):
         self.sample = models.Sample(name='Manganese(III) Oxide')
-
+    
     @override_settings(MEDIA_ROOT='pokedex/fixtures/')
     def test_make_XAS_data(self):
         """Tests that XAS data processing of example files results in a dataframe"""
@@ -23,9 +23,8 @@ class SampleTest(TestCase):
             ('SigScan.56038', 'ALS: 8.0.1', pd.core.frame.DataFrame), # Sample data from ALS801
             ('SigScan.56038', 'APS: 4-ID-C', str),  # Valid datafile with the wrong beamline
         ]
-
         for filename, beamline, exp_out in test_data:
-            result = views.SampleDetailView.make_XAS_data(filename = filename, beamline = beamline)
+            result = views.SampleDetailView.make_XAS_data(filename=filename, beamline=beamline)
             self.assertEqual(exp_out, type(result)) 
         
     def test_normalize_dataframe(self):

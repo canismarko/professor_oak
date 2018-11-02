@@ -1,9 +1,11 @@
+from unittest import skip, skipIf
 import datetime
 import json
 import os
 import time
 import re
 
+from django.conf import settings
 from django.test import TestCase, RequestFactory, Client
 from django.contrib.staticfiles.testing import StaticLiveServerTestCase
 from django.contrib.auth.models import User
@@ -12,9 +14,10 @@ from rest_framework.test import APIRequestFactory, APIClient
 
 from . import models, serializers, views
 
+HAS_CHEMSPIDER_KEY = hasattr(settings, 'CHEMSPIDER_KEY')
+
 class ElementSearchTest(TestCase):
     """Filtering a list of chemicals by symbols in the formula."""
-
     fixtures = ['test_users.json', 'inventory_test_data.json']
     def test_included_elements(self):
         c = Client()
@@ -75,14 +78,22 @@ class ChemicalTest(TestCase):
     
     def setUp(self):
         self.chemical = models.Chemical(name='Acetone')
-
+    
     def test_is_in_stock(self):
         self.assertFalse(self.chemical.is_in_stock())
-
-    def test_chemspider_url(self):
-        target_url='https://www.chemspider.com/'
-        structure_url=self.chemical.structure_url()
-        self.assertNotIn('discovermagazine.com',structure_url,'Default URL found. Check settings.CHEMSPIDER_KEY')
+    
+    @skipIf(HAS_CHEMSPIDER_KEY, 'CHEMSPIDER_KEY found in localsettings.py')
+    def test_chemspider_url_without_key(self):
+        target_url = 'http://discovermagazine.com/~/media/Images/Zen%20Photo/N/nanoputian/3487.gif'
+        structure_url = self.chemical.structure_url()
+        self.assertEqual(structure_url, target_url)
+        
+    @skipIf(not HAS_CHEMSPIDER_KEY, 'CHEMSPIDER_KEY not found in localsettings.py')
+    def test_chemspider_url_with_key(self):
+        target_url = 'https://www.chemspider.com/'
+        structure_url = self.chemical.structure_url()
+        self.assertNotIn('discovermagazine.com', structure_url,
+                         'Default URL found. Check settings.CHEMSPIDER_KEY')
         self.assertEqual(structure_url[:len(target_url)],target_url)
 
 class ContainerAPITest(TestCase):
@@ -93,7 +104,7 @@ class ContainerAPITest(TestCase):
                                              'john.lennon@example.com',
                                              'secret')
         self.client.login(username='john', password='secret')
-
+    
     def test_auto_owner(self):
         """Make sure that creating a new chemical automatically sets the owner."""
         response = self.client.post(

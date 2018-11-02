@@ -4,6 +4,7 @@ import re
 import os
 import subprocess
 import warnings
+import logging
 
 from django.core.urlresolvers import reverse
 from django.core.files import File
@@ -14,9 +15,11 @@ from django.conf import settings
 from django.dispatch import receiver
 from django.db.models import signals
 from django.utils.text import slugify
+from chemspipy import ChemSpider
 
 from professor_oak.models import ScoreMixin
 
+log = logging.getLogger(__name__)
 
 class Hazard(models.Model):
     """A hazard type as defined by the global harmonized system.
@@ -114,12 +117,12 @@ class Chemical(models.Model):
         if Container.objects.filter(chemical__id=self.pk).count() == 0:
             return True
         return False
-
+    
     def structure_url(self):
-        from chemspipy import ChemSpider
         try:
             cs_key = settings.CHEMSPIDER_KEY
         except AttributeError:
+            log.warn('CHEMSPIDER_KEY not found in localsettings.py')
             url = 'http://discovermagazine.com/~/media/Images/Zen%20Photo/N/nanoputian/3487.gif'
         else:
             cs = ChemSpider(cs_key)
