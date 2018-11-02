@@ -1,8 +1,10 @@
 # "Professor Oak" Laboratory Management Server
 
+[![Build Status](https://travis-ci.com/canismarko/professor_oak.svg?branch=master)](https://travis-ci.com/canismarko/professor_oak)
+
 Install all python dependcies with `pip install -r requirements.txt`
 from the project root. Run `python manage.py runserver` to start the
-development server. This should not be used for deployment. Now visit
+development server. This should NOT be used for deployment. Now visit
 `http://localhost:8000` in a web browser to see the site.
 
 ## Project Architecture

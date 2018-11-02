@@ -19,3 +19,5 @@ django-image-cropping==1.0.3
 django-braces==1.9.0
 python-social-auth==0.2.21
 django-browserid==1.0.0
+plotly==2.0.6
+pandas==0.20.1
