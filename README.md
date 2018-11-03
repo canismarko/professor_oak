@@ -1,6 +1,7 @@
 # "Professor Oak" Laboratory Management Server
 
 [![Build Status](https://travis-ci.com/canismarko/professor_oak.svg?branch=master)](https://travis-ci.com/canismarko/professor_oak)
+[![Coverage Status](https://coveralls.io/repos/github/canismarko/professor_oak/badge.svg?branch=master)](https://coveralls.io/github/canismarko/professor_oak?branch=master)
 
 Install all python dependcies with `pip install -r requirements.txt`
 from the project root. Run `python manage.py runserver` to start the
