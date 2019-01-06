@@ -26,6 +26,7 @@ SECRET_KEY = '%rd$h^*ahp%r620=_dn1i=g58(-75=asjn)wd7116fs4ed4gyh'
 DEBUG = True
 
 ALLOWED_HOSTS = ['localhost', '127.0.0.1']
+INTERNAL_IPS = ['localhost', '127.0.0.1']
 
 # Application definition
 INSTALLED_APPS = (
@@ -38,6 +39,7 @@ INSTALLED_APPS = (
     'djng',
     'social.apps.django_app.default',
     'rest_framework',
+    'debug_toolbar',
     'professor_oak',
     'chemical_inventory',
     'oak_utilities',
@@ -74,6 +76,7 @@ SOCIAL_AUTH_PIPELINE = (
 
 MIDDLEWARE_CLASSES = (
     'djng.middleware.AngularUrlMiddleware',
+    'debug_toolbar.middleware.DebugToolbarMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',

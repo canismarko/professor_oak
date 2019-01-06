@@ -109,7 +109,8 @@ class Chemical(models.Model):
         """Return True if a chemical has a container with material in it,
         otherwise return False.
         """
-        full_containers = Container.objects.filter(chemical__id=self.pk, is_empty=False)
+        # full_containers = Container.objects.filter(chemical__id=self.pk, is_empty=False)
+        full_containers = self.containers.filter(is_empty=False)
         return full_containers.count() > 0
 
     def stock_is_null(self):
@@ -187,7 +188,7 @@ class Container(models.Model):
     associated with a container include things like its location,
     amount and owner.
     """
-    chemical = models.ForeignKey('Chemical')
+    chemical = models.ForeignKey('Chemical', related_name='containers')
     location = models.ForeignKey('Location')
     batch = models.CharField(max_length=30, blank=True)
     date_added = models.DateTimeField(auto_now=True)

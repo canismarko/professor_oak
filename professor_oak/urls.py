@@ -21,8 +21,11 @@ from django.views.generic import TemplateView
 from django.core.urlresolvers import reverse
 from django.contrib.auth import views as auth_views
 from django.conf import settings
-from . import views
+from django.conf import settings
+from django.conf.urls import include, url  # For django versions before 2.0
+# from django.urls import include, path  # For django versions from 2.0 and up
 
+from . import views
 import chemical_inventory.urls, oak_utilities.urls, pokedex.urls
 
 urlpatterns = [
@@ -51,8 +54,12 @@ urlpatterns = [
 
 # User uploaded content
 if settings.DEBUG:
-        # static files (images, css, javascript, etc.)
-        urlpatterns.append(
+        import debug_toolbar
+        urlpatterns.extend([
+                # static files (images, css, javascript, etc.)
                 url(r'^media/(?P<path>.*)$', 'django.views.static.serve',
                     { 'document_root': settings.MEDIA_ROOT }
-                ))
+                ),
+                # For including the Django Debug Toolbar
+                url(r'^__debug__/', include(debug_toolbar.urls)),
+        ])

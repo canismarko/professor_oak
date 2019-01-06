@@ -12,7 +12,7 @@ from rest_framework import viewsets, permissions, response, status
 from django.utils.safestring import mark_safe
 from django.http import HttpResponseRedirect, JsonResponse
 from django.conf import settings
-from django.db.models import Q, Count
+from django.db.models import Q, Count, F
 
 from .forms import ChemicalForm, ContainerForm, GloveForm, SupplierForm, SupportingDocumentForm
 from .models import Chemical, Hazard, Container, Glove, Supplier, SupportingDocument
@@ -21,9 +21,9 @@ from .serializers import ChemicalSerializer, HazardSerializer, ContainerSerializ
 from professor_oak.views import breadcrumb, BreadcrumbsMixin
 
 
-GLOSSARY_FILTERS = (
-	'0-9', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'
-)
+GLOSSARY_FILTERS = ( '0-9', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H',
+	             'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T',
+	             'U', 'V', 'W', 'X', 'Y', 'Z' )
 
 # Breadcrumbs definitions
 def inventory_breadcrumb():
@@ -42,7 +42,6 @@ def chemical_breadcrumbs(chemical):
 
 class ElementSearchView(BreadcrumbsMixin, TemplateView):
     template_name = 'element_search.html'
-
     def breadcrumbs(self):
         breadcrumbs = [
             inventory_breadcrumb(),
@@ -50,7 +49,7 @@ class ElementSearchView(BreadcrumbsMixin, TemplateView):
             'element_search',
         ]
         return breadcrumbs
-
+    
     def get_context_data(self, *args, **kwargs):
         context = super().get_context_data(*args, **kwargs)
         query_params = self.request.GET
@@ -106,7 +105,7 @@ class Main(BreadcrumbsMixin, TemplateView):
 
 class ChemicalListView(BreadcrumbsMixin, ListView):
     """View shows a list of currently available chemicals."""
-
+    
     template_name = 'chemical_list.html'
     model = Chemical
     glossary_filters = GLOSSARY_FILTERS
@@ -115,7 +114,7 @@ class ChemicalListView(BreadcrumbsMixin, ListView):
     # @breacrumbs(['chemical_inventory'])
     # def as_view(self):
     #     return super().as_view()
-
+    
     def breadcrumbs(self):
         breadcrumbs = [inventory_breadcrumb()]
         breadcrumbs.append('chemical_list')
@@ -129,7 +128,7 @@ class ChemicalListView(BreadcrumbsMixin, ListView):
         context['active_filter'] = self.request.GET.get('filter')
         context['active_search'] = self.request.GET.get('search')
         return context
-
+    
     def get_queryset(self, *args, **kwargs):
         queryset = super().get_queryset(*args, **kwargs)
         filterstring = self.request.GET.get('filter')
@@ -143,7 +142,10 @@ class ChemicalListView(BreadcrumbsMixin, ListView):
         # For everything else
         elif filterstring is not None:  #Ignores empty returns
             queryset = queryset.filter(name__istartswith=filterstring).exclude(name__isnull=True)
+        # Sort by the number of containers available
+        # queryset = queryset.prefetch_related('containers')
         queryset = sorted(queryset, key=lambda x: x.is_in_stock(), reverse=True)
+        # queryset = queryset.annotate(in_stock=(F(Min(Count('container.is_empty'), 1))))
         return queryset
 
 class ChemicalDetailView(BreadcrumbsMixin, DetailView):

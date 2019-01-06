@@ -16,6 +16,9 @@ django-browserid==1.0.0
 plotly==2.0.6
 pandas==0.20.1
 
+# For development
+django-debug-toolbar==1.9.1
+
 # For testing
 pytest
 pytest-django

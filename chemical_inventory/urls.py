@@ -40,7 +40,7 @@ urlpatterns = [
         # views.breadcrumbs([views.main_breadcrumb(), 'chemical_list', 'element_search'])(views.ElementSearchView.as_view()),
         views.ElementSearchView.as_view(),
         name='element_search'),
-
+    
     # Configurable reports
     url(r'^reports/$', reports.ReportsList.as_view(), name="reports"),
     url(r'^reports/all_chemicals/$', reports.AllChemicals.as_view(), name="all_chemicals"),

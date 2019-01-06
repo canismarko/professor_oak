@@ -1,10 +1,11 @@
-from unittest import skip, skipIf
+from unittest import skip, skipIf, expectedFailure
 import datetime
 import json
 import os
 import time
 import re
 
+from django.db.models import QuerySet
 from django.conf import settings
 from django.test import TestCase, RequestFactory, Client
 from django.contrib.staticfiles.testing import StaticLiveServerTestCase
@@ -70,6 +71,26 @@ class ChemicalAPITest(TestCase):
         # request = APIRequestFactory().post(url, test_data)
         # chemical_view = views.ChemicalViewSet().as_view()
         # chemical_view(request)
+
+
+class InventoryViewTest(TestCase):
+    fixtures = ['test_users', 'inventory_test_data']
+    
+    def setUp(self):
+        self.factory = RequestFactory()
+    
+    @expectedFailure
+    def test_chemical_list(self):
+        list_view = views.ChemicalListView()
+        list_view.request = self.factory.get(reverse('chemical_list'))
+        # Check that the database is not hit too much
+        with self.assertNumQueries(1):
+            qs = list_view.get_queryset()
+            list(qs)
+        # Check that the num_open_containers annotation is set
+        water = qs[0]
+        # self.assertIsInstance(qs, QuerySet)
+        self.assertEqual(len(qs), 4)
 
 
 class ChemicalTest(TestCase):

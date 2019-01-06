@@ -115,6 +115,27 @@
 },
 {
     "fields": {
+        "state": "foil",
+        "batch": "98567",
+        "chemical": 2,
+        "date_added": "2015-09-12T18:57:37.000Z",
+        "unit_of_measure": "g",
+        "quantity": 75.0,
+        "emptied_by": null,
+        "barcode": "",
+        "supplier": null,
+        "location": 4,
+        "is_empty": true,
+        "date_opened": "2015-09-12",
+        "owner": 0,
+        "container_type": "Bottle",
+        "expiration_date": "2016-09-12"
+    },
+    "pk": 27,
+    "model": "chemical_inventory.container"
+},    
+{
+    "fields": {
         "msds_location": "Upper shelf",
         "building": "SES",
         "room_number": "4163",
