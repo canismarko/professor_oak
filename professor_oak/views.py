@@ -15,25 +15,6 @@ from professor_oak.models import OakUser
 
 breadcrumb = namedtuple('breadcrumb', ('name', 'url'))
 
-# class breadcrumbs():
-#     """Modifies the request to include a list of ancestor pages, should be
-#     closely aligned with the URL. If each list item is a string, it will
-#     be resolved to a url, otherwise it will be treated as a tuple of
-#     (name, url)."""
-#     trail = []
-
-#     def __init__(self, trail):
-#         self.trail = trail
-
-#     def __call__(self, view_function):
-#         # This is the actual decorator
-#         self.view_function = view_function
-#         return self.set_breadcrumbs
-
-#     def set_breadcrumbs(self, request, *args, **kwargs):
-#         """Add data to the request indicating what the breadcrumb trail is."""
-#         request.breadcrumbs = self.trail
-#         return self.view_function(request, *args, **kwargs)
 
 class BreadcrumbsMixin():
     """Provides context information to allow the template to render a
@@ -57,7 +38,7 @@ class BreadcrumbsMixin():
                 new_trail.append(breadcrumb(name, url))
         context['breadcrumbs'] = new_trail
         return context
-
+    
     def breadcrumbs(self):
         msg = "Please override the 'breadcrumbs()' method of {}"
         raise NotImplementedError(msg.format(self.__class__))
@@ -67,19 +48,16 @@ class UserView(DetailView):
     model = OakUser
     template_name = 'user_detail.html'
     context_object_name = 'target_user'
-
-    # @login_required
-    # def dispatch(self, *args, **kwargs):
-    #     return super().dispatch(*args, **kwargs)
-
+    
     def get_context_data(self, *args, **kwargs):
+        user = self.object
         context = super().get_context_data(*args, **kwargs)
         containers = self.object.container_set.all()
         context['container_list'] = containers.order_by('chemical', 'is_empty', 'expiration_date')
         # Compile chemical inventory statistics for this user
         stats = {
             'expired_containers': expired_containers().filter(owner=self.object).count(),
-            'total_containers': self.object.container_set.count()
+            'total_containers': user.container_set.count(),
         }
         context['stats'] = stats
         return context

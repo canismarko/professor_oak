@@ -1,12 +1,12 @@
 <div class="col-md-6 pull-right{% if obj.active_containers.count == 0 %} hidden{% endif %}">
   <div class="progress"  >
     <div class="progress-bar progress-bar-danger"
-	 role="progressbar"
-	 aria-valuenow="{{ obj.red_score }}"
-	 aria-valuemin="0"
-	 aria-valuemax="100"
-	 title="Expired containers. Scores can be improved by emptying expired containers"
-	 style="width:{{ obj.red_score }}%">
+    	 role="progressbar"
+    	 aria-valuenow="{{ obj.red_score }}"
+    	 aria-valuemin="0"
+    	 aria-valuemax="100"
+    	 title="Expired containers. Scores can be improved by emptying expired containers"
+    	 style="width:{{ obj.red_score }}%">
       {{ obj.expired_containers.count }}
     </div>
     <div class="progress-bar progress-bar-success"
