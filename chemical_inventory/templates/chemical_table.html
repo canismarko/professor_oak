@@ -18,7 +18,7 @@
   <tr>
   {% endif %}
     <td>
-      <a href="{{ chemical.detail_url }}"
+      <a href="{% url 'chemical_detail' pk=chemical.pk %}"
 	 title="Detailed information on chemical {{ chemical.name|lower }}">
 	{{ chemical.name }}
         {% if chemical.has_expired_containers %}
@@ -31,7 +31,7 @@
       </a>
     </td>
     <td>
-      <a href="{{ chemical.detail_url }}"
+      <a href="{% url 'chemical_detail' pk=chemical.pk %}"
 	 title="Detailed information on chemical {{ chemical.name|lower }}">
 	{{ chemical.formula|formula_markup }}
       </a>

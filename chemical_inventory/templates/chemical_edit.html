@@ -56,7 +56,8 @@
       <div class="oak-form-buttons">
 	<button type="submit" class="btn btn-primary"
 		ng-disabled="{{ form.form_name }}.$invalid">Save</button>
-	<a href="{{ chemical.detail_url }}" title="Return to list of chemicals"
+	<a href="{% url 'chemical_detail' pk=chemical.pk %}"
+	   title="Return to chemical details"
 	   class="btn btn-link">Cancel</a>
       </div>
 

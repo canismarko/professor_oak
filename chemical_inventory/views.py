@@ -190,7 +190,10 @@ class ChemicalDetailView(BreadcrumbsMixin, DetailView):
         if self.request.GET.get('find') is not None: #avoids error with empty ?find=
             context['active_find'] = int(self.request.GET.get('find'))
         # Add list of containers to context
-        container_list = chemical.container_set.order_by('is_empty', 'expiration_date')
+        related_fields = ('location', 'owner', 'chemical')
+        container_list = chemical.container_set.select_related(*related_fields)
+        container_list = container_list.prefetch_related('supportingdocument_set')
+        container_list = container_list.order_by('is_empty', 'expiration_date')
         context['container_list'] = container_list
         return context
 
@@ -414,13 +417,6 @@ def print_label(request, container_pk):
     """Pass the information from the container to subprocess, convert it
     to a csv file and merge with the gLabel template.
     """
-    # stubbed for  development
     container = Container.objects.get(pk=container_pk)
     container.print_label()
-    return JsonResponse({'status': 'success'})
-
-@login_required
-def get_quick_empty(request, container_pk):
-    container = Container.objects.get(pk=container_pk)
-    container.mark_as_empty
     return JsonResponse({'status': 'success'})

@@ -65,7 +65,7 @@
     </td>
     <td>
       <!-- Edit -->
-      <a href="{{ container.edit_url }}"
+      <a href="{% url 'container_edit' pk=container.pk %}"
 	 title="Edit this container of {{ chemical.name|lower }}" >
 	<span class="glyphicon glyphicon-pencil"></span>
       </a>

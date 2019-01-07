@@ -98,7 +98,6 @@ class InventoryViewTest(TestCase):
                 is_empty=False).exists()
             self.assertEqual(chemical.has_expired_containers, has_expired_containers)
     
-    # @expectedFailure
     def test_chemical_list_queryset(self):
         list_view = views.ChemicalListView()
         list_view.request = self.factory.get(reverse('chemical_list'))
@@ -123,9 +122,12 @@ class InventoryViewTest(TestCase):
     def test_chemical_detail_as_view(self):
         list_view = views.ChemicalDetailView.as_view()
         request = self.factory.get(reverse('chemical_list'))
-        response = list_view(request, pk=1)
+        request.user = User.objects.get(username='test')
+        with self.assertNumQueries(7):
+            response = list_view(request, pk=1)
+            response.render()
         # Check that the database is not hit too much
-        self.assertEqual(response.status_code, 200)        
+        self.assertEqual(response.status_code, 200)
 
 
 class ChemicalTest(TestCase):

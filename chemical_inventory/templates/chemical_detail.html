@@ -14,7 +14,7 @@
   <div class="col-sm-4">
 
     <p>
-      <a href="{{ chemical.edit_url }}"
+      <a href="{% url 'chemical_edit' pk=chemical.pk %}"
 	 title="Edit chemical information for {{ chemical.name|lower }}"
 	 class="btn btn-default">
 	<span class="glyphicon glyphicon-pencil"></span>
@@ -56,7 +56,7 @@
 	</a>
 	{% else %}
 	Safety Datasheet (SDS) not available.
-	<a href="{{ chemical.edit_url }}" title="Edit chemical">
+	<a href="{% url 'chemical_edit' pk=chemical.pk %}" title="Edit chemical">
 	  Upload one now?
 	</a>
 	{% endif %}

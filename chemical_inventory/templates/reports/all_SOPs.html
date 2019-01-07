@@ -76,7 +76,7 @@
           {% for chemical in sop.associated_chemicals.all %}
           <tr>
             <td>
-              <a href="{{ chemical.detail_url }}">{{ chemical.name }}</a>
+              <a href="{% url 'chemical_detail' pk=chemical.pk %}">{{ chemical.name }}</a>
             </td>
           </tr>
           {% endfor %}

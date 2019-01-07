@@ -165,9 +165,6 @@ class Chemical(models.Model):
                 url = None
         return url
     
-    def get_absolute_url(self):
-        return reverse('chemical_detail', kwargs={'pk': self.pk})
-    
     @property
     def empty_container_set(self):
         return self.container_set.filter(is_empty=True)
@@ -232,38 +229,21 @@ class Container(models.Model):
     barcode = models.CharField(max_length=30, blank=True)
     supplier = models.ForeignKey('Supplier', null=True, blank=True)
     comment = models.TextField(blank=True)
-
+    
     def __str__(self):
         string = "{chemical} {container_type} in {location}"
         return string.format(chemical=self.chemical,
                              container_type=self.container_type,
                              location=self.location)
-
-    def edit_url(self):
-        """Return the url for the detailed view of this chemical and all the
-        containers of it. Looked up in urls.py.
-        """
-        url = reverse('container_edit', kwargs={'pk': self.pk})
-        return url
-
-    def detail_url(self):
-        """Return the url for the detailed view of this chemical and all the
-        containers of it. Looked up in urls.py.
-        """
-        url = reverse('chemical_detail', kwargs={'pk': self.chemical_id})
-        return url
-
+    
     def save(self, *args, **kwargs):
         """Automatically set the user if necessary."""
         ret = super().save(*args, **kwargs)
         return ret
-
+    
     def is_expired(self):
         return self.expiration_date <= datetime.date.today()
-
-    def get_absolute_url(self):
-        return reverse('chemical_detail', kwargs={'pk': self.chemical_id})
-
+    
     def print_label(self):
         """Pass the information from the container to subprocess, convert it
         to a csv file and merge with the gLabel template.
@@ -291,11 +271,7 @@ class Container(models.Model):
                           '-i'+ settings.PRINTER_KEY,
                           settings.PRINTING_IP,
                           '/home/pi/label_printing/bash_print.sh'])
-
-    def mark_as_empty(self, *args, **kwargs):
-        self.container.is_empty = True
-        self.save()
-
+    
     def quantity_string(self):
         s = "{quantity} {unit_of_measure}"
         return s.format(quantity=self.quantity,
@@ -363,12 +339,12 @@ class Location(ScoreMixin, models.Model):
     building = models.CharField(max_length=30)
     msds_location = models.CharField(max_length=60, blank=True)
     compatible_hazards = models.ManyToManyField('Hazard')
-
+    
     def __str__(self):
         s = "{name} ({room} {bldg})"
         return s.format(name=self.name, room=self.room_number,
                         bldg=self.building)
-
+    
     @property
     def active_container_set(self):
         return self.container_set.filter(is_empty=False)
@@ -376,10 +352,10 @@ class Location(ScoreMixin, models.Model):
 
 class Supplier(models.Model):
     name = models.CharField(max_length=50)
-
+    
     def __str__(self):
         return self.name
-
+    
     class Meta():
         ordering = ['name']
 
