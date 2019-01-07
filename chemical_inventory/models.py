@@ -83,41 +83,69 @@ class Chemical(models.Model):
     gloves = models.ManyToManyField('Glove')
     safety_data_sheet = models.FileField(upload_to='safety_data_sheets',
                                          null=True, blank=True)
-
+    
     class Meta:
         ordering = ['name']
-
+    
     def __str__(self):
         return "{name} ({formula})".format(name=self.name,
                                            formula=self.stripped_formula)
-
+    
     def detail_url(self):
         """Return the url for the detailed view of this chemical and all the
 	containers of it. Looked up in urls.py.
+        
         """
         url = reverse('chemical_detail', kwargs={'pk': self.pk})
         return url
-
+    
     def edit_url(self):
         """Return the url for the detailed view of this chemical and all the
 	containers of it. Looked up in urls.py.
+        
         """
         url = reverse('chemical_edit', kwargs={'pk': self.pk})
         return url
-
-    def is_in_stock(self):
-        """Return True if a chemical has a container with material in it,
-        otherwise return False.
-        """
-        # full_containers = Container.objects.filter(chemical__id=self.pk, is_empty=False)
-        full_containers = self.containers.filter(is_empty=False)
-        return full_containers.count() > 0
-
-    def stock_is_null(self):
-        """Returns whether a chemical has no containers"""
-        if Container.objects.filter(chemical__id=self.pk).count() == 0:
-            return True
-        return False
+    
+    # @property
+    # def is_in_stock(self):
+    #     """Whether this chemical has any active containers with material.
+        
+    #     Retreiving the value invokes a database call to look for open
+    #     containers. For large querysets, this can cause excessive
+    #     database calls. If this property is set first, then the value
+    #     will be cached and used in subsequent reads of this
+    #     attribute. This can be combined with queryset annotations to
+    #     reduce the number of database calls:
+        
+    #     .. code:: python
+	    
+    #         # Too many database calls
+    #         qs = Chemical.objects.all()
+    #         [chemical.is_in_stock() for chemical in qs]
+	   
+    #         # Much saner number of database calls
+    #         qs = Chemical.objects.all()
+    #         full_containers = Container.objects.filter(is_empty=False, chemical=OuterRef('pk'))
+    #         qs = qs.annotate(is_in_stock=Exists(full_containers))
+        
+    #     """
+    #     # Check for cached values
+    #     if self._is_in_stock is not None:
+    #         has_containers = self._is_in_stock
+    #     else:
+    #         # No cached value, so execute a DB query
+    #         has_containers = self.container_set.filter(is_empty=False).exists()
+    #     return bool(has_containers)
+    
+    # @is_in_stock.setter
+    # def is_in_stock(self, val):
+    #     self._is_in_stock = val
+    
+    # def stock_is_null(self):
+    #     """Returns whether a chemical has no containers"""
+    #     raise DeprecationWarning("Use a queryset annotation instead")
+    #     return bool(self.container_set.exists())
     
     def structure_url(self):
         try:
@@ -136,29 +164,29 @@ class Chemical(models.Model):
             except IndexError:
                 url = None
         return url
-
+    
     def get_absolute_url(self):
         return reverse('chemical_detail', kwargs={'pk': self.pk})
-
+    
     @property
     def empty_container_set(self):
         return self.container_set.filter(is_empty=True)
-
-    def has_expired(self):
-        expired_qs = Container.objects.filter(
-            chemical__id=self.pk,
-            expiration_date__lte=datetime.date.today()
-        )
-        return expired_qs.count() > 0
-
+    
+    # def has_expired(self):
+    #     expired_qs = Container.objects.filter(
+    #         chemical__id=self.pk,
+    #         expiration_date__lte=datetime.date.today()
+    #     )
+    #     return expired_qs.count() > 0
+    
     def not_empty_but_expired(self):
-        expired_qs = Container.objects.filter(
-            chemical__id=self.pk,
-            expiration_date__lte=datetime.date.today(),
-            is_empty=False
-        )
-        if expired_qs.count() > 0:
-            return True
+        # expired_qs = Container.objects.filter(
+        #     chemical__id=self.pk,
+        #     expiration_date__lte=datetime.date.today(),
+        #     is_empty=False
+        # )
+        # if expired_qs.count() > 0:
+        #     return True
         return False
 
 
@@ -188,7 +216,7 @@ class Container(models.Model):
     associated with a container include things like its location,
     amount and owner.
     """
-    chemical = models.ForeignKey('Chemical', related_name='containers')
+    chemical = models.ForeignKey('Chemical')
     location = models.ForeignKey('Location')
     batch = models.CharField(max_length=30, blank=True)
     date_added = models.DateTimeField(auto_now=True)

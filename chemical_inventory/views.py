@@ -1,5 +1,6 @@
 from collections import namedtuple
 import re
+import datetime as dt
 
 from django.contrib.auth.decorators import login_required
 from django.core.urlresolvers import reverse, reverse_lazy
@@ -13,6 +14,7 @@ from django.utils.safestring import mark_safe
 from django.http import HttpResponseRedirect, JsonResponse
 from django.conf import settings
 from django.db.models import Q, Count, F
+from django_subquery.expressions import Subquery, OuterRef, Exists
 
 from .forms import ChemicalForm, ContainerForm, GloveForm, SupplierForm, SupportingDocumentForm
 from .models import Chemical, Hazard, Container, Glove, Supplier, SupportingDocument
@@ -38,6 +40,31 @@ def chemical_breadcrumbs(chemical):
             reverse('chemical_detail', kwargs={'pk': chemical.pk})
         )
     ]
+
+def annotate_chemical_queryset(queryset):
+    """Take a queryset of chemical objects and add annotations.
+    
+    Adds the following attributes to each chemical:
+    - num_containers
+    - has_expired_containers
+    - is_in_stock
+    
+    This is most efficient if the queryset has not yet been evaluated,
+    saving a bunch of unnecessary calls.
+    
+    """
+    # Annotations for determining if there are any containers
+    queryset = queryset.annotate(num_containers=Count('container'))
+    # Annotations for determining if there are expired containers
+    expired_containers = Container.objects.filter(
+        is_empty=False, chemical=OuterRef('pk'),
+        expiration_date__lte=dt.date.today()
+    )
+    queryset = queryset.annotate(has_expired_containers=Exists(expired_containers))
+    # Sort by the number of containers available
+    full_containers = Container.objects.filter(is_empty=False, chemical=OuterRef('pk'))
+    queryset = queryset.annotate(is_in_stock=Exists(full_containers))
+    return queryset
 
 
 class ElementSearchView(BreadcrumbsMixin, TemplateView):
@@ -71,9 +98,9 @@ class ElementSearchView(BreadcrumbsMixin, TemplateView):
             regex = r'{symbol}[^a-z]|{symbol}$'.format(symbol=symbol)
             chemical_qs = chemical_qs.exclude(formula__regex=regex)
         # Filter excluded elements
-        context['chemicals'] = sorted(chemical_qs,
-                                      key=lambda x: x.is_in_stock(),
-                                      reverse=True)
+        chemical_qs = annotate_chemical_queryset(chemical_qs)
+        chemical_qs = chemical_qs.order_by('-is_in_stock')
+        context['chemicals'] = chemical_qs
         # Check if an failure message should be displayed
         is_query = (len(included_symbols) > 0 or len(excluded_symbols) >0)
         context['failed_search'] = len(chemical_qs) == 0 and is_query
@@ -111,15 +138,11 @@ class ChemicalListView(BreadcrumbsMixin, ListView):
     glossary_filters = GLOSSARY_FILTERS
     context_object_name = 'chemicals'
     
-    # @breacrumbs(['chemical_inventory'])
-    # def as_view(self):
-    #     return super().as_view()
-    
     def breadcrumbs(self):
         breadcrumbs = [inventory_breadcrumb()]
         breadcrumbs.append('chemical_list')
         return breadcrumbs
-
+    
     def get_context_data(self, *args, **kwargs):
         # Get the default context
         context = super().get_context_data(*args, **kwargs)
@@ -142,30 +165,23 @@ class ChemicalListView(BreadcrumbsMixin, ListView):
         # For everything else
         elif filterstring is not None:  #Ignores empty returns
             queryset = queryset.filter(name__istartswith=filterstring).exclude(name__isnull=True)
-        # Sort by the number of containers available
-        # queryset = queryset.prefetch_related('containers')
-        queryset = sorted(queryset, key=lambda x: x.is_in_stock(), reverse=True)
-        # queryset = queryset.annotate(in_stock=(F(Min(Count('container.is_empty'), 1))))
+        queryset = annotate_chemical_queryset(queryset)
+        queryset = queryset.order_by('-is_in_stock')
         return queryset
+
 
 class ChemicalDetailView(BreadcrumbsMixin, DetailView):
     """This view shows detailed information about one chemical. Also gets
-    the list of containers that this chemical is in."""
-
+    the list of containers that this chemical is in.
+    
+    """
     template_name = 'chemical_detail.html'
     template_object_name = 'chemical'
-
-    def get_object(self):
-        """Return the specific chemical by its primary key ('pk')."""
-        # Find the primary key from the url
-        pk = self.kwargs['pk']
-        # Get the actual Chemical object
-        chemical = Chemical.objects.get(pk=pk)
-        return chemical
-
+    model = Chemical
+    
     def breadcrumbs(self):
         return chemical_breadcrumbs(self.object)
-
+    
     def get_context_data(self, *args, **kwargs):
         chemical = self.get_object()
         # Get the default context
@@ -182,24 +198,24 @@ class ChemicalDetailView(BreadcrumbsMixin, DetailView):
 class SupportingDocumentView(BreadcrumbsMixin, FormView):
     template_name = 'supporting_documents.html'
     form_class = SupportingDocumentForm
-
+    
     def dispatch(self, *args, **kwargs):
         # Set container for later use
         self.container = Container.objects.get(pk=self.kwargs['container_pk'])
         return super().dispatch(*args, **kwargs)
-
+    
     def get_success_url(self):
         container_pk = self.kwargs['container_pk']
         return reverse('supporting_documents',
                        kwargs={'container_pk': container_pk})
-
+    
     def breadcrumbs(self):
         # Set breadcrumbs
         breadcrumbs = chemical_breadcrumbs(self.container.chemical)
         breadcrumbs.append(('Supporting Documents',
                             self.get_success_url()))
         return breadcrumbs
-
+    
     def get_context_data(self, *args, **kwargs):
         # Inherit parent context
         context = super().get_context_data(*args, **kwargs)
@@ -207,7 +223,7 @@ class SupportingDocumentView(BreadcrumbsMixin, FormView):
         context['container'] = self.container
         context['documents'] = self.container.supportingdocument_set.order_by('-date_added')
         return context
-
+    
     def form_valid(self, form):
         # Set some attributes and save container
         document = form.save(commit=False)
@@ -229,7 +245,7 @@ def container_detail(request, pk):
 
 class AddContainerView(BreadcrumbsMixin, TemplateView):
     template_name = 'container_add.html'
-
+    
     def get_context_data(self, *args, **kwargs):
         context = super().get_context_data(*args, **kwargs)
         # Load the angular forms for container and chemical
@@ -238,7 +254,7 @@ class AddContainerView(BreadcrumbsMixin, TemplateView):
         context.update(glove_form=GloveForm())
         context.update(supplier_form=SupplierForm())
         return context
-
+    
     def breadcrumbs(self):
         # Add breadcrumbs
         chemical_id = self.request.GET.get('chemical_id')
@@ -249,13 +265,13 @@ class AddContainerView(BreadcrumbsMixin, TemplateView):
             breadcrumbs = [inventory_breadcrumb()]
         breadcrumbs.append(('Add to Inventory', reverse('add_container')))
         return breadcrumbs
-
+    
     @property
     def success_url(self):
         # Look up the url for the chemical that this inventory belongs to
         url = reverse('chemical_detail', kwargs={'pk': self.object.chemical.pk})
         return url
-
+    
     @success_url.setter
     def success_url(self, url):
         # Django throws an error if it can't set success_url
@@ -267,7 +283,7 @@ class EditChemicalView(BreadcrumbsMixin, UpdateView):
     template_object_name = 'chemical'
     model = Chemical
     form_class = ChemicalForm
-
+    
     def breadcrumbs(self):
         return [
             inventory_breadcrumb(),
@@ -283,7 +299,7 @@ class EditContainerView(BreadcrumbsMixin, UpdateView):
     template_name = 'container_edit.html'
     model = Container
     form_class = ContainerForm
-
+    
     def get_object(self):
         """Return the specific chemical by its primary key ('pk')."""
         # Find the primary key from the url

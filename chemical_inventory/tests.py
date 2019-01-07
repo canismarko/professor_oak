@@ -79,18 +79,53 @@ class InventoryViewTest(TestCase):
     def setUp(self):
         self.factory = RequestFactory()
     
-    @expectedFailure
-    def test_chemical_list(self):
+    def test_annotate_chemical_queryset(self):
+        qs = models.Chemical.objects.all()
+        new_qs = views.annotate_chemical_queryset(qs)
+        # Make sure the querysets have the same items
+        self.assertEqual(len(qs), len(new_qs))
+        self.assertEqual([q.pk for q in qs], [q.pk for q in new_qs],
+                         'QuerySet modified during annotation')
+        # Check that stock-level annotations are set
+        for chemical in new_qs:
+            num_containers = chemical.container_set.count()
+            self.assertEqual(chemical.num_containers, num_containers)
+            num_empty = chemical.container_set.filter(is_empty=True).count()
+            has_stock = (num_containers - num_empty) > 0
+            self.assertEqual(chemical.is_in_stock, has_stock)
+            has_expired_containers = chemical.container_set.filter(
+                expiration_date__lte=datetime.date.today(),
+                is_empty=False).exists()
+            self.assertEqual(chemical.has_expired_containers, has_expired_containers)
+    
+    # @expectedFailure
+    def test_chemical_list_queryset(self):
         list_view = views.ChemicalListView()
         list_view.request = self.factory.get(reverse('chemical_list'))
+        # Retrieve the queryset
+        qs = list_view.get_queryset()
+        self.assertIsInstance(qs, QuerySet)
         # Check that the database is not hit too much
         with self.assertNumQueries(1):
-            qs = list_view.get_queryset()
             list(qs)
-        # Check that the num_open_containers annotation is set
-        water = qs[0]
-        # self.assertIsInstance(qs, QuerySet)
+            [q.is_in_stock for q in qs]
+            [q.num_containers for q in qs]
+            [q.has_expired_containers for q in qs]
         self.assertEqual(len(qs), 4)
+    
+    def test_chemical_list_as_view(self):
+        list_view = views.ChemicalListView.as_view()
+        request = self.factory.get(reverse('chemical_list'))
+        response = list_view(request)
+        # Check that the database is not hit too much
+        self.assertEqual(response.status_code, 200)
+    
+    def test_chemical_detail_as_view(self):
+        list_view = views.ChemicalDetailView.as_view()
+        request = self.factory.get(reverse('chemical_list'))
+        response = list_view(request, pk=1)
+        # Check that the database is not hit too much
+        self.assertEqual(response.status_code, 200)        
 
 
 class ChemicalTest(TestCase):
@@ -99,9 +134,6 @@ class ChemicalTest(TestCase):
     
     def setUp(self):
         self.chemical = models.Chemical(name='Acetone')
-    
-    def test_is_in_stock(self):
-        self.assertFalse(self.chemical.is_in_stock())
     
     @skipIf(HAS_CHEMSPIDER_KEY, 'CHEMSPIDER_KEY found in localsettings.py')
     def test_chemspider_url_without_key(self):
@@ -116,6 +148,7 @@ class ChemicalTest(TestCase):
         self.assertNotIn('discovermagazine.com', structure_url,
                          'Default URL found. Check settings.CHEMSPIDER_KEY')
         self.assertEqual(structure_url[:len(target_url)],target_url)
+
 
 class ContainerAPITest(TestCase):
     fixtures = ['test_users.json', 'inventory_test_data.json']
