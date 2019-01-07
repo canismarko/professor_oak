@@ -183,5 +183,12 @@
     },
     "pk": 5,
     "model": "chemical_inventory.location"
+},
+{
+    "pk": 1,
+    "model": "chemical_inventory.supplier",
+    "fields": {
+        "name": "Sigma-Aldrich"
+    }
 }
 ]

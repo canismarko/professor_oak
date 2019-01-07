@@ -271,7 +271,7 @@ class Container(models.Model):
                           '-i'+ settings.PRINTER_KEY,
                           settings.PRINTING_IP,
                           '/home/pi/label_printing/bash_print.sh'])
-    
+
     def quantity_string(self):
         s = "{quantity} {unit_of_measure}"
         return s.format(quantity=self.quantity,

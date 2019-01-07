@@ -226,3 +226,55 @@ class IsEmptyTest(TestCase):
                 is_empty=False).count()
             # print (container_test)
             assert type(container_test) is int
+
+
+
+
+class ContainerTest(TestCase):
+    fixtures = ['test_users.json', 'inventory_test_data.json']
+    def setUp(self):
+        self.container = models.Container.objects.get(pk=26)
+        self.location = models.Location.objects.get(pk=1) 
+        self.supplier = models.Supplier.objects.get(pk=1)
+        self.chemical = models.Chemical.objects.get(pk=1)       
+
+    def test_setUp(self):
+        self.assertEqual(self.container.chemical.name, 'Lithium')
+        self.assertEqual(self.container.location.name, 'Glovebox')
+        self.assertEqual(self.container.batch, '98567')
+        self.assertEqual(self.container.state, 'foil')
+        self.assertEqual(self.container.container_type, 'Pouch')
+        self.assertEqual(self.container.quantity, 75.0)
+        self.assertEqual(self.container.unit_of_measure, 'g')
+        self.assertEqual(self.supplier.name, 'Sigma-Aldrich')
+
+    def test__str__(self):
+        string_instance=isinstance(self.container.__str__(),str)
+        self.assertEqual(self.container.__str__(), 'Lithium (Li) Pouch in Glovebox (4130 SES)')
+        self.assertEqual(string_instance, True)
+
+    def test_edit_url(self):
+        self.assertEqual(self.container.edit_url(), '/chemical_inventory/containers/edit/26/')
+
+    def test_detail_url(self):
+        self.assertEqual(self.container.detail_url(), '/chemical_inventory/chemicals/1/')
+
+    def test_is_expired(self):
+        self.assertEqual(self.container.is_expired(), True)
+
+    def test_get_absolute_url(self):
+        self.assertEqual(self.container.get_absolute_url(), '/chemical_inventory/chemicals/1/')
+
+    def test_mark_as_empty(self):
+        self.container.mark_as_empty()
+        self.assertEqual(self.container.is_empty, True)
+
+        # Now check the value from the database
+        db_container = models.Container.objects.get(pk=self.container.pk)
+        self.assertEqual(db_container.is_empty, True) 
+
+    def test_quantity_string(self):
+        self.assertEqual(self.container.quantity_string(), '75.0 g')
+
+
+
