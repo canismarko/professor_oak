@@ -15,7 +15,7 @@ python-social-auth==0.2.21
 django-browserid==1.0.0
 plotly==2.0.6
 pandas==0.20.1
-allauth==0.34.0
+django-allauth==0.34.0
 
 # Only required until upgrading to Django 2.1
 django-subquery==1.0.4
