@@ -4,170 +4,178 @@
 
 {% block content %}
 <div class="row">
-<div class="col-lg-6 col-md-4">
-	<h2 class="pull-left">Inventory Results <small>{{ active_stock.name }}</small></h2>
-</div>
-<div class="col-lg-6 col-md-2" ng-controller="sendresultsEmail">	
-<button ng-click="sendEmailRequest({{ active_stock.id }})" class="btn btn-default pull-right" data-toggle="tooltip" title="E-Mail Results to all Active Users" id="SendEmailButton" onclick="disableButton()">
-		<span class="glyphicon glyphicon-envelope"></span>
-		E-Mail Results
-	</button>
-</div>
+  <div class="col-lg-6 col-md-4">
+    <h2 class="pull-left">Inventory Results <small>{{ active_stock.name }}</small></h2>
+  </div>
+  <div class="col-lg-6 col-md-2" ng-controller="sendresultsEmail">	
+    <button ng-click="sendEmailRequest({{ active_stock.id }})"
+	    class="btn btn-default pull-right"
+	    data-toggle="tooltip"
+	    title="E-Mail Results to all Active Users"
+	    id="SendEmailButton"
+	    onclick="disableButton()">
+      <span class="glyphicon glyphicon-envelope"></span>
+      E-Mail Results
+    </button>
+  </div>
 </div>
 
 <div class="row">
 <div class="col-lg-4 col-md-6">
-	<div class="panel panel-green" data-toggle="tooltip" title="These are containers that were scanned and subsequently found in the database. Hooray!">
-		<div class="panel-heading">
-			<div class="row">
-				<div class="col-xs-3">
-					<i class="fa fa-thumbs-up fa-5x"></i>
-				</div>
-				<div class="col-xs-9 text-right">
-					<div style="font-size:250%">{{ accounted_for.count }}</div>
-					<div>Containers are accounted for</div>
-				</div>
-			</div>
-		</div>
+  <div class="panel panel-green" data-toggle="tooltip"
+       title="These are containers that were scanned and subsequently found in the database. Hooray!">
+    <div class="panel-heading">
+      <div class="row">
+	<div class="col-xs-3">
+	  <i class="fa fa-thumbs-up fa-5x"></i>
 	</div>
+	<div class="col-xs-9 text-right">
+	  <div style="font-size:250%">{{ accounted_for.count }}</div>
+	  <div>Containers are accounted for</div>
+	</div>
+      </div>
+    </div>
+  </div>
 </div>
 <div class="col-lg-4 col-md-6">
-	<div class="panel panel-yellow" data-toggle="tooltip" title="These are containers that were scanned but not found in the database. This could be because they were marked as empty in the database and not removed.">
-		<div class="panel-heading">
-			<div class="row">
-				<div class="col-xs-3">
-					<i class="fa fa-exclamation fa-5x"></i>
-				</div>
-				<div class="col-xs-9 text-right">
-					<div style="font-size:250%">{{ not_in_db|length }}</div>
-					<div>Scanned but not in the database</div>
-				</div>
-			</div>
-		</div>
+  <div class="panel panel-yellow" data-toggle="tooltip" title="These are containers that were scanned but not found in the database. This could be because they were marked as empty in the database and not removed.">
+    <div class="panel-heading">
+      <div class="row">
+	<div class="col-xs-3">
+	  <i class="fa fa-exclamation fa-5x"></i>
 	</div>
+	<div class="col-xs-9 text-right">
+	  <div style="font-size:250%">{{ not_in_db|length }}</div>
+	  <div>Scanned but not in the database</div>
+	</div>
+      </div>
+    </div>
+  </div>
 </div>
-		
+
 <div class="col-lg-4 col-md-6">
-	<div class="panel panel-red" data-toggle="tooltip" title="These are containers that are in the database but were not scanned/found.">
-		<div class="panel-heading">
-			<div class="row">
-				<div class="col-xs-3">
-					<i class="fa fa-times fa-5x"></i>
-				</div>
-				<div class="col-xs-9 text-right">
-					<div style="font-size:250%">{{ not_in_actual.count }}</div>
-					<div>Not scanned/found</div>
-				</div>
-			</div>
-		</div>
+  <div class="panel panel-red" data-toggle="tooltip" title="These are containers that are in the database but were not scanned/found.">
+    <div class="panel-heading">
+      <div class="row">
+	<div class="col-xs-3">
+	  <i class="fa fa-times fa-5x"></i>
 	</div>
+	<div class="col-xs-9 text-right">
+	  <div style="font-size:250%">{{ not_in_actual.count }}</div>
+	  <div>Not scanned/found</div>
+	</div>
+      </div>
+    </div>
+  </div>
 </div>
 </div>
 
 <div class="row">
-	<div class="col-md-6">
-		<div class="panel panel-warning">
-			<div class="panel-heading">
-				<div class="panel-title pull-left">
-					These are the ones that are listed as empty
-				</div>
-				{% if csv_available %}
-					<a href="?format=csv&list=marked_as_empty" class="btn btn-default pull-right" data-toggle="tooltip" title="Download as .csv">
-    					<span class="glyphicon glyphicon-list-alt"></span>
-    				CSV
-  					</a>
-				<div class="clearfix"></div>
-  				{% endif %}
-			</div>
-			<table class="table">
-				<tr>
-					<th>Barcode</th>
-					<th>Chemical Name</th>
-					<th>Location</th>
-					<th>Owner</th>
-				</tr>
-				{% for container in not_in_db_but_empty %}
-				<tr>
-					<td>{{ container.id }}</td>
-					<td>{{ container.chemical.name }}</td>
-					<td>{{ container.location }}</td>
-					<td>{{ container.owner.get_full_name }}</td>
-				</tr>
-				{% endfor %}
-			</table>
-		</div>
+  <div class="col-md-6">
+    <div class="panel panel-warning">
+      <div class="panel-heading">
+	<div class="panel-title pull-left">
+	  These are the ones that are listed as empty
 	</div>
-	<div class="col-md-6">
-		<div class="panel panel-warning">
-			<div class="panel-heading">
-				<div class="panel-title pull-left">
-					These are the ones that remain   
-				</div>
-				{% if csv_available %}
-					<a href="?format=csv&list=not_in_database" class="btn btn-default pull-right" data-toggle="tooltip" title="Download as .csv">
-    					<span class="glyphicon glyphicon-list-alt"></span>
-    				CSV
-  					</a>
-				<div class="clearfix"></div>
-  				{% endif %}
-			</div>
-			<table class="table">
-				<tr>
-					<th>Barcode</th>
-				</tr>
-				{% for barcode_number in not_in_db %}
-				<tr>
-					<td>{{ barcode_number }}</td>
-				</tr>
-				{% endfor %}
-			</table>
-		</div>
+	{% if csv_available %}
+	<a href="?format=csv&list=marked_as_empty" class="btn btn-default pull-right" data-toggle="tooltip" title="Download as .csv">
+    	  <span class="glyphicon glyphicon-list-alt"></span>
+    	  CSV
+  	</a>
+	<div class="clearfix"></div>
+  	{% endif %}
+      </div>
+      <table class="table">
+	<tr>
+	  <th>Barcode</th>
+	  <th>Chemical Name</th>
+	  <th>Location</th>
+	  <th>Owner</th>
+	</tr>
+	{% for container in not_in_db_but_empty %}
+	<tr>
+	  <td>{{ container.id }}</td>
+	  <td>{{ container.chemical.name }}</td>
+	  <td>{{ container.location }}</td>
+	  <td>{{ container.owner.get_full_name }}</td>
+	</tr>
+	{% endfor %}
+      </table>
+    </div>
+  </div>
+  <div class="col-md-6">
+    <div class="panel panel-warning">
+      <div class="panel-heading">
+	<div class="panel-title pull-left">
+	  <i class="fa fa-exclamation"></i>
+	  These are the ones that remain   
 	</div>
+	{% if csv_available %}
+	<a href="?format=csv&list=not_in_database" class="btn btn-default pull-right" data-toggle="tooltip" title="Download as .csv">
+    	  <span class="glyphicon glyphicon-list-alt"></span>
+    	  CSV
+  	</a>
+	<div class="clearfix"></div>
+  	{% endif %}
+      </div>
+      <table class="table">
+	<tr>
+	  <th>Barcode</th>
+	</tr>
+	{% for barcode_number in not_in_db %}
+	<tr>
+	  <td>{{ barcode_number }}</td>
+	</tr>
+	{% endfor %}
+      </table>
+    </div>
+  </div>
 </div>
 
 <div class="row">
-	<div class="col-md-12">
-		<div class="panel panel-danger">
-			<div class="panel-heading">
-				<div class="panel-title pull-left">
-					Not scanned
-				</div>
-				{% if csv_available %}
-					<a href="?format=csv&list=not_scanned" class="btn btn-default pull-right" data-toggle="tooltip" title="Download as .csv">
-    					<span class="glyphicon glyphicon-list-alt"></span>
-    				CSV
-  					</a>
-				<div class="clearfix"></div>
-  				{% endif %}
-			</div>
-			<table class="table">
-				<tr>
-					<th>Barcode</th>
-					<th>Chemical Name</th>
-					<th>Batch</th>
-					<th>Location</th>
-					<th>Container</th>
-					<th>Owner</th>
-				</tr>
-				{% for container in not_in_actual %}
-				<tr>
-					<td>{{ container.id }}</td>
-					<td>{{ container.chemical.name }}</td>
-					<td>{{ container.batch }}</td>
-					<td>{{ container.location }}</td>
-					<td>{{ container.container_type }}</td>
-					<td>{{ container.owner.get_full_name }}</td>
-				</tr>
-				{% endfor %}
-			</table>
-		</div>
+  <div class="col-md-12">
+    <div class="panel panel-danger">
+      <div class="panel-heading">
+	<div class="panel-title pull-left">
+	  <i class="fa fa-times"></i>
+	  Listed in inventory but not scanned
 	</div>
+	{% if csv_available %}
+	<a href="?format=csv&list=not_scanned" class="btn btn-default pull-right" data-toggle="tooltip" title="Download as .csv">
+    	  <span class="glyphicon glyphicon-list-alt"></span>
+    	  CSV
+  	</a>
+	<div class="clearfix"></div>
+  	{% endif %}
+      </div>
+      <table class="table">
+	<tr>
+	  <th>Barcode</th>
+	  <th>Chemical Name</th>
+	  <th>Batch</th>
+	  <th>Location</th>
+	  <th>Container</th>
+	  <th>Owner</th>
+	</tr>
+	{% for container in not_in_actual %}
+	<tr>
+	  <td>{{ container.id }}</td>
+	  <td>{{ container.chemical.name }}</td>
+	  <td>{{ container.batch }}</td>
+	  <td>{{ container.location }}</td>
+	  <td>{{ container.container_type }}</td>
+	  <td>{{ container.owner.get_full_name }}</td>
+	</tr>
+	{% endfor %}
+      </table>
+    </div>
+  </div>
 </div>
 <script type="text/javascript">
-document.getElementById("SendEmailButton").onclick = function() {
-	this.disabled = true;
-	this.innerHTML = '<span class="glyphicon glyphicon-envelope"></span> Email Sent!';
-}
-</script>
+  document.getElementById("SendEmailButton").onclick = function() {
+      this.disabled = true;
+      this.innerHTML = '<span class="glyphicon glyphicon-envelope"></span> Email Sent!';
+  }
+  </script>
 {% endblock %}
 

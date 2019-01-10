@@ -20,10 +20,10 @@ urlpatterns = [
 	url(r'^stock_take/$',
 		login_required(views.UploadInventoryView.as_view()),
 		name='stock_take'),
-	url(r'^stock_take/results/(?P<stock>[0-9]+)/$',
+	url(r'^stock_take/(?P<pk>[0-9]+)/$',
 		login_required(views.InventoryResultsView.as_view()),
-		name='results'),
-	url(r'^stock_take/results/(?P<stock>[0-9]+)/email_results/$',
+		name='stock_take_result'),
+	url(r'^stock_take/(?P<pk>[0-9]+)/email_results/$',
 		views.send_stock_email,
 		name='send_stock_email')
 	

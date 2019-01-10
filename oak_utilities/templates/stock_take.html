@@ -5,31 +5,47 @@
 
 {% block content %}
 
-<h2>Upload your most recent stock take</h2>
 
 <div class="row">
-  <div class="col-md-4">
-    <form action="{{ form.form_name }}"
+  <div class="col-sm-6">
+    <h2>Upload your most recent stock take</h2>
+    
+    <form action="" method="POST" class="stock-take-form"
 	  enctype="multipart/form-data" novalidate oak-form-validation>
       {% csrf_token %}
 
-		{% for field in form.visible_fields %}
-	  		<p>{{ field.label_tag }} {{ field }}</p>
-			{% for error in field.errors %}
-				<div class="alert alert-danger">
-					<strong>Error: </strong>{{ error }}
-				</div>
-<!--				<p style="color:#FA0101">{{ error }}</p>-->
-			{% endfor %} 		
-		{% endfor %}
+      {{ form.as_p }}
+      <!-- {% for field in form.visible_fields %} -->
+      <!-- <p>{{ field.label_tag }} {{ field }}</p> -->
+      <!-- {% for error in field.errors %} -->
+      <!-- <div class="alert alert-danger"> -->
+	<!--   <strong>Error: </strong>{{ error }} -->
+	<!-- </div> -->
+      <!-- <\!--				<p style="color:#FA0101">{{ error }}</p>-\-> -->
+	<!-- {% endfor %} 		 -->
+	<!-- {% endfor %} -->
 
-      <div class="oak-form-buttons">
-	<button type="submit" class="btn btn-primary"
-		ng-disabled="{{ form.form_name }}.$invalid">Upload</button>
-      </div>
+	<div class="oak-form-buttons">
+	  <button type="submit" class="btn btn-primary"
+		  ng-disabled="{{ form.form_name }}.$invalid">Upload</button>
+	</div>
     </form>
   </div>
-  <div class="col-md-8">
+
+  <div class="col-md-6">
+    <h2>Previous Stock Take Results</h2>
+    <div class="stock-take-list">
+      <ul>
+	{% for stock_take in stock_takes %}
+	<li>
+	  <a href="{% url 'stock_take_result' pk=stock_take.pk %}"
+	     title="View results from {{ stock_take.name }}">
+	    {{ stock_take.name }}
+	  </a>
+	</li>
+	{% endfor %}
+      </ul>
+    </div>
   </div>
 </div>
 

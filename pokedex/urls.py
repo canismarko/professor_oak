@@ -8,11 +8,11 @@ from . import views
 urlpatterns = patterns('',
 	#browserid for Persona
 	url(r'', include('django_browserid.urls')),
-    # Examples:
+        # Examples:
     	url(r'^$',
 		views.Main.as_view(), 
 		name='pokedex'),
-    # url(r'^blog/', include('blog.urls')),
+                       # url(r'^blog/', include('blog.urls')),
 	url(r'^accounts/login/$', 
 		TemplateView.as_view(template_name='pokedex/login.html'),
 		name='login'),

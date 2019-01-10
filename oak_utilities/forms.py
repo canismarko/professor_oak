@@ -166,27 +166,75 @@ class ULONtemplateForm(Bootstrap3FormMixin, NgModelFormMixin,
         'additional_hazards'
         ]
 
+
+def validate_stock_take(lines):
+    """Take an iterable of strings and check for valid inventory keys.
+    
+    Currently, this just means they are all valid integers.
+    
+    Parameters
+    ==========
+    lines : iterable
+      Entries from a stock take that are subject to validation.
+    
+    Raises
+    ======
+    ValueError :
+      One of the lines is not a valid inventory key.
+    
+    Returns
+    =======
+    valid_pks : list
+      Entries, as integers, in lines that are suitable as primary
+      keys. There is no guaranteee that these keys actually exist in
+      the database.
+    invalid_pks : list
+      Entries in lines that are not suitable as primary keys. They may
+      be non-numeric, or negative, etc.
+    
+    """
+    valid_pks = []
+    invalid_pks = []
+    for line in lines:
+        line = line.decode('utf-8').strip()
+        # Ignore empty lines
+        if line == '':
+            continue
+        # Typecast to an integer to see if it's valid
+        try:
+            valid_pks.append(int(line))
+        except ValueError:
+            invalid_pks.append(line)
+    return valid_pks, invalid_pks
+
+
 class UploadInventoryForm(forms.ModelForm):
     form_name = 'stock_take'
     file = forms.FileField(
         label = '',
         required = True,
-        )
-
+    )
+    
     class Meta:
         model = models.stock_take
         fields = ['file']       
     
     def clean(self):
-        cleaned_data = super(UploadInventoryForm, self).clean()
+        cleaned_data = super().clean()
+        # Make sure we can read the file contents
         try:
-            for line in cleaned_data.get("file").readlines():
-                try:
-                    int(line)
-                except ValueError:
-                    self._errors['file'] = ErrorList(["This file could not be read, please make sure the file is a single list of integers, each integer corresponding to a barcode."])
-                    raise forms.ValidationError('Non-integers found, file not saved.')
+            lines = cleaned_data.get('file').readlines()
         except AttributeError:
-                self._errors['file'] = ErrorList(["No file found. Make sure you use the upload button above to find your stock take file."])
-                raise forms.ValidationError('No file found.')
+            self._errors['file'] = ErrorList([
+                "No file found. Make sure you use the upload button above "
+                "to find your stock take file."])
+            raise forms.ValidationError('No file found.')
+        # Make sure the primary keys are valid
+        valid_pks, invalid_pks = validate_stock_take(lines)
+        if len(invalid_pks) > 0:
+            self._errors['file'] = ErrorList([
+                "Invalid keys found: {}. Please make sure the file "
+                "is a single list of integers, each integer corresponding "
+                "to a barcode.".format(invalid_pks)])
+            raise forms.ValidationError('Non-integers found, file not saved.')
         return self.cleaned_data
