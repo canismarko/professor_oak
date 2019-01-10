@@ -6,9 +6,6 @@ from django.contrib.auth.decorators import login_required
 from . import views
 
 urlpatterns = patterns('',
-	#browserid for Persona
-	url(r'', include('django_browserid.urls')),
-        # Examples:
     	url(r'^$',
 		views.Main.as_view(), 
 		name='pokedex'),

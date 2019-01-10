@@ -1,4 +1,4 @@
-from unittest import skip, skipIf, expectedFailure
+from unittest import skip, skipIf, expectedFailure, mock
 import datetime
 import json
 import os
@@ -240,19 +240,19 @@ class ChemicalTest(TestCase):
     def setUp(self):
         self.chemical = models.Chemical(name='Acetone')
     
-    @skipIf(HAS_CHEMSPIDER_KEY, 'CHEMSPIDER_KEY found in localsettings.py')
+    
     def test_chemspider_url_without_key(self):
         target_url = 'http://discovermagazine.com/~/media/Images/Zen%20Photo/N/nanoputian/3487.gif'
-        structure_url = self.chemical.structure_url()
+        structure_url = self.chemical.structure_url(database_api=None)
         self.assertEqual(structure_url, target_url)
         
-    @skipIf(not HAS_CHEMSPIDER_KEY, 'CHEMSPIDER_KEY not found in localsettings.py')
     def test_chemspider_url_with_key(self):
-        target_url = 'https://www.chemspider.com/'
-        structure_url = self.chemical.structure_url()
+        mock_api = mock.MagicMock()
+        structure_url = self.chemical.structure_url(database_api=mock_api)
         self.assertNotIn('discovermagazine.com', structure_url,
-                         'Default URL found. Check settings.CHEMSPIDER_KEY')
-        self.assertEqual(structure_url[:len(target_url)],target_url)
+                         'Default URL found. Make new settings.CHEMSPIDER_KEY from '
+                         'https://developer.rsc.org/user/me/apps')
+        mock_api.simple_search.assert_called_with(self.chemical.name)
 
 
 class ContainerAPITest(TestCase):
@@ -356,28 +356,12 @@ class ContainerTest(TestCase):
         self.assertEqual(self.container.__str__(), 'Lithium (Li) Pouch in Glovebox (4130 SES)')
         self.assertEqual(string_instance, True)
 
-    def test_edit_url(self):
-        self.assertEqual(self.container.edit_url(), '/chemical_inventory/containers/edit/26/')
-
-    def test_detail_url(self):
-        self.assertEqual(self.container.detail_url(), '/chemical_inventory/chemicals/1/')
-
     def test_is_expired(self):
         self.assertEqual(self.container.is_expired(), True)
 
-    def test_get_absolute_url(self):
-        self.assertEqual(self.container.get_absolute_url(), '/chemical_inventory/chemicals/1/')
-
-    def test_mark_as_empty(self):
-        self.container.mark_as_empty()
-        self.assertEqual(self.container.is_empty, True)
-
-        # Now check the value from the database
-        db_container = models.Container.objects.get(pk=self.container.pk)
-        self.assertEqual(db_container.is_empty, True) 
-
     def test_quantity_string(self):
         self.assertEqual(self.container.quantity_string(), '75.0 g')
+
 
 
 

@@ -21,6 +21,17 @@ from professor_oak.models import ScoreMixin
 
 log = logging.getLogger(__name__)
 
+
+# Load the chemspider API for accessing the RSC structure database
+try:
+    cs_key = settings.CHEMSPIDER_KEY
+except AttributeError:
+    log.warn('CHEMSPIDER_KEY not found in localsettings.py')
+    chemspider_api = None
+else:
+    chemspider_api = ChemSpider(cs_key)
+
+
 class Hazard(models.Model):
     """A hazard type as defined by the global harmonized system.
 
@@ -147,22 +158,30 @@ class Chemical(models.Model):
     #     raise DeprecationWarning("Use a queryset annotation instead")
     #     return bool(self.container_set.exists())
     
-    def structure_url(self):
+    def structure_url(self, database_api=chemspider_api):
+        """Retrieve a URL for loading the chemical structure from the RSC database.
+
+	Parameters
+	==========
+	database_api : 
+	  An API object to use for accessing the database. If omitted, 
+          the default will be used based on the value of settings.CHEMSPIDER_KEY
+
+        """
+        default_url = 'http://discovermagazine.com/~/media/Images/Zen%20Photo/N/nanoputian/3487.gif'
+        # Retrieve the url for the structure    
+        IUPAC = self.name
         try:
-            cs_key = settings.CHEMSPIDER_KEY
+            search_results = database_api.simple_search(IUPAC)
         except AttributeError:
-            log.warn('CHEMSPIDER_KEY not found in localsettings.py')
-            url = 'http://discovermagazine.com/~/media/Images/Zen%20Photo/N/nanoputian/3487.gif'
-        else:
-            cs = ChemSpider(cs_key)
-            IUPAC = self.name
-            search_results = cs.simple_search(IUPAC)
-            try:
-                url = search_results[0].image_url
-                if url[:5] != 'https':
-                    url = 'https' + url[4:]     # add https to url for added security
-            except IndexError:
-                url = None
+            return default_url
+	# Parse the search result to get the URL
+        try:
+            url = search_results[0].image_url
+            if url[:5] != 'https':
+                url = 'https' + url[4:]     # add https to url for added security
+        except IndexError:
+            url = default_url
         return url
     
     @property
