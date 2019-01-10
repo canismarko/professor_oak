@@ -57,6 +57,20 @@
 },
 {
     "fields": {
+        "flammability": 3,
+        "instability": 0,
+        "cas_number": "",
+        "formula": "LaTi",
+        "name": "2-propanol",
+        "special_hazards": "",
+        "gloves": [1],
+        "health": 1
+    },
+    "pk": 5,
+    "model": "chemical_inventory.chemical"
+},
+{
+    "fields": {
         "supplier": [],
         "name": "Nitrile"
     },

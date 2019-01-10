@@ -1,6 +1,8 @@
 from collections import namedtuple
 import re
 import datetime as dt
+import urllib
+import warnings
 
 from django.contrib.auth.decorators import login_required
 from django.core.urlresolvers import reverse, reverse_lazy
@@ -113,18 +115,29 @@ class Main(BreadcrumbsMixin, TemplateView):
     def get_context_data(self, *args, **kwargs):
         context = super().get_context_data(*args, **kwargs)
         # A 'context' is the data that the template can use
-        comic = xkcd.Comic(xkcd.getLatestComicNum())
+        # Update inventory data
         context.update({
             'inventory_size': Container.objects.filter(is_empty=False).count(),
-            'xkcd_url': comic.getImageLink(),
-            'xkcd_alt': comic.getAsciiAltText(),
-            'xkcd_title': comic.getAsciiTitle()
         })
-        # Now put the context together with a template
-        # Look in chemical_inventory/templates/main.html for the actual html
-        # 'request' is the HTTP request submitted by the browser
+        # Get the latest XKCD comic to show the user
+        try:
+            comic = xkcd.Comic(xkcd.getLatestComicNum())
+        except urllib.error.URLError:
+            # Problems getting the latest comic (maybe offline?)
+            warnings.warn("Could not acquire latest XKCD comic")
+            context.update({
+                'xkcd_url': '',
+                'xkcd_alt': '',
+                'xkcd_title': '',
+            })        
+        else:
+            context.update({
+                'xkcd_url': comic.getImageLink(),
+                'xkcd_alt': comic.getAsciiAltText(),
+                'xkcd_title': comic.getAsciiTitle()
+            })        
         return context
-
+    
     def breadcrumbs(self):
         breadcrumbs = [inventory_breadcrumb()]
         return breadcrumbs
@@ -158,7 +171,11 @@ class ChemicalListView(BreadcrumbsMixin, ListView):
         searchstring = self.request.GET.get('search')
         # Search in name and formula
         if searchstring is not None: #ignores empty searchstring (if this ever happens)
-            queryset = queryset.filter(Q(formula__icontains=searchstring) | Q(name__icontains=searchstring) | Q(stripped_formula__icontains=searchstring) | Q(cas_number=searchstring))
+            query = (Q(formula__icontains=searchstring) |
+                     Q(name__icontains=searchstring) |
+                     Q(stripped_formula__icontains=searchstring) |
+                     Q(cas_number=searchstring))
+            queryset = queryset.filter(query)
         # For leading digits
         if filterstring == '0-9':
             queryset = queryset.filter(name__regex=r'^\d').exclude(name__isnull=True)
