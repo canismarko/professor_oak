@@ -18,61 +18,13 @@ from . import models, serializers, views
 HAS_CHEMSPIDER_KEY = hasattr(settings, 'CHEMSPIDER_KEY')
 
 
-class MainViewTest(TestCase):
-    """Check that the landing view works properly."""
+class HazardTest(TestCase):
+    fixtures = ['test_users.json', 'inventory_test_data.json']
     def setUp(self):
-        self.client = Client()
-        self.factory = RequestFactory()
-    
-    def test_as_view(self):
-        view = views.Main.as_view()
-        request = self.factory.get(reverse('inventory_main'))
-        response = view(request)
-        self.assertEqual(response.status_code, 200)
-    
-    def test_get_context_data(self):
-        view = views.Main()
-        context = view.get_context_data()
-        # Check for the inventory size
-        count = models.Container.objects.filter(is_empty=False).count()
-        self.assertEqual(context['inventory_size'], count)
-        # Check that the XKCD comic is present
-        self.assertIn('xkcd_url', context.keys())
-        self.assertIn('xkcd_alt', context.keys())
-        self.assertIn('xkcd_title', context.keys())
-    
-    def test_client(self):
-        response = self.client.get(reverse('inventory_main'))
-        self.assertEqual(response.status_code, 200)
+        self.hazard = models.Hazard(name='Acetone') 
+    def test__str__(self):
+        self.assertEqual(self.hazard.__str__(),'Acetone')  
 
-
-class ContainerDetailViewTest(TestCase):
-    fixtures = ['test_users', 'inventory_test_data']
-    def setUp(self):
-        self.factory = RequestFactory()
-    
-    def test_redirect(self):
-        pk = 14
-        container = models.Container.objects.get(pk=pk)
-        request = self.factory.get(reverse('container_detail', kwargs={'pk': pk}))
-        response = views.container_detail(request, pk=pk)
-        # Check that the view redirects to its parent chemical
-        self.assertEqual(response.status_code, 301)
-        new_url = reverse('chemical_detail', kwargs={'pk': container.chemical.pk})
-        new_url += '?find={}'.format(container.pk)
-        self.assertEqual(response.url, new_url)
-
-
-class SupportingDocumentViewTest(TestCase):
-    fixtures = ['test_users', 'inventory_test_data']
-    def setUp(self):
-        self.client = Client()
-    
-    def test_with_client(self):
-        container_pk = 14
-        url = reverse('supporting_documents', kwargs={'container_pk': container_pk})
-        response = self.client.get(url)
-        self.assertEqual(response.status_code, 200)
 
 
 class ElementSearchTest(TestCase):
@@ -88,7 +40,7 @@ class ElementSearchTest(TestCase):
         lithium = models.Chemical.objects.get(formula='Li')
         self.assertEqual(len(chemicals), 1)
         self.assertEqual(chemicals[0], lithium)
-    
+
     def test_excluded_elements(self):
         c = Client()
         response = c.get(
@@ -97,13 +49,7 @@ class ElementSearchTest(TestCase):
         )
         chemicals = response.context['chemicals']
         self.assertFalse("Li" in [c.formula for c in chemicals])
-    
-    def test_no_elements(self):
-        c = Client()
-        response = c.get(reverse('element_search'))
-        chemicals = response.context['chemicals']
-        self.assertEqual(len(chemicals), 0)
-    
+
     def test_two_letter_elements(self):
         """Make sure eg. searching H doesn't return He."""
         c = Client()
@@ -137,44 +83,11 @@ class ChemicalAPITest(TestCase):
         # chemical_view(request)
 
 
-class ChemicalListViewTest(TestCase):
+class InventoryViewTest(TestCase):
     fixtures = ['test_users', 'inventory_test_data']
     
     def setUp(self):
         self.factory = RequestFactory()
-    
-    def test_search_list(self):
-        view = views.ChemicalListView.as_view()
-        # Do a basic search string_instance
-        request = self.factory.get(reverse('chemical_list'), {'search':'lithium'})
-        response = view(request)
-        context = response.context_data
-        self.assertEqual(context['active_search'], 'lithium')
-        # Check that it found the one and only lithium
-        self.assertEqual(len(context['object_list']), 1)
-        self.assertEqual(context['object_list'][0],
-                         models.Chemical.objects.get(name='Lithium'))
-    
-    def test_filter_list(self):
-        view = views.ChemicalListView.as_view()
-        # Filter by alphabetical value
-        request = self.factory.get(reverse('chemical_list'), {'filter': 'L'})
-        response = view(request)
-        context = response.context_data
-        self.assertEqual(context['active_filter'], 'L')
-        # Check that if found things starting with lithium
-        self.assertEqual(len(context['object_list']), 1)
-        self.assertEqual(context['object_list'][0],
-                         models.Chemical.objects.get(name='Lithium'))
-        # Filter by 0-9 value
-        request = self.factory.get(reverse('chemical_list'), {'filter': '0-9'})
-        response = view(request)
-        context = response.context_data
-        self.assertEqual(context['active_filter'], '0-9')
-        # Check that if found things starting with numbers
-        self.assertEqual(len(context['object_list']), 1)
-        self.assertEqual(context['object_list'][0],
-                         models.Chemical.objects.get(name='2-propanol'))
     
     def test_annotate_chemical_queryset(self):
         qs = models.Chemical.objects.all()
@@ -207,7 +120,7 @@ class ChemicalListViewTest(TestCase):
             [q.is_in_stock for q in qs]
             [q.num_containers for q in qs]
             [q.has_expired_containers for q in qs]
-        self.assertEqual(len(qs), models.Chemical.objects.count())
+        self.assertEqual(len(qs), 5)
     
     def test_chemical_list_as_view(self):
         list_view = views.ChemicalListView.as_view()
@@ -215,12 +128,6 @@ class ChemicalListViewTest(TestCase):
         response = list_view(request)
         # Check that the database is not hit too much
         self.assertEqual(response.status_code, 200)
-
-
-class ChemicalDetailViewTest(TestCase):
-    fixtures = ['test_users', 'inventory_test_data']
-    def setUp(self):
-        self.factory = RequestFactory()
     
     def test_chemical_detail_as_view(self):
         list_view = views.ChemicalDetailView.as_view()
@@ -235,10 +142,11 @@ class ChemicalDetailViewTest(TestCase):
 
 class ChemicalTest(TestCase):
     """Unit tests for the Chemical class."""
-    # fixtures=['test_users', 'inventory_test_data']
+    fixtures=['test_users', 'inventory_test_data']
     
     def setUp(self):
-        self.chemical = models.Chemical(name='Acetone')
+        self.chemical = models.Chemical.objects.get(pk=1)
+        #self.chemical = models.Chemical(name='Acetone')
     
     
     def test_chemspider_url_without_key(self):
@@ -254,6 +162,14 @@ class ChemicalTest(TestCase):
                          'https://developer.rsc.org/user/me/apps')
         mock_api.simple_search.assert_called_with(self.chemical.name)
 
+    def test_detail_url(self):
+        self.assertEqual(self.chemical.detail_url(),'/chemical_inventory/chemicals/1/')
+
+    def test_edit_url(self):
+        self.assertEqual(self.chemical.edit_url(),'/chemical_inventory/chemicals/edit/1/')
+
+    def test_not_empty_but_expired(self):
+        self.assertEqual(self.chemical.not_empty_but_expired(),False)
 
 class ContainerAPITest(TestCase):
     fixtures = ['test_users.json', 'inventory_test_data.json']
@@ -330,6 +246,20 @@ class IsEmptyTest(TestCase):
             # print (container_test)
             assert type(container_test) is int
 
+#class StandardOperatingProcedureTest(TestCase):
+#    fixtures = ['test_users.json', 'inventory_test_data.json']
+#    def setUp(self):
+#        self.user = User.objects.create_user('john',
+#                                             'john.lennon@example.com',
+#                                             'secret')
+#        self.client.login(username='john', password='secret')
+#        #self.standardopperatingprocedure = models.StandardOperatingProcedure.objects.get(pk=1)
+#        self.chemical = models.Chemical.objects.get(pk=1) 
+#        self.standardopperatingprocedure = models.StandardOperatingProcedure(name=self.chemical.name)
+#    def test__str__(self):
+#        return
+#        print(self.standardopperatingprocedure.name)
+#        #print(self.standardopperatingprocedure.__str__())
 
 
 
