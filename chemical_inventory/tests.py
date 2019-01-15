@@ -4,6 +4,8 @@ import json
 import os
 import time
 import re
+import urllib
+import warnings
 
 from django.db.models import QuerySet
 from django.conf import settings
@@ -32,7 +34,9 @@ class MainViewTest(TestCase):
     
     def test_get_context_data(self):
         view = views.Main()
-        context = view.get_context_data()
+        # Prepare a fake xkcd api
+        xkcd_api = mock.MagicMock()
+        context = view.get_context_data(xkcd_api=xkcd_api)
         # Check for the inventory size
         count = models.Container.objects.filter(is_empty=False).count()
         self.assertEqual(context['inventory_size'], count)
@@ -40,9 +44,46 @@ class MainViewTest(TestCase):
         self.assertIn('xkcd_url', context.keys())
         self.assertIn('xkcd_alt', context.keys())
         self.assertIn('xkcd_title', context.keys())
+
+    def test_bad_xkcd(self):
+        view = views.Main()
+        # Prepare an XKCD api that raises a url exception
+        xkcd_api = mock.MagicMock()
+        xkcd_api.getLatestComicNum.side_effect = urllib.error.URLError('Testing')
+        # Call the actual view
+        with warnings.catch_warnings():
+            warnings.filterwarnings('ignore',
+                                    message='Could not acquire latest XKCD comic')
+            context = view.get_context_data(xkcd_api=xkcd_api)
+        # Check that blank values are returned for the latest comic 
+        self.assertEqual(context['xkcd_url'], '')
     
     def test_client(self):
         response = self.client.get(reverse('inventory_main'))
+        self.assertEqual(response.status_code, 200)
+
+
+class AddContainerViewTest(TestCase):
+    fixtures = ['test_users.json']
+    def setUp(self):
+        self.factory = RequestFactory()
+        self.client = Client()
+    
+    def test_as_view(self):
+        view = views.AddContainerView.as_view()
+        request = self.factory.get(reverse('add_container'))
+        response = view(request)
+        self.assertEqual(response.status_code, 200)
+    
+    def test_with_client(self):
+        # Check without logging in (it should redirect to login)
+        response = self.client.get(reverse('add_container'))
+        self.assertEqual(response.status_code, 302)
+        login_url = reverse('login_page') + '?next=' + reverse('add_container')
+        self.assertIn(login_url, response.url)
+        # Now log in and check again
+        self.client.login(username='test', password='secret')
+        response = self.client.get(reverse('add_container'))
         self.assertEqual(response.status_code, 200)
 
 

@@ -87,7 +87,7 @@
 <div class="row">
   {% for sop in chemical.sop.all %}
   <div class="col-sm-12">
-    {% if user in sop.certified_users.all %}
+    {% if user in sop.verified_users.all %}
     <div class="alert alert-warning" role="alert" href="{{ sop.file.url }}">
       <strong>{{ sop.name }} Warning: </strong> You have been
       certified to use this SOP, but be careful!

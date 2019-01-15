@@ -112,7 +112,7 @@ class ElementSearchView(BreadcrumbsMixin, TemplateView):
 class Main(BreadcrumbsMixin, TemplateView):
     template_name = 'main.html'
 
-    def get_context_data(self, *args, **kwargs):
+    def get_context_data(self, xkcd_api=xkcd, *args, **kwargs):
         context = super().get_context_data(*args, **kwargs)
         # A 'context' is the data that the template can use
         # Update inventory data
@@ -121,7 +121,7 @@ class Main(BreadcrumbsMixin, TemplateView):
         })
         # Get the latest XKCD comic to show the user
         try:
-            comic = xkcd.Comic(xkcd.getLatestComicNum())
+            comic = xkcd_api.Comic(xkcd_api.getLatestComicNum())
         except urllib.error.URLError:
             # Problems getting the latest comic (maybe offline?)
             warnings.warn("Could not acquire latest XKCD comic")
