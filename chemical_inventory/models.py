@@ -102,22 +102,6 @@ class Chemical(models.Model):
         return "{name} ({formula})".format(name=self.name,
                                            formula=self.stripped_formula)
     
-    def detail_url(self):
-        """Return the url for the detailed view of this chemical and all the
-	containers of it. Looked up in urls.py.
-        
-        """
-        url = reverse('chemical_detail', kwargs={'pk': self.pk})
-        return url
-    
-    def edit_url(self):
-        """Return the url for the detailed view of this chemical and all the
-	containers of it. Looked up in urls.py.
-        
-        """
-        url = reverse('chemical_edit', kwargs={'pk': self.pk})
-        return url
-    
     # @property
     # def is_in_stock(self):
     #     """Whether this chemical has any active containers with material.
