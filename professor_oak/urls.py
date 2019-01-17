@@ -13,6 +13,7 @@ Including another URLconf
     1. Add an import:  from blog import urls as blog_urls
     2. Add a URL to urlpatterns:  url(r'^blog/', include(blog_urls))
 """
+
 from django.conf.urls import include, url
 from django.contrib.auth.decorators import login_required
 from django.contrib import admin
@@ -26,21 +27,20 @@ from django.conf.urls import include, url  # For django versions before 2.0
 # from django.urls import include, path  # For django versions from 2.0 and up
 
 from . import views
-import chemical_inventory.urls, oak_utilities.urls, pokedex.urls
+import chemical_inventory.urls
+import oak_utilities.urls
 
 urlpatterns = [
         # Since there's home content yet, temporarily redirect to the chemical inventory
-        # url(r'^$', views.home, name='home'),
         url(r'^$', RedirectView.as_view(url='/chemical_inventory/', permanent=False),
-            name='home'),
+        name='home'),
         url(r'^admin/', include(admin.site.urls)),
         url(r'^chemical_inventory/', include(chemical_inventory.urls)),
-		url(r'^pokedex/', include(pokedex.urls)),
         url(r'^utilities/', include(oak_utilities.urls)),
         url(r'^users/(?P<pk>\d+)/$',
             login_required(views.UserView.as_view()),
             name="user_detail"),
-
+        
         # Authorization stuff using Django backend
         url(r'^accounts/login/',
             TemplateView.as_view(template_name='login.html'), name='login_page'),
