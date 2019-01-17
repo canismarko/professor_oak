@@ -10,7 +10,6 @@ from django.core.urlresolvers import reverse
 from django.core.files import File
 from django.core.exceptions import ImproperlyConfigured
 from django.db import models
-from django.contrib.auth.models import User
 from django.conf import settings
 from django.dispatch import receiver
 from django.db.models import signals
@@ -224,11 +223,11 @@ class Container(models.Model):
     expiration_date = models.DateField()
     state = models.CharField(max_length=10)
     container_type = models.CharField(max_length=50)
-    owner = models.ForeignKey(User, null=True, blank=True)
+    owner = models.ForeignKey(settings.AUTH_USER_MODEL, null=True, blank=True)
     quantity = models.FloatField(null=True, blank=True)
     unit_of_measure = models.CharField(max_length=20, null=True, blank=True)
     is_empty = models.BooleanField(default=False)
-    emptied_by = models.ForeignKey(User, null=True, blank=True, related_name='emptied_containers')
+    emptied_by = models.ForeignKey(settings.AUTH_USER_MODEL, null=True, blank=True, related_name='emptied_containers')
     barcode = models.CharField(max_length=30, blank=True)
     supplier = models.ForeignKey('Supplier', null=True, blank=True)
     comment = models.TextField(blank=True)
@@ -283,10 +282,22 @@ class Container(models.Model):
 
 class StandardOperatingProcedure(models.Model):
     """A document that is required to be signed before working with
-    associated chemicals
+    associated chemicals.
+
+    Fields
+    ======
+    name : str, optional
+      Name of the procedure.
+    verified_users : ManyToManyField, optional
+      All the lab users that are authorized to use this procedure.
+    associated_chemical : ManyToManyField, optional
+      All the chemicals that are covered by this procedure.
+    file : FileField
+      PDF (or other document) with the actual procedure itself.
+    
     """
     name = models.CharField(max_length=50)
-    verified_users = models.ManyToManyField(User,
+    verified_users = models.ManyToManyField(settings.AUTH_USER_MODEL,
                                             related_name='sop',
                                             blank=True)
     associated_chemicals = models.ManyToManyField('Chemical',
@@ -297,8 +308,12 @@ class StandardOperatingProcedure(models.Model):
     def __str__(self):
         plural_list = ["","s"]
         name = self.name
-        user_count = len(self.verified_users.all())
-        if user_count==1:
+        if self.verified_users.exists():
+            user_count = self.verified_users.count()
+        else:
+            user_count = 0
+
+        if user_count == 1:
                 plural = plural_list[0]
         else:
                 plural = plural_list[1]
@@ -326,7 +341,7 @@ class SupportingDocument(models.Model):
     container = models.ForeignKey('Container')
     file = models.FileField(upload_to='supporting_documents')
     comment = models.TextField(blank=True)
-    owner = models.ForeignKey(User, blank=True, null=True)
+    owner = models.ForeignKey(settings.AUTH_USER_MODEL, blank=True, null=True)
     date_added = models.DateTimeField(auto_now=True)
 
     def __str__(self):

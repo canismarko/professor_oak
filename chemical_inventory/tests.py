@@ -14,6 +14,7 @@ from django.http import HttpResponse
 from django.contrib.staticfiles.testing import StaticLiveServerTestCase
 from django.contrib.auth.models import User
 from django.core.urlresolvers import reverse
+from django.core.files.uploadedfile import SimpleUploadedFile
 from rest_framework.test import APIRequestFactory, APIClient
 
 from . import models, serializers, views, reports
@@ -420,7 +421,7 @@ class GloveTest(TestCase):
         self.glove = models.Glove.objects.get(pk=1)
 
     def test__str__(self):
-        self.assertEqual(self.glove.name,'Nitrile')
+        self.assertEqual(str(self.glove),'Nitrile')
 
 class Location(TestCase):
     fixtures = ['test_users.json', 'inventory_test_data.json']
@@ -574,3 +575,35 @@ class ReportsTest(TestCase):
         # Get the regular HTTP view
         request = self.factory.get(reverse('sop'))
         response = view(request)
+
+class SupplierTest(TestCase):
+    fixtures = ['test_users.json', 'inventory_test_data.json']
+    def setUp(self):
+        self.supplier = models.Supplier.objects.get(pk=1)
+    def test__str__(self):
+        self.assertEqual(str(self.supplier),'Sigma-Aldrich')
+
+class StandardOperatingProcedureTest(TestCase):
+    fixtures = ['test_users.json', 'inventory_test_data.json']
+    def setUp(self):
+        self.user = User.objects.create_user('john',
+                                             'john.lennon@example.com',
+                                             'secret')
+        self.chemical = models.Chemical.objects.get(pk=1)
+        self.file = SimpleUploadedFile('Alkali metal Procedures.pdf', b'Them Procedures Tho!')
+        self.sop = models.StandardOperatingProcedure(name = 'Alkali metal Procedures', file = self.file)
+        self.sop.save()
+    
+    def test__str__(self):
+        # First try it with no users
+        self.assertEqual(str(self.sop),
+                         'Alkali metal Procedures (0 verified users)')
+        # Now try it with one user
+        self.sop.verified_users.add(User.objects.get(pk=1))
+        self.assertEqual(str(self.sop),
+                         'Alkali metal Procedures (1 verified user)')
+        # Now try it with two users
+        self.sop.verified_users.add(User.objects.get(pk=2))
+        self.assertEqual(str(self.sop),
+                         'Alkali metal Procedures (2 verified users)')
+
