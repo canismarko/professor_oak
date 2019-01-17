@@ -16,6 +16,7 @@ from django.core.urlresolvers import reverse
 from rest_framework.test import APIRequestFactory, APIClient
 
 from . import models, serializers, views
+from .templatetags.custom_filters import formula_markup, subtract
 
 HAS_CHEMSPIDER_KEY = hasattr(settings, 'CHEMSPIDER_KEY')
 
@@ -44,7 +45,7 @@ class MainViewTest(TestCase):
         self.assertIn('xkcd_url', context.keys())
         self.assertIn('xkcd_alt', context.keys())
         self.assertIn('xkcd_title', context.keys())
-
+    
     def test_bad_xkcd(self):
         view = views.Main()
         # Prepare an XKCD api that raises a url exception
@@ -425,7 +426,25 @@ class Location(TestCase):
     def setUp(self):
         self.location = models.Location.objects.get(pk=1)
         self.container = models.Container.objects.get(pk=26)
-
+    
     def test_activate_container_set(self):
-        return
         self.location.active_container_set
+
+
+class TemplateTagTest(TestCase):
+    def test_formula_markup(self):
+        # Formula with no content
+        result = formula_markup('')
+        self.assertEqual(result, '')
+        # Formula with subscript
+        result = formula_markup('CH_4')
+        self.assertEqual(result, 'CH<sub>4</sub>')
+        # Formula with superscript
+        result = formula_markup('Li^+')
+        self.assertEqual(result, 'Li<sup>+</sup>')
+        # Formula with bullet
+        result = formula_markup('Mn|3H_2O')
+        self.assertEqual(result, 'Mn&bull;3H<sub>2</sub>O')
+    
+    def test_subtract(self):
+        self.assertEqual(subtract(3, 1), 2)
