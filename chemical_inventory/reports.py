@@ -1,7 +1,7 @@
 import csv
 import datetime
 
-from django.core.urlresolvers import reverse
+from django.core.urlresolvers import reverse, NoReverseMatch
 from django.http import HttpResponse
 from django.views.generic.base import TemplateView
 
@@ -21,10 +21,11 @@ container_csv_header = ['Barcode',
                         'Container',
                         'Owner',]
 
+
 def container_csv_row(container):
     """Convert a container object into a list suitable for passing to a
     csv writer writerow() method."""
-    return [
+    return (
         container.id,
         container.chemical.name,
         container.batch,
@@ -35,14 +36,15 @@ def container_csv_row(container):
         container.state,
         container.container_type,
         container.owner.get_full_name(),
-    ]
+    )
+
 
 class ReportsList(BreadcrumbsMixin, TemplateView):
     """List of all available reports. New reports must be added to
     urls.py and the reports_list.html template.
     """
     template_name = "reports/report_list.html"
-
+    
     def breadcrumbs(self):
         return [
             inventory_breadcrumb(),
@@ -51,15 +53,20 @@ class ReportsList(BreadcrumbsMixin, TemplateView):
 
 
 class ReportView(BreadcrumbsMixin, TemplateView):
+    """Base class for showing a specific report."""
     template_name = 'reports/generic_report.html'
     formats = []
     report_name = 'Report'
-    """Base class for showing a specific report."""
-
+    url_name = ''
+    
     def get_queryset(self):
         msg = 'No `get_queryset()` method defined for {cls}'
         raise NotImplementedError(msg.format(cls=self.__class__))
-
+    
+    def write_csv(self, *args, **kwargs):
+        raise NotImplementedError('csv writing not implemented for {cls}'
+                                  ''.format(cls=self.__class__))
+    
     def get_context_data(self, *args, **kwargs):
         context = super().get_context_data(*args, **kwargs)
         context['report_name'] = self.report_name
@@ -67,7 +74,7 @@ class ReportView(BreadcrumbsMixin, TemplateView):
         # Check which formats this view supports
         context['csv_available'] = hasattr(self, 'write_csv')
         return context
-
+    
     def get(self, request, *args, **kwargs):
         format = request.GET.get('format')
         if format == 'csv':
@@ -79,7 +86,7 @@ class ReportView(BreadcrumbsMixin, TemplateView):
         else:
             response = super().get(request, *args, **kwargs)
         return response
-
+    
     def breadcrumbs(self):
         breadcrumbs = [
             inventory_breadcrumb(),
@@ -88,9 +95,8 @@ class ReportView(BreadcrumbsMixin, TemplateView):
         # Try and determine this reports navigation trail from the name and url
         try:
             breadcrumbs.append((self.report_name, reverse(self.url_name)))
-        except AttributeError:
+        except (AttributeError, NoReverseMatch):
             pass
-        print(breadcrumbs)
         return breadcrumbs
 
 
@@ -101,10 +107,10 @@ class AllChemicals(ReportView):
     template_name = "reports/all_chemicals.html"
     url_name = 'all_chemicals'
     report_name = "All Chemicals"
-
+    
     def get_queryset(self):
         return Chemical.objects.all()
-
+    
     def write_csv(self, response):
         writer = csv.writer(response)
         # Write column headings
@@ -158,7 +164,7 @@ class ContainersByLocation(ReportView):
     template_name = "reports/containers_by_location.html"
     url_name = 'containers_by_location'
     report_name = 'Containers by Location'
-
+    
     def get_context_data(self, *args, **kwargs):
         context = super().get_context_data(*args, **kwargs)
         # A 'context' is the data that the template can use
@@ -173,7 +179,7 @@ class ContainersByLocation(ReportView):
     def get_queryset(self):
         locations = Location.objects.all()
         return locations
-
+    
     def write_csv(self, response):
         writer = csv.writer(response)
         # Write header
@@ -183,7 +189,7 @@ class ContainersByLocation(ReportView):
             writer.writerow([location])
             # Write container data
             for container in location.active_container_set:
-                writer.writerow([''] + container_csv_row(container))
+                writer.writerow(('',) + container_csv_row(container))
         return response
 
 
@@ -206,7 +212,7 @@ class ContainersByOwner(ReportView):
             # Write container data
             for container in user.container_set.all():
                 if not container.is_empty:
-                    writer.writerow([''] + container_csv_row(container))
+                    writer.writerow(('',) + container_csv_row(container))
         return response
 
 
