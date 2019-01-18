@@ -360,20 +360,6 @@ class SearchFormulaTest(TestCase):
         assert cobalt.stripped_formula == 'CoF2'
 
 
-class IsEmptyTest(TestCase):
-    '''Test for verifying whether a chemical as an expired but non-empty
-    container'''
-    fixtures = ['inventory_test_data','test_users']
-    def test_not_empty_expired(TestCase):
-        for chemicals in models.Chemical.objects.all():
-            container_test = models.Container.objects.filter(
-                chemical__id=chemicals.pk,
-                expiration_date__lte=datetime.date.today(),
-                is_empty=False).count()
-            # print (container_test)
-            assert type(container_test) is int
-
-
 class ContainerTest(TestCase):
     fixtures = ['test_users.json', 'inventory_test_data.json']
     def setUp(self):
@@ -621,4 +607,18 @@ class SupportingDocument(TestCase):
 
     def test__str__(self):
         self.assertEqual(str(self.supdocs),'lithium-msds (Lithium (Li): 26)')
+
+class ExpiredContainersTest(TestCase):
+    fixtures = ['test_users.json', 'inventory_test_data.json']
+
+    def test_expired_containers(self):
+        date = datetime.date.today()
+        real_qs = models.Container.objects.filter(expiration_date__lte=date,
+                                        is_empty=False)
+        def_qs = models.expired_containers()
+        self.assertEqual(list(def_qs), list(real_qs))
+
+
+
+
 

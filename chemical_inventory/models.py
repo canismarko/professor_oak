@@ -101,46 +101,6 @@ class Chemical(models.Model):
         return "{name} ({formula})".format(name=self.name,
                                            formula=self.stripped_formula)
     
-    # @property
-    # def is_in_stock(self):
-    #     """Whether this chemical has any active containers with material.
-        
-    #     Retreiving the value invokes a database call to look for open
-    #     containers. For large querysets, this can cause excessive
-    #     database calls. If this property is set first, then the value
-    #     will be cached and used in subsequent reads of this
-    #     attribute. This can be combined with queryset annotations to
-    #     reduce the number of database calls:
-        
-    #     .. code:: python
-	    
-    #         # Too many database calls
-    #         qs = Chemical.objects.all()
-    #         [chemical.is_in_stock() for chemical in qs]
-	   
-    #         # Much saner number of database calls
-    #         qs = Chemical.objects.all()
-    #         full_containers = Container.objects.filter(is_empty=False, chemical=OuterRef('pk'))
-    #         qs = qs.annotate(is_in_stock=Exists(full_containers))
-        
-    #     """
-    #     # Check for cached values
-    #     if self._is_in_stock is not None:
-    #         has_containers = self._is_in_stock
-    #     else:
-    #         # No cached value, so execute a DB query
-    #         has_containers = self.container_set.filter(is_empty=False).exists()
-    #     return bool(has_containers)
-    
-    # @is_in_stock.setter
-    # def is_in_stock(self, val):
-    #     self._is_in_stock = val
-    
-    # def stock_is_null(self):
-    #     """Returns whether a chemical has no containers"""
-    #     raise DeprecationWarning("Use a queryset annotation instead")
-    #     return bool(self.container_set.exists())
-    
     def structure_url(self, database_api=chemspider_api):
         """Retrieve a URL for loading the chemical structure from the RSC database.
 
@@ -171,23 +131,6 @@ class Chemical(models.Model):
     def empty_container_set(self):
         return self.container_set.filter(is_empty=True)
     
-    # def has_expired(self):
-    #     expired_qs = Container.objects.filter(
-    #         chemical__id=self.pk,
-    #         expiration_date__lte=datetime.date.today()
-    #     )
-    #     return expired_qs.count() > 0
-    
-    def not_empty_but_expired(self):
-        # expired_qs = Container.objects.filter(
-        #     chemical__id=self.pk,
-        #     expiration_date__lte=datetime.date.today(),
-        #     is_empty=False
-        # )
-        # if expired_qs.count() > 0:
-        #     return True
-        return False
-
 
 @receiver(signals.pre_save, sender=Chemical)
 def strip_formula(sender, instance, raw, using, update_fields, *args, **kwargs):
