@@ -284,12 +284,11 @@ class ChemicalTest(TestCase):
     def setUp(self):
         self.chemical = models.Chemical(name='Acetone')
     
-    
     def test_chemspider_url_without_key(self):
         target_url = 'http://discovermagazine.com/~/media/Images/Zen%20Photo/N/nanoputian/3487.gif'
         structure_url = self.chemical.structure_url(database_api=None)
         self.assertEqual(structure_url, target_url)
-        
+
     def test_chemspider_url_with_key(self):
         mock_api = mock.MagicMock()
         structure_url = self.chemical.structure_url(database_api=mock_api)
@@ -606,4 +605,20 @@ class StandardOperatingProcedureTest(TestCase):
         self.sop.verified_users.add(User.objects.get(pk=2))
         self.assertEqual(str(self.sop),
                          'Alkali metal Procedures (2 verified users)')
+
+class SupportingDocument(TestCase):
+    fixtures = ['test_users.json', 'inventory_test_data.json']
+    def setUp(self):
+        self.user = User.objects.create_user('john',
+                                             'john.lennon@example.com',
+                                             'secret')
+        self.chemical = models.Chemical.objects.get(pk=1)
+        self.file = SimpleUploadedFile('Alkali metal Procedures.pdf', b'Them Procedures Tho!')
+        self.container = models.Container.objects.get(pk=26)
+
+        self.supdocs = models.SupportingDocument(name = 'lithium-msds', file = self.file, 
+        container = self.container)
+
+    def test__str__(self):
+        self.assertEqual(str(self.supdocs),'lithium-msds (Lithium (Li): 26)')
 
