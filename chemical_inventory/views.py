@@ -33,6 +33,7 @@ GLOSSARY_FILTERS = ( '0-9', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H',
 def inventory_breadcrumb():
     return breadcrumb('Chemical Inventory', reverse_lazy('inventory_main'))
 
+
 def chemical_breadcrumbs(chemical):
     return [
         inventory_breadcrumb(),
@@ -111,7 +112,7 @@ class ElementSearchView(BreadcrumbsMixin, TemplateView):
 
 class Main(BreadcrumbsMixin, TemplateView):
     template_name = 'main.html'
-
+    
     def get_context_data(self, xkcd_api=xkcd, *args, **kwargs):
         context = super().get_context_data(*args, **kwargs)
         # A 'context' is the data that the template can use
@@ -319,7 +320,7 @@ class EditContainerView(BreadcrumbsMixin, UpdateView):
     template_name = 'container_edit.html'
     model = Container
     form_class = ContainerForm
-    
+   
     def get_object(self):
         """Return the specific chemical by its primary key ('pk')."""
         # Find the primary key from the url
@@ -327,34 +328,21 @@ class EditContainerView(BreadcrumbsMixin, UpdateView):
         # Get the actual Chemical object
         container = Container.objects.get(pk=pk)
         return container
-
+   
     def breadcrumbs(self):
         # Set the breadcrumb navigation
         breadcrumbs = [
             inventory_breadcrumb(),
             'chemical_list',
-            breadcrumb(self.object.chemical.name, reverse('chemical_detail', kwargs={'pk': self.object.chemical.pk})),
-            breadcrumb('Edit container', reverse('container_edit', kwargs={'pk': self.object.pk})),
-            ]
+            breadcrumb(
+                self.object.chemical.name,
+                reverse('chemical_detail', kwargs={'pk': self.object.chemical.pk})),
+            breadcrumb(
+                'Edit container',
+                reverse('container_edit', kwargs={'pk': self.object.pk})),
+        ]
         return breadcrumbs
 
-
-# class StandardOperatingProceduresListView(BreadcrumbsMixin, ListView):
-#     """View shows a list of all Standard Operating Procedures (SOPs)"""
-
-#     template_name = 'all_SOPs.html'
-#     model = StandardOperatingProcedures
-#     context_object_name = 'sop'
-
-#     def breadcrumbs(self):
-#         breadcrumbs = [inventory_breadcrumb()]
-#         breadcrumbs.append('sop_list')
-#         return breadcrumbs
-
-#     def get_context_data(self, *args, **kwargs):
-#         # Get the default context
-#         context = super().get_context_data(*args, **kwargs)
-#         return context
 
 # Browseable API viewsets
 # =======================

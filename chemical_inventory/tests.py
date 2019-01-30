@@ -66,6 +66,12 @@ class MainViewTest(TestCase):
         self.assertEqual(response.status_code, 200)
 
 
+class EditContainerViewTest(TestCase):
+    fixtures = ['test_users.json', 'inventory_test_data']
+    def setUp(self):
+        self.factory = RequestFactory()
+
+
 class AddContainerViewTest(TestCase):
     fixtures = ['test_users.json']
     def setUp(self):

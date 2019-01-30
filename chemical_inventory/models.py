@@ -101,6 +101,9 @@ class Chemical(models.Model):
         return "{name} ({formula})".format(name=self.name,
                                            formula=self.stripped_formula)
     
+    def get_absolute_url(self):
+        return reverse('chemical_detail', kwargs={'pk': self.pk})
+    
     def structure_url(self, database_api=chemspider_api):
         """Retrieve a URL for loading the chemical structure from the RSC database.
 
@@ -221,6 +224,9 @@ class Container(models.Model):
         s = "{quantity} {unit_of_measure}"
         return s.format(quantity=self.quantity,
                         unit_of_measure=self.unit_of_measure)
+
+    def get_absolute_url(self):
+        return reverse('chemical_detail', kwargs={'pk': self.chemical_id})
 
 
 class StandardOperatingProcedure(models.Model):
