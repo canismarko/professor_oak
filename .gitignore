@@ -29,3 +29,4 @@ oak_utilities/ULONs/ULON
 *.bak
 changes.md
 .coverage
+htmlcov/

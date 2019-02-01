@@ -1,5 +1,7 @@
 import io
+import datetime as dt
 
+from django.contrib.auth import get_user_model
 from django.test import TestCase, RequestFactory
 from django import forms
 from django.core.files.uploadedfile import SimpleUploadedFile, UploadedFile
@@ -46,3 +48,23 @@ class StockTakeFormTest(TestCase):
         valid, invalid = validate_stock_take(lines)
         self.assertEqual(valid, [1 ,2])
         self.assertEqual(invalid, ['%%15'])
+
+
+class ModelsTest(TestCase):
+    fixtures = ['test_users']
+    def test_update_filename(self):
+        date = dt.date(2019, 2, 1)
+        new_filename = models.update_filename(None, None, date=date)
+        expected = ('oak_utilities/chemical_inventory_data/'
+                    'stock_take-2019-02-01.txt')
+        self.assertEqual(new_filename, expected)
+    
+    def test_stock_take_str(self):
+        take = models.stock_take(name='my stock take')
+        self.assertEqual(str(take), 'my stock take')
+    
+    def test_ulon_str(self):
+        user = get_user_model().objects.first()
+        ulon = models.ULON(user=user, ul=13)
+        expected = '{owner} (UL0013)'.format(owner=user)
+        self.assertEqual(str(ulon), expected)

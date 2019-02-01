@@ -1,5 +1,5 @@
 from django.db import models
-from datetime import datetime, date
+import datetime as dt
 import os
 
 from chemical_inventory.models import Container
@@ -14,8 +14,10 @@ from templated_email import send_templated_mail
 
 root_file_storage = 'oak_utilities/chemical_inventory_data/'
 
-def update_filename(instance, filename):
-    format = 'stock_take-' + str(date.today()) + '.txt'
+def update_filename(instance, filename, date=None):
+    if date is None:
+        date = dt.date.today()
+    format = 'stock_take-{}.txt'.format(date)
     return os.path.join(root_file_storage, format)
 
 def send_email(template_name, payload, destination_email=""):
@@ -53,7 +55,7 @@ class stock_take(models.Model):
     object'
     
     """
-    name = models.DateTimeField(default=datetime.now)
+    name = models.DateTimeField(default=dt.datetime.now)
     file = models.FileField(upload_to=update_filename)
     
     class Meta:
@@ -67,11 +69,11 @@ class stock_take(models.Model):
         uploaded_file_name = str(self.file)
         containers = Container.objects.all()
         base_url = str(settings.PRODUCTION_URL)
-        #Iterate over containers that are not empty to form a list of container id's
+        # Iterate over containers that are not empty to form a list of container id's
         database = []
         for item in containers:
             database.append(item.id)
-        #Create actual list from uploaded file and run comparison
+        # Create actual list from uploaded file and run comparison
         file_upload = '{0}/{1}/{2}'.format(settings.BASE_DIR, settings.MEDIA_ROOT, uploaded_file_name)
         actual = ir.create_barcode_actual(str(file_upload))
         accounted_for, not_in_db, not_in_actual = ir.analyse(actual, database)
@@ -80,12 +82,12 @@ class stock_take(models.Model):
         not_in_db_count = len(not_in_db)
         not_in_actual_count = Container.objects.filter(id__in=not_in_actual, is_empty=False).count()
         payload = {
-            'active_stock_id':self.id,
-            'active_stock_name':self.name,
-            'accounted_for_count':accounted_for_count,
-            'not_in_db_count':not_in_db_count,
-            'not_in_actual_count':not_in_actual_count,
-            'base_url':base_url,
+            'active_stock_id': self.id,
+            'active_stock_name': self.name,
+            'accounted_for_count': accounted_for_count,
+            'not_in_db_count': not_in_db_count,
+            'not_in_actual_count': not_in_actual_count,
+            'base_url': base_url,
             }
         send_email('inventory_results', payload)
 
