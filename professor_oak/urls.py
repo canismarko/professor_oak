@@ -16,7 +16,9 @@ Including another URLconf
 
 from django.conf.urls import include, url
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.views import logout
 from django.contrib import admin
+from django.views import static
 from django.views.generic.base import RedirectView
 from django.views.generic import TemplateView
 from django.core.urlresolvers import reverse
@@ -44,10 +46,11 @@ urlpatterns = [
         # Authorization stuff using Django backend
         url(r'^accounts/login/',
             TemplateView.as_view(template_name='login.html'), name='login_page'),
-        url(r'^accounts/logout/', 'django.contrib.auth.views.logout',
+        url(r'^accounts/logout/', logout,
             {'next_page': '/'}, name="logout"),
         # Authorization stuff using python-social-auth
-        url('', include('social.apps.django_app.urls', namespace='social')),
+        url('', include('social_django.urls', namespace='social')),
+        # url('', include('social.apps.django_app.urls', namespace='social')),
         # Jasmine unit-test runner
         url(r'^jasmine/$', TemplateView.as_view(template_name='jasmine.html')),
 ]
@@ -57,7 +60,7 @@ if settings.DEBUG:
         import debug_toolbar
         urlpatterns.extend([
                 # static files (images, css, javascript, etc.)
-                url(r'^media/(?P<path>.*)$', 'django.views.static.serve',
+                url(r'^media/(?P<path>.*)$', static.serve,
                     { 'document_root': settings.MEDIA_ROOT }
                 ),
                 # For including the Django Debug Toolbar
