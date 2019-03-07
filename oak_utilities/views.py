@@ -140,7 +140,7 @@ class UploadInventoryView(BreadcrumbsMixin, FormView):
                 'stock_take'
         ]
         return breadcrumbs
-
+    
     def get_context_data(self, *args, **kwargs):
         context = super().get_context_data(*args, **kwargs)
         # Get the list of previous stock-takes

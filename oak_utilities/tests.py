@@ -19,6 +19,7 @@ class StockTakeViewTest(TestCase):
     
     def test_context_data(self):
         view = UploadInventoryView()
+        view.request = self.factory.get('')
         context = view.get_context_data()
         self.assertIn('stock_takes', context.keys())
 

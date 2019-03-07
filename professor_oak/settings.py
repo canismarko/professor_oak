@@ -36,6 +36,7 @@ INSTALLED_APPS = (
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django.contrib.sites',
     'allauth',
     'allauth.account',
 
@@ -49,6 +50,8 @@ INSTALLED_APPS = (
     'easy_thumbnails',
     'image_cropping'
 )
+
+SITE_ID = 1
 
 AUTHENTICATION_BACKENDS = (
     'social.backends.google.GoogleOAuth2',
