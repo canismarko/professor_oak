@@ -1,5 +1,5 @@
 from django import forms
-from djng.forms import NgFormValidationMixin, NgModelFormMixin, NgModelForm, NgForm
+from djng.forms import fields as ngfields, NgFormValidationMixin, NgModelFormMixin, NgModelForm, NgForm
 from djng.styling.bootstrap3.forms import Bootstrap3FormMixin
 from django.core.validators import RegexValidator
 from django.forms.widgets import DateTimeInput, TimeInput, SplitDateTimeWidget
@@ -32,11 +32,11 @@ class DateTimeInput(forms.widgets.DateTimeInput):
     input_type = 'datetime'
     format_key = 'DATETIME_INPUT_FORMATS'
     
-class CheckboxChoiceInput(forms.widgets.CheckboxChoiceInput):
-    input_type = 'radio'
+# class CheckboxChoiceInput(forms.widgets.CheckboxChoiceInput):
+#     input_type = 'radio'
     
 class ULONtemplateForm(Bootstrap3FormMixin, NgModelFormMixin,
-            NgFormValidationMixin, NgModelForm):
+                       NgFormValidationMixin, NgModelForm):
     form_name = 'ulon_template'
     
     def getKey(item):
@@ -83,66 +83,66 @@ class ULONtemplateForm(Bootstrap3FormMixin, NgModelFormMixin,
     contact_regex = RegexValidator(regex=r'^[0-9]{3}-[0-9]{3}-[0-9]{4}$', message="Phone number must be entered in the format: '999-999-9999'.")
     
     #Fields
-    experiment_start = forms.DateField(
+    experiment_start = ngfields.DateField(
         label="Start Date",
         # widget=DateTimePicker(options={"format": "YY-MM-DD HH:mm", "pickSeconds": False}),
         widget=DateInput(),
         required=True)
-    experiment_start_time = forms.TimeField(
+    experiment_start_time = ngfields.TimeField(
         label="Start Time",
         widget=TimeInput(format="%H:%M",
         attrs={'placeholder': 'e.g. 09:00, 12:00, 14:00'}),
         required=False,
         )
-    experiment_end = forms.DateField(
+    experiment_end = ngfields.DateField(
         label="End Date",
         widget=DateInput(),
         required=True)
-    experiment_end_time = forms.TimeField(
+    experiment_end_time = ngfields.TimeField(
         label="End Time",
         widget=TimeInput(format="%H:%M",
         attrs={'placeholder': 'e.g. 09:00, 12:00, 14:00'}),
         required=False,
         )
-    contact_number = forms.CharField(
+    contact_number = ngfields.CharField(
         required=True,
         max_length=12,
         label="Contact Number",
         widget=forms.TextInput(
         attrs={'placeholder': 'e.g. 999-999-9999'})
         )
-    chemicals = forms.CharField(
+    chemicals = ngfields.CharField(
         label="Chemicals in use",
         required=True,
         widget=forms.Textarea(
         attrs={'placeholder': 'e.g. Lithium Hydroxide, Carbon', 'rows': '3'})
         ) 
-    experiment_description = forms.CharField(
+    experiment_description = ngfields.CharField(
         label="Experiment Description",
         required=True,
         widget=forms.Textarea(attrs={'rows': '3'})
         ) 
-    experiment_location = forms.CharField(
+    experiment_location = ngfields.CharField(
         label="Room Number & Building",
         required=True, 
         widget=forms.TextInput(attrs={'placeholder': '4169 SES, 4130 SES...'}))
-    experiment_sublocation = forms.CharField(
+    experiment_sublocation = ngfields.CharField(
         label="Sublocation (if any)",
         required=False, 
         widget=forms.TextInput(attrs={'placeholder': 'Fumehood A...'}))
-    emergency_shutdown_procedure = forms.CharField(
+    emergency_shutdown_procedure = ngfields.CharField(
         label="Emergency Shutdown Procedure",
         required=True, 
         widget=forms.Textarea(attrs={'rows': '3'})
          )
-    hazards = forms.MultipleChoiceField(
+    hazards = ngfields.MultipleChoiceField(
         label = "Hazards (select all that apply)",
         choices=sorted(list_of_hazards, key=getKey),
         widget=forms.CheckboxSelectMultiple(
         attrs={'class':'checkbox'}), 
         required=False
         )
-    additional_hazards = forms.CharField(
+    additional_hazards = ngfields.CharField(
         label="Additional Hazards (if any)",
         required=False,
         widget=forms.Textarea(attrs={'rows': '3'})

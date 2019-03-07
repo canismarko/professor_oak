@@ -39,15 +39,14 @@ INSTALLED_APPS = (
     'django.contrib.sites',
     'allauth',
     'allauth.account',
-
     'djng',
+    'easy_thumbnails',
     'social.apps.django_app.default',
     'rest_framework',
     'debug_toolbar',
     'professor_oak',
     'chemical_inventory',
     'oak_utilities',
-    'easy_thumbnails',
     'image_cropping'
 )
 
@@ -145,8 +144,10 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/1.8/howto/static-files/`
 
 STATIC_ROOT = 'static_files/'
-
 STATIC_URL = '/static/'
+STATICFILES_DIRS = [
+    ('node_modules', os.path.join(BASE_DIR, 'node_modules')),
+]
 
 MEDIA_ROOT = 'media_files/'
 MEDIA_URL = '/media/'

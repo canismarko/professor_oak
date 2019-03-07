@@ -1,5 +1,5 @@
 from django import forms
-from djng.forms import NgFormValidationMixin, NgModelFormMixin, NgModelForm, NgForm
+from djng.forms import fields as ngfields, NgFormValidationMixin, NgModelFormMixin, NgModelForm, NgForm
 from djng.styling.bootstrap3.forms import Bootstrap3FormMixin
 
 from . import models
@@ -16,19 +16,19 @@ class ContainerForm(Bootstrap3FormMixin, NgModelFormMixin,
                     NgFormValidationMixin, NgModelForm):
     scope_prefix = 'container'
     form_name = 'container_form'
-    location = forms.ModelChoiceField(label="Location (SDS § 7)",
-                                      queryset=models.Location.objects.order_by('name'))
-    date_opened = forms.DateField(widget=DateInput(),
+    location = ngfields.ModelChoiceField(label="Location (SDS § 7)",
+                                         queryset=models.Location.objects.order_by('name'))
+    date_opened = ngfields.DateField(widget=DateInput(),
                                   required=False)
-    expiration_date = forms.DateField(widget=DateInput())
-    state = forms.CharField(
+    expiration_date = ngfields.DateField(widget=DateInput())
+    state = ngfields.CharField(
         widget=forms.TextInput(attrs={'placeholder': 'Solid, liquid, foil, etc.'}))
-    unit_of_measure = forms.CharField(
+    unit_of_measure = ngfields.CharField(
         widget=forms.TextInput(attrs={'placeholder': 'g, mL, etc'}),
         required=False
     )
-    batch = forms.CharField(label='Batch/Lot Number', required=False)
-    container_type = forms.CharField(widget=forms.TextInput(
+    batch = ngfields.CharField(label='Batch/Lot Number', required=False)
+    container_type = ngfields.CharField(widget=forms.TextInput(
         attrs={'placeholder': 'Glass bottle, metal pouch, etc.'}
     ))
     class Meta:
@@ -40,13 +40,12 @@ class ContainerForm(Bootstrap3FormMixin, NgModelFormMixin,
 
 class SupportingDocumentForm(NgModelFormMixin, NgFormValidationMixin,
                              Bootstrap3FormMixin, NgModelForm):
-# class SupportingDocumentForm(forms.ModelForm):
     form_name = 'supporting_document_form'
-    comment = forms.CharField(
+    comment = ngfields.CharField(
         required=False,
         widget=forms.Textarea(attrs={'rows': '3'})
         )
-
+    
     class Meta:
         model = models.SupportingDocument
         fields = ['name', 'file', 'comment']
@@ -73,36 +72,36 @@ class ChemicalForm(NgModelFormMixin, NgFormValidationMixin,
     # class ChemicalForm(forms.ModelForm):
     scope_prefix = 'chemical'
     form_name = 'chemical_form'
-    cas_number = forms.CharField(
+    cas_number = ngfields.CharField(
         label="CAS Number (SDS § 1)",
         required=False,
         widget=forms.TextInput(attrs={'placeholder': 'eg. 7732-18-5'}))
-    formula = forms.CharField(
+    formula = ngfields.CharField(
         label="Formula (SDS § 3)",
         required=False,
         # widget=forms.TextInput(attrs={'placeholder': 'eg. H_2O', 'ow-formula': 'ow-formula'})
     )
-    ghs_hazards = forms.ModelMultipleChoiceField(
+    ghs_hazards = ngfields.ModelMultipleChoiceField(
         label="GHS Hazards (SDS § 2)",
         # widget=forms.SelectMultiple(attrs={'ow-form': 'chemical_form'}),
         queryset=models.Hazard.objects.all(),
         required=False)
-    health = forms.ChoiceField(
+    health = ngfields.ChoiceField(
         label="Health NFPA Rating (SDS § 15 or 16)",
         choices=NFPA_RATINGS)
-    flammability = forms.ChoiceField(
+    flammability = ngfields.ChoiceField(
         label="Flammability NFPA Rating (SDS § 15 or 16)",
         choices=NFPA_RATINGS)
-    instability = forms.ChoiceField(
+    instability = ngfields.ChoiceField(
         label="Instability NFPA Rating (SDS § 15 or 16)",
         choices=NFPA_RATINGS)
-    special_hazards = forms.ChoiceField(
+    special_hazards = ngfields.ChoiceField(
         label="Special Hazards (SDS § 15 or 16)",
         choices=NFPA_HAZARDS, required=False)
-    gloves = forms.ModelMultipleChoiceField(
+    gloves = ngfields.ModelMultipleChoiceField(
         label="Gloves (SDS § 8.2)",
         queryset=models.Glove.objects.all())
-    safety_data_sheet = forms.FileField(
+    safety_data_sheet = ngfields.FileField(
         label="Safety Data Sheet (MSDS)",
         widget=forms.FileInput(attrs={'file-model': 'chemical.safety_data_sheet'}),
         required=False)

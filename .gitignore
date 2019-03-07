@@ -30,3 +30,5 @@ oak_utilities/ULONs/ULON
 changes.md
 .coverage
 htmlcov/
+package-lock.json
+node_modules/
