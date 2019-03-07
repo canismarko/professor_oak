@@ -118,7 +118,7 @@ class Chemical(models.Model):
         # Retrieve the url for the structure    
         IUPAC = self.name
         try:
-            search_results = database_api.simple_search(IUPAC)
+            search_results = database_api.search(IUPAC)
         except AttributeError:
             return default_url
 	# Parse the search result to get the URL

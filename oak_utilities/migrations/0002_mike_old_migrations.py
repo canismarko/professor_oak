@@ -21,7 +21,7 @@ class Migration(migrations.Migration):
                 ('creation_date', models.DateTimeField(auto_now_add=True)),
                 ('file', models.FileField(blank=True, null=True, upload_to='ULONs')),
                 ('title', models.CharField(max_length=100, blank=True)),
-                ('user', models.ForeignKey(null=True, blank=True, to=settings.AUTH_USER_MODEL)),
+                ('user', models.ForeignKey(null=True, blank=True, to=settings.AUTH_USER_MODEL, on_delete=models.CASCADE)),
             ],
             options={
                 'verbose_name_plural': 'ULONs',

@@ -24,8 +24,11 @@
     Please login to access protected areas of this site.
   </p>
   <p>
+
+    {% comment %}
     <a href="{% url 'social:begin' 'google-oauth2' %}?next={{ request.GET.next }}"
        title="Sign-in with Google">
+      {% endcomment %}
       <img src="{% static 'btn_google_signin_dark_normal_web.png' %}" />
     </a>
   </p>

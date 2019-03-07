@@ -21,7 +21,6 @@ from django.contrib import admin
 from django.views import static
 from django.views.generic.base import RedirectView
 from django.views.generic import TemplateView
-from django.core.urlresolvers import reverse
 from django.contrib.auth import views as auth_views
 from django.conf import settings
 from django.conf import settings
@@ -38,7 +37,7 @@ urlpatterns = [
         # Since there's home content yet, temporarily redirect to the chemical inventory
         url(r'^$', RedirectView.as_view(url='/chemical_inventory/', permanent=False),
             name='home'),
-        url(r'^admin/', include(admin.site.urls)),
+        url(r'^admin/', admin.site.urls),
         url(r'^chemical_inventory/', include(chemical_inventory.urls)),
         url(r'^utilities/', include(oak_utilities.urls)),
         url(r'^users/(?P<pk>\d+)/$',
@@ -51,7 +50,7 @@ urlpatterns = [
         url(r'^accounts/logout/', logout,
             {'next_page': '/'}, name="logout"),
         # Authorization stuff using python-social-auth
-        url('', include('social_django.urls', namespace='social')),
+        # url('', include('social_django.urls', namespace='social')),
         # url('', include('social.apps.django_app.urls', namespace='social')),
         # Jasmine unit-test runner
         url(r'^jasmine/$', TemplateView.as_view(template_name='jasmine.html')),

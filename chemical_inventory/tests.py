@@ -13,7 +13,7 @@ from django.test import TestCase, RequestFactory, Client
 from django.http import HttpResponse
 from django.contrib.staticfiles.testing import StaticLiveServerTestCase
 from django.contrib.auth.models import User
-from django.core.urlresolvers import reverse
+from django.core.urlresolvers import reverse, reverse_lazy
 from django.core.files.uploadedfile import SimpleUploadedFile
 from rest_framework.test import APIRequestFactory, APIClient
 
@@ -301,7 +301,7 @@ class ChemicalTest(TestCase):
         self.assertNotIn('discovermagazine.com', structure_url,
                          'Default URL found. Make new settings.CHEMSPIDER_KEY from '
                          'https://developer.rsc.org/user/me/apps')
-        mock_api.simple_search.assert_called_with(self.chemical.name)
+        mock_api.search.assert_called_with(self.chemical.name)
 
 
 class ContainerAPITest(TestCase):

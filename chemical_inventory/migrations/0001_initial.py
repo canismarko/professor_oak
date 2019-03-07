@@ -47,8 +47,8 @@ class Migration(migrations.Migration):
                 ('is_empty', models.BooleanField(default=False)),
                 ('barcode', models.CharField(blank=True, max_length=30)),
                 ('comment', models.TextField(blank=True)),
-                ('chemical', models.ForeignKey(to='chemical_inventory.Chemical')),
-                ('emptied_by', models.ForeignKey(null=True, to=settings.AUTH_USER_MODEL, related_name='emptied_containers', blank=True)),
+                ('chemical', models.ForeignKey(to='chemical_inventory.Chemical', on_delete=models.CASCADE)),
+                ('emptied_by', models.ForeignKey(null=True, to=settings.AUTH_USER_MODEL, related_name='emptied_containers', blank=True, on_delete=models.CASCADE)),
             ],
         ),
         migrations.CreateModel(
@@ -112,8 +112,8 @@ class Migration(migrations.Migration):
                 ('file', models.FileField(upload_to='supporting_documents')),
                 ('comment', models.TextField(blank=True)),
                 ('date_added', models.DateTimeField(auto_now=True)),
-                ('container', models.ForeignKey(to='chemical_inventory.Container')),
-                ('owner', models.ForeignKey(null=True, to=settings.AUTH_USER_MODEL, blank=True)),
+                ('container', models.ForeignKey(to='chemical_inventory.Container', on_delete=models.CASCADE)),
+                ('owner', models.ForeignKey(null=True, to=settings.AUTH_USER_MODEL, blank=True, on_delete=models.CASCADE)),
             ],
         ),
         migrations.AddField(
@@ -124,17 +124,17 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='container',
             name='location',
-            field=models.ForeignKey(to='chemical_inventory.Location'),
+            field=models.ForeignKey(to='chemical_inventory.Location', on_delete=models.CASCADE),
         ),
         migrations.AddField(
             model_name='container',
             name='owner',
-            field=models.ForeignKey(null=True, to=settings.AUTH_USER_MODEL, blank=True),
+            field=models.ForeignKey(null=True, to=settings.AUTH_USER_MODEL, blank=True, on_delete=models.CASCADE),
         ),
         migrations.AddField(
             model_name='container',
             name='supplier',
-            field=models.ForeignKey(null=True, to='chemical_inventory.Supplier', blank=True),
+            field=models.ForeignKey(null=True, to='chemical_inventory.Supplier', blank=True, on_delete=models.CASCADE),
         ),
         migrations.AddField(
             model_name='chemical',

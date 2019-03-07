@@ -31,9 +31,9 @@ urlpatterns = [
 
 # URLs for the browsable API
 router = routers.DefaultRouter()
-router.register(r'stock_take', views.StockViewSet, base_name="stock_take")
+router.register(r'stock_take', views.StockViewSet, basename="stock_take")
 
 # Add API URLs to Django's urls
 urlpatterns += [
-    url(r'^api/', include(router.urls, namespace="util_api")),
+    url(r'^api/', include((router.urls, 'oak_utilities'), namespace="api")),
 ]
