@@ -102,7 +102,7 @@ class ULON(models.Model):
     
     """
     ul = models.AutoField(primary_key=True)
-    user = models.ForeignKey(User, null=True, blank=True)
+    user = models.ForeignKey(User, null=True, blank=True, on_delete=models.SET_NULL)
     creation_date = models.DateTimeField(auto_now_add=True, blank=True)
     file = models.FileField(upload_to='ULONs', null=True, blank=True)
     title = models.CharField(max_length=100, blank=True)

@@ -13,7 +13,7 @@ from django.test import TestCase, RequestFactory, Client
 from django.http import HttpResponse
 from django.contrib.staticfiles.testing import StaticLiveServerTestCase
 from django.contrib.auth.models import User
-from django.core.urlresolvers import reverse, reverse_lazy
+from django.urls import reverse
 from django.core.files.uploadedfile import SimpleUploadedFile
 from rest_framework.test import APIRequestFactory, APIClient
 

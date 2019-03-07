@@ -1,7 +1,7 @@
 import csv
 import datetime
 
-from django.core.urlresolvers import reverse, NoReverseMatch
+from django.urls import reverse, NoReverseMatch
 from django.http import HttpResponse
 from django.views.generic.base import TemplateView
 

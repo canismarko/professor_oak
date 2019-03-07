@@ -5,7 +5,7 @@ import urllib
 import warnings
 
 from django.contrib.auth.decorators import login_required
-from django.core.urlresolvers import reverse, reverse_lazy
+from django.urls import reverse
 from django.shortcuts import render, redirect
 from django.views.generic.list import ListView
 from django.views.generic.base import TemplateView
@@ -31,7 +31,7 @@ GLOSSARY_FILTERS = ( '0-9', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H',
 
 # Breadcrumbs definitions
 def inventory_breadcrumb():
-    return breadcrumb('Chemical Inventory', reverse_lazy('inventory_main'))
+    return breadcrumb('Chemical Inventory', reverse('inventory_main'))
 
 
 def chemical_breadcrumbs(chemical):

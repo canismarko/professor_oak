@@ -4,7 +4,7 @@ from django.views.generic.list import ListView
 from django.views.generic.base import TemplateView
 from django.views.generic.detail import DetailView
 from django.views.generic.edit import CreateView, UpdateView, FormView
-from django.core.urlresolvers import reverse, reverse_lazy
+from django.urls import reverse
 from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from django.shortcuts import redirect
 from .forms import ULONtemplateForm, UploadInventoryForm
@@ -29,7 +29,7 @@ from templated_email import send_templated_mail
 
 # Breadcrumbs definitions
 def utilities_breadcrumb():
-    return breadcrumb('Utilities', reverse_lazy('utilities_main'))
+    return breadcrumb('Utilities', reverse('utilities_main'))
 
 
 def stock_breadcrumbs(stock_take):

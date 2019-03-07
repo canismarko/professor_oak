@@ -3,7 +3,7 @@ specific app. This module is mostly for default/landing pages."""
 
 from collections import namedtuple
 
-from django.core.urlresolvers import reverse, reverse_lazy
+from django.urls import reverse
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse
 from django.template import RequestContext, loader
@@ -33,7 +33,7 @@ class BreadcrumbsMixin():
                 new_trail.append(breadcrumb(*step))
             except TypeError:
                 # Reverse the urls if possible
-                url = reverse_lazy(step)
+                url = reverse(step)
                 name = step.replace('_', ' ').title()
                 new_trail.append(breadcrumb(name, url))
         context['breadcrumbs'] = new_trail

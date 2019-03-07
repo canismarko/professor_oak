@@ -6,7 +6,7 @@ import subprocess
 import warnings
 import logging
 
-from django.core.urlresolvers import reverse
+from django.urls import reverse
 from django.core.files import File
 from django.core.exceptions import ImproperlyConfigured
 from django.db import models
@@ -161,21 +161,21 @@ class Container(models.Model):
     associated with a container include things like its location,
     amount and owner.
     """
-    chemical = models.ForeignKey('Chemical')
-    location = models.ForeignKey('Location')
+    chemical = models.ForeignKey('Chemical', on_delete=models.CASCADE)
+    location = models.ForeignKey('Location', on_delete=models.CASCADE)
     batch = models.CharField(max_length=30, blank=True)
     date_added = models.DateTimeField(auto_now=True)
     date_opened = models.DateField(null=True, default=datetime.date.today)
     expiration_date = models.DateField()
     state = models.CharField(max_length=10)
     container_type = models.CharField(max_length=50)
-    owner = models.ForeignKey(settings.AUTH_USER_MODEL, null=True, blank=True)
+    owner = models.ForeignKey(settings.AUTH_USER_MODEL, null=True, blank=True, on_delete=models.SET_NULL)
     quantity = models.FloatField(null=True, blank=True)
     unit_of_measure = models.CharField(max_length=20, null=True, blank=True)
     is_empty = models.BooleanField(default=False)
-    emptied_by = models.ForeignKey(settings.AUTH_USER_MODEL, null=True, blank=True, related_name='emptied_containers')
+    emptied_by = models.ForeignKey(settings.AUTH_USER_MODEL, null=True, blank=True, related_name='emptied_containers', on_delete=models.SET_NULL)
     barcode = models.CharField(max_length=30, blank=True)
-    supplier = models.ForeignKey('Supplier', null=True, blank=True)
+    supplier = models.ForeignKey('Supplier', null=True, blank=True, on_delete=models.SET_NULL)
     comment = models.TextField(blank=True)
     
     def __str__(self):
@@ -287,10 +287,10 @@ class SupportingDocument(models.Model):
     vendor CofA.
     """
     name = models.CharField(max_length=50)
-    container = models.ForeignKey('Container')
+    container = models.ForeignKey('Container', on_delete=models.CASCADE)
     file = models.FileField(upload_to='supporting_documents')
     comment = models.TextField(blank=True)
-    owner = models.ForeignKey(settings.AUTH_USER_MODEL, blank=True, null=True)
+    owner = models.ForeignKey(settings.AUTH_USER_MODEL, blank=True, null=True, on_delete=models.SET_NULL)
     date_added = models.DateTimeField(auto_now=True)
 
     def __str__(self):
