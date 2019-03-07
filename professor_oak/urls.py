@@ -16,7 +16,7 @@ Including another URLconf
 
 from django.conf.urls import include, url
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth.views import logout
+from django.contrib.auth import logout
 from django.contrib import admin
 from django.views import static
 from django.views.generic.base import RedirectView

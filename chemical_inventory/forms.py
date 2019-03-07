@@ -1,3 +1,5 @@
+from django.urls import reverse, reverse_lazy
+
 from django import forms
 from djng.forms import fields as ngfields, NgFormValidationMixin, NgModelFormMixin, NgModelForm, NgForm
 from djng.styling.bootstrap3.forms import Bootstrap3FormMixin
@@ -44,7 +46,12 @@ class SupportingDocumentForm(NgModelFormMixin, NgFormValidationMixin,
     comment = ngfields.CharField(
         required=False,
         widget=forms.Textarea(attrs={'rows': '3'})
-        )
+    )
+    file = ngfields.FileField(
+        label="Document file",
+        fileupload_url=reverse_lazy('fileupload'),
+        required=True
+    )
     
     class Meta:
         model = models.SupportingDocument

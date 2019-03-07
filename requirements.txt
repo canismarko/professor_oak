@@ -1,4 +1,4 @@
-Django==2.0.13
+Django==2.1.7
 wheel==0.24.0
 django-angular==2.2 # Previously 0.7.15
 pyBarcode==0.7
@@ -12,13 +12,9 @@ easy_thumbnails==2.6
 django-image-cropping==1.0.3
 django-braces==1.9.0
 python-social-auth==0.2.21
-django-browserid==1.0.0
 plotly==2.0.6
 pandas==0.20.1
 django-allauth==0.34.0
-
-# Only required until upgrading to Django 2.1
-django-subquery==1.0.4
 
 # For development
 django-debug-toolbar==1.9.1
